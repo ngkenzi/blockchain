@@ -1,30 +1,35 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function App() {
-  // Initialize state variables
-  const [apiKey, setApiKey] = useState("");
-  const [address, setAddress] = useState("");
+  const [address, setAddress] = useState('');
   const [nfts, setNfts] = useState([]);
+  const network_id = '137';
 
-  // Function to fetch NFTs
   const fetchNFTs = async () => {
-    let url = `https://api.nftport.xyz/v0/accounts/${address}?chain=polygon&include=metadata`;
-    const response = await fetch(url, {
-      method: "GET",
+    let url = `http://localhost:8000/https://api.chainbase.online/v1/account/nfts?chain_id=${network_id}&address=${address}&page=1&limit=5`;
+    const response = await axios.get(url, {
       headers: {
-        "Content-Type": "application/json",
-        "Authorization": process.env.REACT_APP_NFT_PORT_API
+        'Content-Type': 'application/json',
+        'x-api-key': '2S65t1iBkZGg0KsMrWqGRGR9LLX',
       },
     });
-    const json = await response.json();
-    // Reverse the order of the NFTs
-    setNfts(json['nfts'].reverse());
+
+    if (response.status !== 200) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const nftData = response.data.data.map((nft) => ({
+      ...nft.metadata,
+      image_url: nft.metadata.image.replace('ipfs://', 'https://ipfs.io/ipfs/'),
+    }));
+
+    setNfts(nftData);
   }
 
-  // Call the fetchNFTs function when the button is clicked
-  const handleClick = () => {
-    fetchNFTs();
-  }
+  useEffect(() => {
+    if (address) fetchNFTs();
+  }, [address]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 py-2">
@@ -32,23 +37,28 @@ function App() {
 
       <div className="w-1/2">
         <label className="block mb-2 text-sm font-bold text-gray-700" htmlFor="address-input">Address</label>
-        <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline" id="address-input" type="text" placeholder="Address" value={address} onChange={e => setAddress(e.target.value)} />
+        <input className="w-full px-3 py-2 leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+          id="address-input"
+          type="text"
+          placeholder="Address"
+          value={address}
+          onChange={e => setAddress(e.target.value)} />
       </div>
-      <button className="px-4 py-2 mt-5 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={handleClick}>Show me!</button>
+      <button className="px-4 py-2 mt-5 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={fetchNFTs}>Show me!</button>
 
       <div className="flex flex-wrap justify-center mt-10">
         {nfts.map((nft, index) => (
           <div key={index} className="w-64 m-4 bg-white rounded shadow-md">
-            <img className="w-full h-64 rounded-t" src={nft['cached_file_url']} alt="NFT image" />
+            <img className="w-full h-64 rounded-t" src={nft.image_url} alt="NFT image" />
             <div className="p-4">
-              <h2 className="text-xl font-bold">{nft['name']}</h2>
-              <p className="mt-2 text-gray-600">{nft['description']}</p>
+              <h2 className="text-xl font-bold">{nft.name}</h2>
+              <p className="mt-2 text-gray-600">{nft.description}</p>
             </div>
           </div>
         ))}
       </div>
     </div>
-  )
+  );
 }
 
 export default App;
