@@ -7,25 +7,44 @@ function App() {
   const network_id = '137';
 
   const fetchNFTs = async () => {
-    let url = `http://localhost:8000/https://api.chainbase.online/v1/account/nfts?chain_id=${network_id}&address=${address}&page=1&limit=5`;
-    const response = await axios.get(url, {
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': '2S65t1iBkZGg0KsMrWqGRGR9LLX',
-      },
-    });
+    let page = 1;
+    let moreDataExists = true;
+    let nftData = [];
 
-    if (response.status !== 200) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    while (moreDataExists) {
+      let url = `http://localhost:8000/https://api.chainbase.online/v1/account/nfts?chain_id=${network_id}&address=${address}&page=${page}&limit=100`;
+      const response = await axios.get(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': '2S65t1iBkZGg0KsMrWqGRGR9LLX',
+        },
+      });
+
+      if (response.status !== 200) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const pageData = response.data.data.map((nft) => ({
+        ...nft.metadata,
+        image_url: nft.metadata && nft.metadata.image ? nft.metadata.image.replace('ipfs://', 'https://ipfs.io/ipfs/') : '',
+      }));
+
+      nftData = [...nftData, ...pageData];
+
+      // If the number of items returned is less than the limit, it means there is no more data.
+      moreDataExists = pageData.length === 100;
+      page++;
+
+      // Wait for 1 second between requests to avoid rate limiting
+      if (moreDataExists) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
     }
-
-    const nftData = response.data.data.map((nft) => ({
-      ...nft.metadata,
-      image_url: nft.metadata.image.replace('ipfs://', 'https://ipfs.io/ipfs/'),
-    }));
 
     setNfts(nftData);
   }
+
+
 
   useEffect(() => {
     if (address) fetchNFTs();
