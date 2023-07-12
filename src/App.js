@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 
 function App() {
   const [address, setAddress] = useState('');
   const [nfts, setNfts] = useState([]);
   const network_id = '137';
+
+  const axiosInstance = axios.create();
+  axiosRetry(axiosInstance, { retries: 3 });
 
   const fetchNFTs = async () => {
     let page = 1;
@@ -13,38 +17,48 @@ function App() {
 
     while (moreDataExists) {
       let url = `http://localhost:8000/https://api.chainbase.online/v1/account/nfts?chain_id=${network_id}&address=${address}&page=${page}&limit=100`;
-      const response = await axios.get(url, {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': '2S65t1iBkZGg0KsMrWqGRGR9LLX',
-        },
-      });
 
-      if (response.status !== 200) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      try {
+        const response = await axiosInstance.get(url, {
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': '2S65t1iBkZGg0KsMrWqGRGR9LLX',
+          },
+        });
 
-      const pageData = response.data.data.map((nft) => ({
-        ...nft.metadata,
-        image_url: nft.metadata && nft.metadata.image ? nft.metadata.image.replace('ipfs://', 'https://ipfs.io/ipfs/') : '',
-      }));
+        if (response.status !== 200) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-      nftData = [...nftData, ...pageData];
+        const pageData = response.data.data.map((nft) => ({
+          ...nft.metadata,
+          image_url: nft.metadata && nft.metadata.image ? nft.metadata.image.replace('ipfs://', 'https://ipfs.io/ipfs/') : '',
+        }));
 
-      // If the number of items returned is less than the limit, it means there is no more data.
-      moreDataExists = pageData.length === 100;
-      page++;
+        nftData = [...nftData, ...pageData];
 
-      // Wait for 1 second between requests to avoid rate limiting
-      if (moreDataExists) {
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // If the number of items returned is less than the limit, it means there is no more data.
+        moreDataExists = pageData.length === 100;
+        page++;
+
+        // Wait for 1 second between requests to avoid rate limiting
+        if (moreDataExists) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 429) {
+          // Handle rate limit error
+          console.error("Rate limit exceeded. Please slow down your requests.");
+          break; // break the loop if rate limit is exceeded
+        } else {
+          // Handle general errors
+          console.error(error);
+        }
       }
     }
 
     setNfts(nftData);
   }
-
-
 
   useEffect(() => {
     if (address) fetchNFTs();
@@ -63,7 +77,7 @@ function App() {
           value={address}
           onChange={e => setAddress(e.target.value)} />
       </div>
-      <button className="px-4 py-2 mt-5 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={fetchNFTs}>Show me!</button>
+      {/* <button className="px-4 py-2 mt-5 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={fetchNFTs}>Show me!</button> */}
 
       <div className="flex flex-wrap justify-center mt-10">
         {nfts.map((nft, index) => (
