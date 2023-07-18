@@ -77,12 +77,12 @@ function App() {
           value={address}
           onChange={e => setAddress(e.target.value)} />
       </div>
-      {/* <button className="px-4 py-2 mt-5 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={fetchNFTs}>Show me!</button> */}
+      { <button className="px-4 py-2 mt-5 font-bold text-white bg-blue-500 rounded hover:bg-blue-700" onClick={fetchNFTs}>Show me!</button>}
 
       <div className="flex flex-wrap justify-center mt-10">
         {nfts.map((nft, index) => (
           <div key={index} className="w-64 m-4 bg-white rounded shadow-md">
-            <img className="w-full h-64 rounded-t" src={nft.image_url} alt="NFT image" />
+            <img className="w-full h-64 rounded-t" src={nft.image_url} alt="NFT" />
             <div className="p-4">
               <h2 className="text-xl font-bold">{nft.name}</h2>
               <p className="mt-2 text-gray-600">{nft.description}</p>
