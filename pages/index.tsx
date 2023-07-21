@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import Head from 'next/head';
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
-import { Grid, Text, Input, Button } from '@mantine/core';
+import { Grid, Text, Input, Button, Title, Paper, Col, Image, Select } from '@mantine/core';
 import { HeaderResponsive } from '../components/Header';
+import { FooterLinks } from '../components/Footer';
 
 interface NFT {
   name: string;
@@ -19,13 +21,51 @@ const Home = () => {
         { link: '/authentication', label: 'Admin'},
         
         // Add more links as needed
-      ]; 
-  const [address, setAddress] = useState('');
-  const [nfts, setNfts] = useState<NFT[]>([]);
-  const network_id = '137';
+    ];
+    const footerLinks = [
+      {
+        title: 'Company',
+        links: [
+          { label: 'About', link: '/about' },
+          // Add more links as needed
+        ],
+      },
+      // Add more groups as needed
+    ];
+    const universities = [
+      { label: 'Universiti Malaya (UM)', value: '0123' },
+      { label: 'Universiti Sains Malaysia (USM)', value: '0123' },
+      { label: 'Universiti Kebangsaan Malaysia (UKM)', value: '0123' },
+      { label: 'Universiti Putra Malaysia (UPM)', value: '0x01Ff83b084498CfDa27497F14D5c2AdbB5a7f73D' },
+      { label: 'Universiti Teknologi Malaysia (UPM)', value: '0123' },
+      { label: 'Universiti Islam Antarabangsa Malaysia (UIAM)', value: '0123' },
+      { label: 'Universiti Utara Malaysia (UUM)', value: '0123' },
+      { label: 'Universiti Malaysia Sarawak (UNIMAS)', value: '0123' },
+      { label: 'Universiti Malaysia Sabah (UMS)', value: '0123' },
+      { label: 'Universiti Pendidikan Sultan Idris (UPSI)', value: '0123' },
+      { label: 'Universiti Sains Islam Malaysia (USIM)', value: '0123' },
+      { label: 'Universiti Teknologi MARA (UiTM)', value: '0123' },
+      { label: 'Universiti Malaysia Terengganu (UMT)', value: '0123' },
+      { label: 'Universiti Tun Hussein Onn (UTHM)', value: '0123' },
+      { label: 'Universiti Teknikal Malaysia Melaka (UTeM)', value: '0123' },
+      { label: 'Universiti Malaysia Pahang (UMP)', value: '0123' },
+      { label: 'Universiti Malaysia Perlis (UniMAP)', value: '0123' },
+      { label: 'Universiti Sultan Zainal Abidin (UniSZA)', value: '0123' },
+      { label: 'Universiti Malaysia Kelantan (UMK)', value: '0123' },
+      { label: 'Universiti Pertahanan Nasional Malaysia (UPNM)', value: '0123' },
+    ];
+    const [address, setAddress] = useState('');
+    const [selectedUniversity, setSelectedUniversity] = useState('');
+    const [nfts, setNfts] = useState<NFT[]>([]);
+    const [search, setSearch] = useState('');
+    const network_id = '137';
 
-  const axiosInstance = axios.create();
-  axiosRetry(axiosInstance, { retries: 3 });
+    const axiosInstance = axios.create();
+    axiosRetry(axiosInstance, { retries: 3 });
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setSearch(event.target.value);
+    };
 
   const fetchNFTs = async () => {
     let page = 1;
@@ -86,44 +126,68 @@ const Home = () => {
 
   return (
     
-    <div style={{ minHeight: '100vh', padding: '20px' }}>
+    <div style={{ minHeight: '100vh', padding: '0px' }}>
+      <Head>
+        <title>Home</title>
+        <meta name="description" content="Verify and Validate your certificates with MSP Cert" />
+      </Head>
         <HeaderResponsive links={links} />
-        <h1>Students Certificates Ownership</h1>
-
-      <div style={{ marginBottom: '20px' }}>
-        <label style={{ fontSize: '1rem', fontWeight: 'bold', marginBottom: '5px', display: 'block' }} htmlFor="address-input">
-          Address
-        </label>
-        <Input
-          id="address-input"
-          type="text"
-          placeholder="Address"
-          value={address}
-          onChange={(e) => setAddress(e.currentTarget.value)}
-          style={{ width: '100%', padding: '10px', fontSize: '1rem' }}
-        />
-      </div>
-
-      <Button
-        variant="outline"
-        color="blue"
-        onClick={fetchNFTs}
-        style={{ marginBottom: '20px' }}
+        <Title 
+      order={3} 
+      style={{
+      fontWeight: 'bold',
+      marginTop: '20px', // change this to whatever value you need
+      }} 
+      align="center"
       >
-        Show me!
-      </Button>
+       Students Certificates Ownership
+      </Title>
+      <Text component="label" htmlFor="address-input" weight={700} style={{ marginBottom: '5px' }}>
+          Select your University
+      </Text>
+      <Select
+      placeholder="Select a university"
+      data={universities}
+      value={address}
+      onChange={setAddress}
+      style={{ width: '100%', padding: '10px', fontSize: '1rem' }}
+      />
+      <Text component="label" htmlFor="address-input" weight={700} style={{ marginBottom: '5px' }}>
+          Search Student Name
+      </Text>
+     
 
-      <Grid gutter="md">
-        {nfts.map((nft, index) => (
-          <div key={index} style={{ width: '100%', marginBottom: '20px' }}>
-            <img style={{ width: '100%', height: 'auto', borderRadius: '4px' }} src={nft.image_url} alt="NFT" />
-            <div style={{ padding: '10px' }}>
-              <Text style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '5px' }}>{nft.name}</Text>
-              <Text style={{ fontSize: '1rem', color: 'gray' }}>{nft.description}</Text>
-            </div>
-          </div>
+      <Input
+        id="search-input"
+        type="text"
+        placeholder="Search for Students Name..."
+        value={search}
+        onChange={handleSearchChange}
+        style={{ width: '100%', padding: '10px', fontSize: '1rem', marginBottom: '20px' }}
+      />
+
+  <Grid gutter="md">
+  {nfts.filter(nft => nft.name?.toLowerCase().includes(search.toLowerCase())).map((nft, index) => (
+          <Col key={index} md={6} lg={4}>
+            <Paper style={{ marginBottom: '20px', padding: '10px' }}>
+              <Image
+                src={nft.image_url}
+                alt="NFT"
+                fit="cover"
+                caption={nft.name}
+                style={{ borderRadius: '4px' }}
+              />
+              <Text size="xl" weight={700} style={{ marginBottom: '5px' }}>
+                {nft.name}
+              </Text>
+              <Text size="sm" color="gray">
+                {nft.description}
+              </Text>
+            </Paper>
+          </Col>
         ))}
       </Grid>
+      <FooterLinks data={footerLinks} />
     </div>
   );
 };

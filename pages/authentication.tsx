@@ -1,18 +1,17 @@
 import Head from 'next/head';
 import { HeaderResponsive } from '../components/Header';
 import { FooterLinks } from '../components/Footer';
-import { ArticlesCardsGrid } from '../components/Card';
 import { Title } from '@mantine/core';
 import { AuthenticationForm } from '../components/Authentication';
 
 
 const links = [
   { link: '/', label: 'Home' },
-  { link: '/customer', label: 'Our Customer' },
-  { link: 'https://forms.gle/2n5c4y1MFGoSnHsw6', label: 'Pre-Order', isExternal: true },
+  { link: '/upskill', label: 'Online Courses' },
   { link: '/authentication', label: 'Admin'},
+  
   // Add more links as needed
-];
+]; 
 
 const footerLinks = [
   {

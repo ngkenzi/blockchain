@@ -1,5 +1,6 @@
-import { createStyles, Text, Container, ActionIcon, Group, rem, Image } from '@mantine/core';
+import { createStyles, Text, Container, ActionIcon, Group, rem } from '@mantine/core';
 import { IconBrandTwitter, IconBrandYoutube, IconBrandInstagram } from '@tabler/icons-react';
+import Logo from "./logo";
 
 const useStyles = createStyles((theme) => ({
   footer: {
@@ -13,19 +14,13 @@ const useStyles = createStyles((theme) => ({
   },
 
   logo: {
-    maxWidth: rem(100),
+    maxWidth: rem(200),
 
     [theme.fn.smallerThan('sm')]: {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
     },
-  },
-
-  logoImage: {
-    width: rem(100),
-    height: rem(100),
-    marginRight: rem(8),
   },
 
   description: {
@@ -138,16 +133,16 @@ export function FooterLinks({ data }: FooterLinksProps) {
     <footer className={classes.footer}>
       <Container className={classes.inner}>
         <div className={classes.logo}>
-          <Image src="/images/logo.png" alt="Farmlah Logo" className={classes.logoImage} />
+        <Logo/>
           <Text size="xs" color="dimmed" className={classes.description}>
-            Check & Verify your certificates
+            Verify and Validate Certificates here
           </Text>
         </div>
         <div className={classes.groups}>{groups}</div>
       </Container>
       <Container className={classes.afterFooter}>
         <Text color="dimmed" size="sm">
-          © 2023 .dev. All rights reserved.
+          © 2023 MSP.dev. All rights reserved.
         </Text>
 
         <Group spacing={0} className={classes.social} position="right" noWrap>
