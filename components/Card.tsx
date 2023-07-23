@@ -1,4 +1,5 @@
 import { Card, Image, Text, Badge, Button, Group } from '@mantine/core';
+import Link from 'next/link';
 
 interface CourseCardProps {
   imageUrl: string;
@@ -7,9 +8,10 @@ interface CourseCardProps {
   onSale: boolean;
   description: string;
   buttonLabel: string;
+  link: string;
 }
 
-export const CourseCard: React.FC<CourseCardProps> = ({ imageUrl, altText, courseTitle, onSale, description, buttonLabel }) => {
+export const CourseCard: React.FC<CourseCardProps> = ({ imageUrl, altText, courseTitle, onSale, description, buttonLabel, link }) => {
   return (
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>
@@ -27,7 +29,11 @@ export const CourseCard: React.FC<CourseCardProps> = ({ imageUrl, altText, cours
 
       <Text size="sm" color="dimmed">{description}</Text>
 
-      <Button variant="light" color="blue" fullWidth mt="md" radius="md">{buttonLabel}</Button>
+      <Link href={link}>
+          <Button variant="light" color="blue" fullWidth mt="md" radius="md" >
+            {buttonLabel}
+          </Button>
+      </Link>
     </Card>
   );
 }

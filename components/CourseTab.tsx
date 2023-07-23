@@ -10,6 +10,7 @@ type Course = {
     onSale: boolean;
     description: string;
     buttonLabel: string;
+    link: string; 
   };
 
 const CourseTabs: React.FC<{ courses: Course[] }> = ({ courses }) => {
@@ -20,8 +21,8 @@ const CourseTabs: React.FC<{ courses: Course[] }> = ({ courses }) => {
     <Tabs variant="pills" radius="md" defaultValue="allCourses">
       <Tabs.List>
         <Tabs.Tab value="allCourses">All Courses</Tabs.Tab>
-        <Tabs.Tab value="onSale">On Sale</Tabs.Tab>
-        <Tabs.Tab value="notOnSale">Not On Sale</Tabs.Tab>
+        <Tabs.Tab value="onSale">Tech</Tabs.Tab>
+        <Tabs.Tab value="notOnSale">Non Tech</Tabs.Tab>
       </Tabs.List>
 
       <Tabs.Panel value="allCourses" pt="xs">

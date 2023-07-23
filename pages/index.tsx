@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import axios from 'axios';
 import axiosRetry from 'axios-retry';
-import { Grid, Text, Input, Button, Title, Paper, Col, Image, Select } from '@mantine/core';
+import { Grid, Text, Input, Title, Paper, Col, Image, Select } from '@mantine/core';
 import { HeaderResponsive } from '../components/Header';
 import { FooterLinks } from '../components/Footer';
 

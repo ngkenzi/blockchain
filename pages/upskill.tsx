@@ -20,6 +20,7 @@ const courses = [
     onSale: true,
     description: "Minimise skill gaps in the digital creative content industry through skill development and up-skill programmes",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   {
     imageUrl: "https://titan.mdec.my/wp-content/uploads/assets/images/pages/index/gfx/thumb-erezeki.jpg",
@@ -28,14 +29,16 @@ const courses = [
     onSale: true,
     description: "Learn via online modules to onboard at various sharing economy platforms and earn additional income.",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   {
     imageUrl: "https://titan.mdec.my/wp-content/uploads/gettyimages-1194657255-170667a.jpg",
     altText: "Course 3",
-    courseTitle: "Facebook Digital Marketing Certification",
+    courseTitle: "Facebook Digital Marketing",
     onSale: true,
     description: "You will learn about Facebook Advertising Fundamentals, Create and Manage Ads and Reporting.",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   {
     imageUrl: "https://titan.mdec.my/wp-content/uploads/assets/images/pages/index/gfx/thumb-glow.jpg",
@@ -44,6 +47,7 @@ const courses = [
     onSale: true,
     description: "Learn how to pitch and win global freelance jobs and earn income as digital freelancers",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   {
     imageUrl: "https://titan.mdec.my/wp-content/uploads/image45-f.jpg",
@@ -52,6 +56,7 @@ const courses = [
     onSale: false,
     description: "Malaysian businesses and entrepreneurs can access up to a 100 online eCommerce certifications for free.",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   {
     imageUrl: "https://titan.mdec.my/wp-content/uploads/Thumbnail-Cloud-Administration-No-Logo.png",
@@ -60,6 +65,7 @@ const courses = [
     onSale: false,
     description: "Learn how to solve real-world problems with cloud knowledge",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   {
     imageUrl: "https://titan.mdec.my/wp-content/uploads/google.jpeg",
@@ -68,6 +74,7 @@ const courses = [
     onSale: false,
     description: "Free training and tools to help you grow your skills, career, or business",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   {
     imageUrl: "https://titan.mdec.my/wp-content/uploads/Thumbnail-AWS-Certified-Cloud-Practitioner-and-SysOps-Administrator.png",
@@ -76,6 +83,7 @@ const courses = [
     onSale: false,
     description: "Designed for students, educators, and job seekers, learners can build skills while preparing for entry-level jobs.",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   {
     imageUrl: "https://titan.mdec.my/wp-content/uploads/Microsoft-logo_rgb_c-gray-1.png",
@@ -84,6 +92,7 @@ const courses = [
     onSale: false,
     description: "ESI sharpens technical expertise on Microsoft platforms/ solutions through trainings and certifications.",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   {
     imageUrl: "https://titan.mdec.my/wp-content/uploads/2022/09/Logo-Red_Hat-A-Standard-Pantone.jpg",
@@ -92,6 +101,7 @@ const courses = [
     onSale: false,
     description: "Learners will experience hands-on training and practical certification path to fit their business goals.",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   {
     imageUrl: "https://titan.mdec.my/wp-content/uploads/tom-parkes-Ns-BIiW_cNU-unsplash.jpg",
@@ -100,6 +110,7 @@ const courses = [
     onSale: false,
     description: "Master Google Ads with free online training and get Google Ads certified.",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   {
     imageUrl: "https://titan.mdec.my/wp-content/uploads/Webp.net-resizeimage-49.png",
@@ -108,6 +119,7 @@ const courses = [
     onSale: false,
     description: "Update skills on LinkedIn profile to join SYC and learn how to increase your marketability.",
     buttonLabel: "Start Course",
+    link: "/courses/course1",
   },
   // More course objects...
 ];
