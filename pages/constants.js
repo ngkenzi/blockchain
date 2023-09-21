@@ -1,0 +1,9 @@
+// API token for nft.storage
+export const NFT_STORAGE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDM5NWI5Mjc1MTRkMDliMENkZEE2MzFmZkQ5QTYyRTdEMjEzQjA0ODkiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY4ODQ0NjM1MDMyMiwibmFtZSI6Ik5GVFNTUyJ9.todgFKV3qV-uqRC0CB4QQt9KwUpTyThgNyMmQOdO7gQ";
+
+// Infura project ID
+export const INFURA_ID = "408cd01a00ce4ba6b0d0258596850ba0";
+
+//LazyNFT contract address
+export const CONTRACT_ADDRESS = "0x9214a1B70a0F348dB103552c83A11b02a5D9fF90";

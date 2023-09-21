@@ -6,10 +6,11 @@ import { AuthenticationForm } from '../components/Authentication';
 
 
 const links = [
-  { link: '/', label: 'Home' },
-  { link: '/upskill', label: 'Online Courses' },
-  { link: '/authentication', label: 'Admin'},
-  
+  { link: "/", label: "Home" },
+  { link: "/upskill", label: "Online Courses" },
+  { link: "/authentication", label: "Admin" },
+  { link: "/university", label: "University" },
+
   // Add more links as needed
 ]; 
 

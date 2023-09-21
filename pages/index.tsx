@@ -1,99 +1,117 @@
-import { useState, useEffect } from 'react';
-import Head from 'next/head';
-import axios from 'axios';
-import axiosRetry from 'axios-retry';
-import { Grid, Text, Input, Title, Paper, Col, Image, Select } from '@mantine/core';
-import { HeaderResponsive } from '../components/Header';
-import { FooterLinks } from '../components/Footer';
+import { useState, useEffect } from "react";
+import Head from "next/head";
+import axios from "axios";
+import axiosRetry from "axios-retry";
+import {
+  Grid,
+  Text,
+  Input,
+  Title,
+  Paper,
+  Col,
+  Image,
+  Select,
+} from "@mantine/core";
+import { HeaderResponsive } from "../components/Header";
+import { FooterLinks } from "../components/Footer";
+import { BeatLoader } from "react-spinners";
 
 interface NFT {
   name: string;
   description: string;
   image_url: string;
-  // Add more properties if needed
 }
 
 const Home = () => {
+  const links = [
+    { link: "/", label: "Home" },
+    { link: "/upskill", label: "Online Courses" },
+    { link: "/authentication", label: "Admin" },
+    { link: "/university", label: "University" },
 
-    const links = [
-        { link: '/', label: 'Home' },
-        { link: '/upskill', label: 'Online Courses' },
-        { link: '/authentication', label: 'Admin'},
-        
+    // Add more links as needed
+  ];
+  const footerLinks = [
+    {
+      title: "Company",
+      links: [
+        { label: "About", link: "/about" },
         // Add more links as needed
-    ];
-    const footerLinks = [
-      {
-        title: 'Company',
-        links: [
-          { label: 'About', link: '/about' },
-          // Add more links as needed
-        ],
-      },
-      // Add more groups as needed
-    ];
-    const universities = [
-      { label: 'Universiti Malaya (UM)', value: '0123' },
-      { label: 'Universiti Sains Malaysia (USM)', value: '0123' },
-      { label: 'Universiti Kebangsaan Malaysia (UKM)', value: '0123' },
-      { label: 'Universiti Putra Malaysia (UPM)', value: '0x01Ff83b084498CfDa27497F14D5c2AdbB5a7f73D' },
-      { label: 'Universiti Teknologi Malaysia (UPM)', value: '0123' },
-      { label: 'Universiti Islam Antarabangsa Malaysia (UIAM)', value: '0123' },
-      { label: 'Universiti Utara Malaysia (UUM)', value: '0123' },
-      { label: 'Universiti Malaysia Sarawak (UNIMAS)', value: '0123' },
-      { label: 'Universiti Malaysia Sabah (UMS)', value: '0123' },
-      { label: 'Universiti Pendidikan Sultan Idris (UPSI)', value: '0123' },
-      { label: 'Universiti Sains Islam Malaysia (USIM)', value: '0123' },
-      { label: 'Universiti Teknologi MARA (UiTM)', value: '0123' },
-      { label: 'Universiti Malaysia Terengganu (UMT)', value: '0123' },
-      { label: 'Universiti Tun Hussein Onn (UTHM)', value: '0123' },
-      { label: 'Universiti Teknikal Malaysia Melaka (UTeM)', value: '0123' },
-      { label: 'Universiti Malaysia Pahang (UMP)', value: '0123' },
-      { label: 'Universiti Malaysia Perlis (UniMAP)', value: '0123' },
-      { label: 'Universiti Sultan Zainal Abidin (UniSZA)', value: '0123' },
-      { label: 'Universiti Malaysia Kelantan (UMK)', value: '0123' },
-      { label: 'Universiti Pertahanan Nasional Malaysia (UPNM)', value: '0123' },
-    ];
-    const [address, setAddress] = useState('');
-    const [selectedUniversity, setSelectedUniversity] = useState('');
-    const [nfts, setNfts] = useState<NFT[]>([]);
-    const [search, setSearch] = useState('');
-    const network_id = '137';
+      ],
+    },
+    // Add more groups as needed
+  ];
 
-    const axiosInstance = axios.create();
-    axiosRetry(axiosInstance, { retries: 3 });
+  const [address, setAddress] = useState("");
+  const [selectedUniversity, setSelectedUniversity] = useState("");
+  const [nfts, setNfts] = useState<NFT[]>([]);
+  const [search, setSearch] = useState("");
+  const network_id = "137";
+  const [universities, setUniversities] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSearch(event.target.value);
+  const fetchUniversities = async () => {
+    try {
+      const response = await axios.get("/api/universities");
+      return response.data.map((user) => ({
+        label: user.university_name,
+        value: user.wallet_address,
+      }));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const getUniversities = async () => {
+      const universities = await fetchUniversities();
+      setUniversities(universities);
     };
+    getUniversities();
+  }, []);
+
+  const [universityName, setUniversityName] = useState("");
+  const [walletAddress, setWalletAddress] = useState("");
+
+  const axiosInstance = axios.create();
+  axiosRetry(axiosInstance, { retries: 3 });
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+  };
 
   const fetchNFTs = async () => {
     let page = 1;
     let moreDataExists = true;
     let nftData: NFT[] = [];
+    setLoading(true);
 
     while (moreDataExists) {
-      let url = `http://localhost:8000/https://api.chainbase.online/v1/account/nfts?chain_id=${network_id}&address=${address}&page=${page}&limit=100`;
-
+      //let url = `http://localhost:8000/https://api.chainbase.online/v1/account/nfts?chain_id=${network_id}&address=${address}&page=${page}&limit=100`;
+      let url = `/api/rarible?address=${address}`;
       try {
         const response = await axiosInstance.get(url, {
           headers: {
-            'Content-Type': 'application/json',
-            'x-api-key': '2S65t1iBkZGg0KsMrWqGRGR9LLX',
+            "Content-Type": "application/json",
+            "x-api-key": "d94d0879-f919-4803-b293-11ea277a2982",
           },
         });
 
+        console.log(address);
         console.log(response.data);
 
         if (response.status !== 200) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const pageData = response.data.data.map((nft: any) => ({
-          ...nft.metadata,
-          image_url: nft.metadata && nft.metadata.image ? nft.metadata.image.replace('ipfs://', 'https://ipfs.io/ipfs/') : '',
+        const pageData = response.data.items.map((nft: any) => ({
+          name: nft.meta.name,
+          description: nft.meta.description,
+          image_url:
+            nft.meta.content && nft.meta.content.length > 0
+              ? nft.meta.content[0].url
+              : "",
         }));
-
 
         nftData = [...nftData, ...pageData];
 
@@ -108,7 +126,7 @@ const Home = () => {
       } catch (error) {
         if (error.response && error.response.status === 429) {
           // Handle rate limit error
-          console.error('Rate limit exceeded. Please slow down your requests.');
+          console.error("Rate limit exceeded. Please slow down your requests.");
           break; // break the loop if rate limit is exceeded
         } else {
           // Handle general errors
@@ -116,6 +134,7 @@ const Home = () => {
         }
       }
     }
+    setLoading(false);
 
     setNfts(nftData);
   };
@@ -125,68 +144,128 @@ const Home = () => {
   }, [address]);
 
   return (
-    
-    <div style={{ minHeight: '100vh', padding: '0px' }}>
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <Head>
         <title>Home</title>
-        <meta name="description" content="Verify and Validate your certificates with MSP Cert" />
+        <meta
+          name="description"
+          content="Verify and Validate your certificates with MSP Cert"
+        />
       </Head>
-        <HeaderResponsive links={links} />
-        <Title 
-      order={3} 
-      style={{
-      fontWeight: 'bold',
-      marginTop: '20px', // change this to whatever value you need
-      }} 
-      align="center"
-      >
-       Students Certificates Ownership
-      </Title>
-      <Text component="label" htmlFor="address-input" weight={700} style={{ marginBottom: '5px' }}>
-          Select your University
-      </Text>
-      <Select
-      placeholder="Select a university"
-      data={universities}
-      value={address}
-      onChange={setAddress}
-      style={{ width: '100%', padding: '10px', fontSize: '1rem' }}
-      />
-      <Text component="label" htmlFor="address-input" weight={700} style={{ marginBottom: '5px' }}>
-          Search Student Name
-      </Text>
-     
 
-      <Input
-        id="search-input"
-        type="text"
-        placeholder="Search for Students Name..."
-        value={search}
-        onChange={handleSearchChange}
-        style={{ width: '100%', padding: '10px', fontSize: '1rem', marginBottom: '20px' }}
-      />
-
-  <Grid gutter="md">
-  {nfts.filter(nft => nft.name?.toLowerCase().includes(search.toLowerCase())).map((nft, index) => (
-          <Col key={index} md={6} lg={4}>
-            <Paper style={{ marginBottom: '20px', padding: '10px' }}>
-              <Image
-                src={nft.image_url}
-                alt="NFT"
-                fit="cover"
-                caption={nft.name}
-                style={{ borderRadius: '4px' }}
+      <HeaderResponsive links={links} />
+      <div className="flex-grow container mx-auto p-4 sm:p-6 max-w-5xl">
+        {" "}
+        {/* Adjust container width */}
+        <Title
+          order={3}
+          className="text-center font-bold mb-6 sm:mb-10 text-3xl"
+        >
+          Students Certificates Ownership
+        </Title>
+        <div className="bg-white p-4 sm:p-6 rounded shadow-md">
+          <div className="mb-4 flex flex-col sm:flex-row sm:space-x-4 sm:items-end">
+            <div className="w-full sm:w-1/2">
+              <Text
+                component="label"
+                htmlFor="address-input"
+                weight={700}
+                className="block text-lg mb-1"
+              >
+                Select your University
+              </Text>
+              <Select
+                placeholder="Select a university"
+                data={universities}
+                value={address}
+                onChange={setAddress}
+                className="w-full p-3 text-lg rounded-md shadow-sm"
               />
-              <Text size="xl" weight={700} style={{ marginBottom: '5px' }}>
-                {nft.name}
+            </div>
+            <div className="mt-4 sm:mt-0 w-full sm:w-1/2">
+              <Text
+                component="label"
+                htmlFor="search-input"
+                weight={700}
+                className="block text-lg mb-2"
+              >
+                Search Student Name
               </Text>
-              <Text size="sm" color="gray">
-                {nft.description}
-              </Text>
-            </Paper>
-          </Col>
-        ))}
-      </Grid>
+              <Input
+                id="search-input"
+                type="text"
+                placeholder="Search for Students Name..."
+                value={search}
+                onChange={handleSearchChange}
+                className="w-full p-3 text-lg rounded-md shadow-sm"
+              />
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center items-center min-h-64">
+              <BeatLoader color={"#667EEA"} loading={loading} size={24} />
+            </div>
+          ) : (
+            <>
+              {nfts.length === 0 && address && (
+                <div className="text-center mt-6 mb-6">
+                  <Text size="lg" weight={700} className="text-gray-600">
+                    No NFTs available for the selected university.
+                  </Text>
+                </div>
+              )}
+              <Grid gutter="md">
+                {nfts
+                  .filter(
+                    (nft) =>
+                      nft.name?.toLowerCase().includes(search.toLowerCase()) &&
+                      nft.description?.toLowerCase().includes("course")
+                  )
+                  .map((nft, index) => (
+                    <Col key={index} md={6} lg={4}>
+                      <Paper
+                        elevation={3}
+                        className="transition-all duration-300 transform hover:scale-105 rounded-lg"
+                      >
+                        <Image
+                          src={nft.image_url || "/default-image-path.jpg"}
+                          alt="NFT"
+                          fit="cover"
+                          className="rounded-t-lg"
+                        />
+                        <div className="p-4">
+                          <Text
+                            size="xl"
+                            weight={700}
+                            className="mb-2 text-gray-700"
+                          >
+                            {nft.name}
+                          </Text>
+                          <Text size="sm" color="gray">
+                            {nft.description}
+                          </Text>
+                        </div>
+                      </Paper>
+                    </Col>
+                  ))}
+              </Grid>
+              {nfts.filter(
+                (nft) =>
+                  nft.name?.toLowerCase().includes(search.toLowerCase()) &&
+                  nft.description?.toLowerCase().includes("course")
+              ).length === 0 &&
+                nfts.length !== 0 && (
+                  <div className="text-center mt-6 mb-6">
+                    <Text size="lg" weight={700} className="text-gray-600">
+                      No NFTs match the search criteria.
+                    </Text>
+                  </div>
+                )}
+            </>
+          )}
+        </div>
+      </div>
       <FooterLinks data={footerLinks} />
     </div>
   );
