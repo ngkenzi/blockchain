@@ -15,20 +15,23 @@ import {
 import { HeaderResponsive } from "../components/Header";
 import { FooterLinks } from "../components/Footer";
 import { BeatLoader } from "react-spinners";
+import Link from "next/link";
 
 interface NFT {
   name: string;
   description: string;
   image_url: string;
+  tokenId: string;
+  contract: string;
+  blockchain: string;
 }
 
 const Home = () => {
   const links = [
     { link: "/", label: "Home" },
     { link: "/upskill", label: "Online Courses" },
-    { link: "/authentication", label: "Admin" },
+    // { link: "/authentication", label: "Admin" },
     { link: "/university", label: "University" },
-
     // Add more links as needed
   ];
   const footerLinks = [
@@ -111,6 +114,9 @@ const Home = () => {
             nft.meta.content && nft.meta.content.length > 0
               ? nft.meta.content[0].url
               : "",
+          contract: nft.contract.split(":")[1],
+          tokenId: nft.tokenId,
+          blockchain: nft.blockchain,
         }));
 
         nftData = [...nftData, ...pageData];
@@ -224,29 +230,35 @@ const Home = () => {
                   )
                   .map((nft, index) => (
                     <Col key={index} md={6} lg={4}>
-                      <Paper
-                        elevation={3}
-                        className="transition-all duration-300 transform hover:scale-105 rounded-lg"
+                      <a
+                        href={`https://rarible.com/token/${nft.blockchain.toLowerCase()}/${nft.contract}:${nft.tokenId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
-                        <Image
-                          src={nft.image_url || "/default-image-path.jpg"}
-                          alt="NFT"
-                          fit="cover"
-                          className="rounded-t-lg"
-                        />
-                        <div className="p-4">
-                          <Text
-                            size="xl"
-                            weight={700}
-                            className="mb-2 text-gray-700"
-                          >
-                            {nft.name}
-                          </Text>
-                          <Text size="sm" color="gray">
-                            {nft.description}
-                          </Text>
-                        </div>
-                      </Paper>
+                        <Paper
+                          elevation={3}
+                          className="transition-all duration-300 transform hover:scale-105 rounded-lg"
+                        >
+                          <Image
+                            src={nft.image_url || "/default-image-path.jpg"}
+                            alt="NFT"
+                            fit="cover"
+                            className="rounded-t-lg"
+                          />
+                          <div className="p-4">
+                            <Text
+                              size="xl"
+                              weight={700}
+                              className="mb-2 text-gray-700"
+                            >
+                              {nft.name}
+                            </Text>
+                            <Text size="sm" color="gray">
+                              {nft.description}
+                            </Text>
+                          </div>
+                        </Paper>
+                      </a>
                     </Col>
                   ))}
               </Grid>

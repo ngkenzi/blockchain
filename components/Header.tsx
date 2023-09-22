@@ -11,6 +11,8 @@ import {
   rem,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { FaUserPlus } from "react-icons/fa";
+import { Button } from "@mantine/core"; 
 
 import Link from 'next/link';
 import Logo from "./logo";
@@ -84,7 +86,17 @@ const useStyles = createStyles((theme) => ({
       color: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).color,
     },
   },
+
+  signUpButton: {
+    backgroundColor: theme.colors.blue[6], // Adjust color as needed
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: theme.colors.blue[7],
+    },
+  },
 }));
+
+
 
 interface HeaderResponsiveProps {
   links: { link: string; label: string; isExternal?: boolean }[];
@@ -95,6 +107,18 @@ export function HeaderResponsive({ links }: HeaderResponsiveProps) {
   const [active, setActive] = useState(links[0].link);
   const { classes, cx } = useStyles();
   const router = useRouter(); // Get the router instance from Next.js
+
+  const SignUpButton = () => (
+    <Button
+      leftIcon={<FaUserPlus size="1.5em" color="#FFF" />}
+      component={Link}
+      href="/signup"
+      className={cx(classes.link, classes.signUpButton)}
+    >
+      Sign Up
+    </Button>
+  );
+
 
   useEffect(() => {
     setActive(router.pathname);
@@ -135,13 +159,20 @@ export function HeaderResponsive({ links }: HeaderResponsiveProps) {
   return (
     <Header height={HEADER_HEIGHT} mb={0} className={classes.root}>
       <Container className={classes.header}>
-        <Logo/>
-        
+        <Logo />
+
         <Group spacing={5} className={classes.links}>
           {items}
         </Group>
+        
+        <SignUpButton />
 
-        <Burger opened={opened} onClick={toggle} className={classes.burger} size="sm" />
+        <Burger
+          opened={opened}
+          onClick={toggle}
+          className={classes.burger}
+          size="sm"
+        />
 
         <Transition transition="pop-top-right" duration={200} mounted={opened}>
           {(styles) => (
