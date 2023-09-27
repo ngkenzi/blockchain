@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import {
   createStyles,
   Header,
@@ -9,24 +9,24 @@ import {
   Paper,
   Transition,
   rem,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { FaUserPlus } from "react-icons/fa";
-import { Button } from "@mantine/core"; 
+import { Button } from "@mantine/core";
 
-import Link from 'next/link';
+import Link from "next/link";
 import Logo from "./logo";
 
 const HEADER_HEIGHT = rem(60);
 
 const useStyles = createStyles((theme) => ({
   root: {
-    position: 'relative',
+    position: "relative",
     zIndex: 2, // Increase the z-index value
   },
 
   dropdown: {
-    position: 'absolute',
+    position: "absolute",
     top: HEADER_HEIGHT,
     left: 0,
     right: 0,
@@ -34,75 +34,87 @@ const useStyles = createStyles((theme) => ({
     borderTopRightRadius: 0,
     borderTopLeftRadius: 0,
     borderTopWidth: 0,
-    overflow: 'hidden',
+    overflow: "hidden",
 
-    [theme.fn.largerThan('sm')]: {
-      display: 'none',
+    [theme.fn.largerThan("sm")]: {
+      display: "none",
     },
   },
 
   header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: '100%',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: "100%",
   },
 
   links: {
-    [theme.fn.smallerThan('sm')]: {
-      display: 'none',
+    [theme.fn.smallerThan("sm")]: {
+      display: "none",
     },
   },
 
   burger: {
-    [theme.fn.largerThan('sm')]: {
-      display: 'none',
+    [theme.fn.largerThan("sm")]: {
+      display: "none",
     },
   },
 
   link: {
-    display: 'block',
+    display: "block",
     lineHeight: 1,
     padding: `${rem(8)} ${rem(12)}`,
     borderRadius: theme.radius.sm,
-    textDecoration: 'none',
-    color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.gray[7],
+    textDecoration: "none",
+    color:
+      theme.colorScheme === "dark"
+        ? theme.colors.dark[0]
+        : theme.colors.gray[7],
     fontSize: theme.fontSizes.sm,
     fontWeight: 500,
 
-    '&:hover': {
-      backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[6] : theme.colors.gray[0],
+    "&:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark"
+          ? theme.colors.dark[6]
+          : theme.colors.gray[0],
     },
 
-    [theme.fn.smallerThan('sm')]: {
+    [theme.fn.smallerThan("sm")]: {
       borderRadius: 0,
       padding: theme.spacing.md,
     },
   },
 
   linkActive: {
-    '&, &:hover': {
-      backgroundColor: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).background,
-      color: theme.fn.variant({ variant: 'light', color: theme.primaryColor }).color,
+    "&, &:hover": {
+      backgroundColor: theme.fn.variant({
+        variant: "light",
+        color: theme.primaryColor,
+      }).background,
+      color: theme.fn.variant({ variant: "light", color: theme.primaryColor })
+        .color,
     },
   },
 
   signUpButton: {
     backgroundColor: theme.colors.blue[6], // Adjust color as needed
-    color: '#fff',
-    '&:hover': {
+    color: "#fff",
+    "&:hover": {
       backgroundColor: theme.colors.blue[7],
     },
   },
 }));
 
-
-
 interface HeaderResponsiveProps {
   links: { link: string; label: string; isExternal?: boolean }[];
+  toggleModal: (action: "SignIn" | "SignUp") => void;
 }
 
-export function HeaderResponsive({ links }: HeaderResponsiveProps) {
+export function HeaderResponsive({
+  links,
+  toggleModal,
+}: HeaderResponsiveProps) {
   const [opened, { toggle, close }] = useDisclosure(false);
   const [active, setActive] = useState(links[0].link);
   const { classes, cx } = useStyles();
@@ -111,14 +123,12 @@ export function HeaderResponsive({ links }: HeaderResponsiveProps) {
   const SignUpButton = () => (
     <Button
       leftIcon={<FaUserPlus size="1.5em" color="#FFF" />}
-      component={Link}
-      href="/signup"
+      onClick={() => toggleModal("SignUp")}
       className={cx(classes.link, classes.signUpButton)}
     >
-      Sign Up
+      Register
     </Button>
   );
-
 
   useEffect(() => {
     setActive(router.pathname);
@@ -132,7 +142,9 @@ export function HeaderResponsive({ links }: HeaderResponsiveProps) {
           href={link.link}
           target="_blank" // Open in a new tab
           rel="noopener noreferrer" // Recommended for security reasons
-          className={cx(classes.link, { [classes.linkActive]: active === link.link })}
+          className={cx(classes.link, {
+            [classes.linkActive]: active === link.link,
+          })}
         >
           {link.label}
         </a>
@@ -143,7 +155,9 @@ export function HeaderResponsive({ links }: HeaderResponsiveProps) {
       <Link
         key={link.label}
         href={link.link}
-        className={cx(classes.link, { [classes.linkActive]: active === link.link })}
+        className={cx(classes.link, {
+          [classes.linkActive]: active === link.link,
+        })}
         onClick={(event) => {
           event.preventDefault();
           setActive(link.link);
@@ -164,8 +178,20 @@ export function HeaderResponsive({ links }: HeaderResponsiveProps) {
         <Group spacing={5} className={classes.links}>
           {items}
         </Group>
-        
-        <SignUpButton />
+
+        <Group spacing={3} className="items-center">
+          <Link
+            href="#"
+            className={cx(classes.link)}
+            onClick={(event) => {
+              event.preventDefault();
+              toggleModal("SignIn");
+            }}
+          >
+            Sign in
+          </Link>
+          <SignUpButton />
+        </Group>
 
         <Burger
           opened={opened}

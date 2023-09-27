@@ -16,6 +16,7 @@ import { HeaderResponsive } from "../components/Header";
 import { FooterLinks } from "../components/Footer";
 import { BeatLoader } from "react-spinners";
 import Link from "next/link";
+import { FaUniversity, FaUser } from "react-icons/fa";
 
 interface NFT {
   name: string;
@@ -52,6 +53,8 @@ const Home = () => {
   const network_id = "137";
   const [universities, setUniversities] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [actionType, setActionType] = useState<"SignIn" | "SignUp">("SignUp");
 
   const fetchUniversities = async () => {
     try {
@@ -83,6 +86,11 @@ const Home = () => {
     setSearch(event.target.value);
   };
 
+  const toggleModal = (action: "SignIn" | "SignUp") => {
+    setActionType(action);
+    setIsModalOpen(!isModalOpen);
+  };
+
   const fetchNFTs = async () => {
     let page = 1;
     let moreDataExists = true;
@@ -90,7 +98,6 @@ const Home = () => {
     setLoading(true);
 
     while (moreDataExists) {
-      //let url = `http://localhost:8000/https://api.chainbase.online/v1/account/nfts?chain_id=${network_id}&address=${address}&page=${page}&limit=100`;
       let url = `/api/rarible?address=${address}`;
       try {
         const response = await axiosInstance.get(url, {
@@ -159,7 +166,7 @@ const Home = () => {
         />
       </Head>
 
-      <HeaderResponsive links={links} />
+      <HeaderResponsive links={links} toggleModal={toggleModal} />
       <div className="flex-grow container mx-auto p-4 sm:p-6 max-w-5xl">
         {" "}
         {/* Adjust container width */}
@@ -231,7 +238,9 @@ const Home = () => {
                   .map((nft, index) => (
                     <Col key={index} md={6} lg={4}>
                       <a
-                        href={`https://rarible.com/token/${nft.blockchain.toLowerCase()}/${nft.contract}:${nft.tokenId}`}
+                        href={`https://rarible.com/token/${nft.blockchain.toLowerCase()}/${
+                          nft.contract
+                        }:${nft.tokenId}`}
                         target="_blank"
                         rel="noopener noreferrer"
                       >
@@ -275,6 +284,50 @@ const Home = () => {
                   </div>
                 )}
             </>
+          )}
+
+          {isModalOpen && (
+            <div className="fixed inset-0 flex items-center justify-center z-50 transition-all duration-300">
+              <div
+                className="fixed inset-0 bg-black opacity-40 transition-opacity duration-300 ease-in-out"
+                onClick={toggleModal}
+                style={{ zIndex: 100 }}
+              ></div>
+              <div
+                className="bg-white p-8 rounded-xl shadow-2xl relative transform transition-transform duration-300 ease-in-out"
+                style={{ zIndex: 101, width: "450px" }}
+              >
+                <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">
+                  {actionType === "SignUp" ? "Sign Up As" : "Sign In As"}
+                </h2>
+                <div className="mt-5 flex justify-center space-x-6">
+                  <Link
+                    href={actionType === "SignUp" ? "/Signup" : "/Login"}
+                    className="flex flex-col items-center space-y-4 p-6 transition-all transform hover:bg-gray-100 hover:scale-105 rounded-xl focus:outline-none border-2 border-blue-200 rounded-lg w-56"
+                  >
+                    <FaUniversity size="3em" className="mb-2" />
+                    <span className="text-lg font-semibold text-blue-600">
+                      Universities
+                    </span>
+                  </Link>
+                  <Link
+                    href={actionType === "SignUp" ? "/Uregister" : "/Ulogin"}
+                    className="flex flex-col items-center space-y-4 p-6 transition-all transform hover:bg-gray-100 hover:scale-105 rounded-xl focus:outline-none border-2 border-blue-200 rounded-lg w-56"
+                  >
+                    <FaUser size="3em" className="mb-2" />
+                    <span className="text-lg font-semibold text-blue-600">
+                      Users
+                    </span>
+                  </Link>
+                </div>
+                <p
+                  className="absolute top-3 right-3 text-lg text-gray-500 cursor-pointer"
+                  onClick={toggleModal}
+                >
+                  Close
+                </p>
+              </div>
+            </div>
           )}
         </div>
       </div>
