@@ -19,6 +19,8 @@ const User = () => {
   const [search, setSearch] = useState("");
   const [walletAddress, setWalletAddress] = useState("");
   const [loading, setLoading] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState("/sample-profile.jpg"); // Initial value
+  const [universityName, setUniversityName] = useState("");
 
   const router = useRouter();
 
@@ -35,6 +37,25 @@ const User = () => {
 
   useEffect(() => {
     fetchNFTs();
+  }, [walletAddress]);
+
+  const fetchUniversityInfo = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/user-university?walletAddress=${walletAddress}`
+      );
+      if (response.data.universityName) {
+        setUniversityName(response.data.universityName);
+      }
+    } catch (error) {
+      console.error("Error fetching university info", error);
+    }
+  };
+
+  useEffect(() => {
+    if (walletAddress) {
+      fetchUniversityInfo();
+    }
   }, [walletAddress]);
 
   const fetchNFTs = async () => {
@@ -89,6 +110,27 @@ const User = () => {
     setNfts(nftData);
   };
 
+  useEffect(() => {
+    // Fetch avatar URL from the backend
+    const fetchAvatarUrl = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:4000/get-avatar-url?walletAddress=${walletAddress}`
+        );
+        if (response.data.avatarUrl && response.data.avatarUrl !== "") {
+          setAvatarUrl(response.data.avatarUrl);
+        }
+      } catch (error) {
+        console.error("Error fetching avatar URL", error);
+        setAvatarUrl("/sample-profile.jpg");
+      }
+    };
+
+    if (walletAddress) {
+      fetchAvatarUrl();
+    }
+  }, [walletAddress]);
+
   const handleLogout = () => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("token");
@@ -103,21 +145,43 @@ const User = () => {
   return (
     <Container
       size="lg"
-      style={{
-        padding: "40px",
-        backgroundColor: "#F7F9FC",
-        boxShadow: "0px 0px 30px rgba(0, 0, 0, 0.05)",
-        transition: "all 0.3s",
-      }}
+      className="p-10 bg-white shadow-lg rounded-lg min-h-screen relative"
     >
       {" "}
       {/* User Profile */}
       <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center">
-          <Avatar src="/sample-profile.jpg" size="xl" className="mr-6" />
-          <Text size="xxl" weight={700}>
-            User's NFTs
-          </Text>
+        <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-4">
+            <Avatar
+              src={avatarUrl}
+              size="xl"
+              className="mr-6 cursor-pointer"
+              onClick={() => router.push("/AvatarPage")}
+            />
+            <div>
+              <Text size="xxl" weight={700}>
+                User's NFTs
+              </Text>
+              <Text size="md" weight={500}>
+                University: {universityName}
+              </Text>
+            </div>
+          </div>
+          {/* Search Bar */}
+          <div className="relative mb-6">
+            <Input
+              placeholder="Search NFTs..."
+              value={search}
+              onChange={(event) => setSearch(event.currentTarget.value)}
+              className="pl-10 pr-4 rounded-full shadow-sm border-gray-300"
+              style={{ backgroundColor: "#F7F9FC" }}
+            />
+            <FaSearch
+              className="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400"
+              size={18}
+              style={{ pointerEvents: "none" }}
+            />
+          </div>
         </div>
 
         {/* Logout Button */}
@@ -127,21 +191,6 @@ const User = () => {
         >
           Logout
         </button>
-      </div>
-      {/* Search Bar */}
-      <div className="relative mb-6">
-        <Input
-          placeholder="Search NFTs..."
-          value={search}
-          onChange={(event) => setSearch(event.currentTarget.value)}
-          className="pl-10 pr-4 rounded-full shadow-sm border-gray-300"
-          style={{ backgroundColor: "#F7F9FC" }}
-        />
-        <FaSearch
-          className="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400"
-          size={18}
-          style={{ pointerEvents: "none" }}
-        />
       </div>
       {/* Display NFTs */}
       {loading ? (
