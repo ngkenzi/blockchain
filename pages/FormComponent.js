@@ -88,7 +88,7 @@ function FormComponent({ onSubmit, template }) {
             }
 
             try {
-                const response = await axios.get(`/api/students/${universityName}`);
+                const response = await axios.get(`/api/students?universityName=${universityName}`);
                 console.log(response.data);
                 setStudents(response.data);
             } catch (error) {
