@@ -53,7 +53,7 @@ function AvatarPage() {
             .then(async (blob) => {
                 const formData = new FormData();
                 formData.append('myAvatar', blob);
-                const response = await fetch('http://localhost:4000/upload-avatar', {
+                const response = await fetch('api/upload-avatar', {
                     method: 'POST',
                     body: formData,
                 });
@@ -62,7 +62,7 @@ function AvatarPage() {
 
                 // Update the imageURL in the users table with the file URL
                 if (walletAddress) {
-                    const updateResponse = await fetch('http://localhost:4000/update-avatar-url', {
+                    const updateResponse = await fetch('api/update-avatar-url', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

@@ -18,6 +18,7 @@ function University() {
   const [generatedImageData, setGeneratedImageData] = useState(null);
   const [walletAddress, setWalletAddress] = useState("");
   const [template, setTemplate] = useState("");
+  const [universityName, setUniversityName] = useState('');
 
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -26,11 +27,16 @@ function University() {
     const isAuthenticated = localStorage.getItem("isAuthenticated");
     // Also fetch wallet address here, within useEffect.
     setWalletAddress(localStorage.getItem('wallet_address'));
+    setUniversityName(localStorage.getItem('university_name'));
 
     if (!isAuthenticated) {
       router.push("/Login");
     }
   }, [router]);
+
+  console.log(walletAddress)
+  //console.log(universityName)
+
 
 
   const handleSubmit = ({ student, studentId, date, course }) => {

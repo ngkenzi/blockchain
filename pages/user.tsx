@@ -39,18 +39,17 @@ const User = () => {
     fetchNFTs();
   }, [walletAddress]);
 
-  const fetchUniversityInfo = async () => {
+const fetchUniversityInfo = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:4000/user-university?walletAddress=${walletAddress}`
-      );
-      if (response.data.universityName) {
-        setUniversityName(response.data.universityName);
-      }
+        const response = await axios.get(`/api/university-info?walletAddress=${walletAddress}`);
+        if (response.data.universityName) {
+            setUniversityName(response.data.universityName);
+        }
     } catch (error) {
-      console.error("Error fetching university info", error);
+        console.error("Error fetching university info", error);
     }
-  };
+};
+
 
   useEffect(() => {
     if (walletAddress) {
@@ -110,26 +109,25 @@ const User = () => {
     setNfts(nftData);
   };
 
-  useEffect(() => {
+useEffect(() => {
     // Fetch avatar URL from the backend
     const fetchAvatarUrl = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:4000/get-avatar-url?walletAddress=${walletAddress}`
-        );
+        const response = await axios.get(`/api/avatar-url?walletAddress=${walletAddress}`);
         if (response.data.avatarUrl && response.data.avatarUrl !== "") {
           setAvatarUrl(response.data.avatarUrl);
         }
       } catch (error) {
         console.error("Error fetching avatar URL", error);
-        setAvatarUrl("/sample-profile.jpg");
+        setAvatarUrl("/sample-profile.jpg"); 
       }
     };
 
     if (walletAddress) {
       fetchAvatarUrl();
     }
-  }, [walletAddress]);
+}, [walletAddress]);
+
 
   const handleLogout = () => {
     if (typeof window !== "undefined") {

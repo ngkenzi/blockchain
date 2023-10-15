@@ -24,6 +24,8 @@ function Login() {
                 setErrorMessage('');  // Clear any error messages
                 localStorage.setItem('isAuthenticated', res.data.token);
                 localStorage.setItem('wallet_address', res.data.walletAddress);
+                localStorage.setItem('university_name', res.data.uniName);
+
                 router.push('/university-certs');
             }
         } catch (err) {

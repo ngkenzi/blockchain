@@ -7,10 +7,12 @@ function FormComponent({ onSubmit, template }) {
     const [date, setDate] = useState("");
     const [course, setCourse] = useState("");
     const [studentId, setStudentId] = useState("");
+
     const [error, setError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [studentIdError, setStudentIdError] = useState("");
     const isValid = student.trim() !== '' && date.trim() !== '' && course.trim() !== '' && studentId.trim() !== '' && !error && studentIdError === '';
+    const [students, setStudents] = useState([]);
 
     const handleChange = (e, setter) => {
         setter(e.target.value);
@@ -49,6 +51,15 @@ function FormComponent({ onSubmit, template }) {
         }
     };
 
+    const handleStudentChange = (e) => {
+        const selectedId = e.target.value;
+        const selectedStudent = students.find(student => student.id.toString() === selectedId);
+        if (selectedStudent) {
+            setStudentId(selectedId);
+            setStudent(selectedStudent.email);  
+        }
+    };
+
 
     useEffect(() => {
         if (studentId.trim() !== '' && template !== "Course") {
@@ -67,6 +78,26 @@ function FormComponent({ onSubmit, template }) {
         }
     }, [studentId, template]); // Trigger only when studentId or template changes
 
+
+    useEffect(() => {
+        const fetchStudents = async () => {
+            const universityName = localStorage.getItem('university_name');
+            if (!universityName) {
+                console.error("University name not found in local storage");
+                return;
+            }
+
+            try {
+                const response = await axios.get(`/api/students/${universityName}`);
+                console.log(response.data);
+                setStudents(response.data);
+            } catch (error) {
+                console.error("Error fetching students:", error);
+            }
+        };
+
+        fetchStudents();
+    }, []);
 
     return (
         <div className="flex justify-center mt-6">
@@ -110,15 +141,16 @@ function FormComponent({ onSubmit, template }) {
 
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2">
-                        Student ID
+                        Select Student
                     </label>
-                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        type="number"
+                    <select className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         value={studentId}
-                        onChange={e => handleChange(e, setStudentId)}
-                        placeholder="Enter student ID"
-                    />
-                    {studentIdError && <div className="text-red-500 mt-2">{studentIdError}</div>}
+                        onChange={handleStudentChange}>
+                        <option value="">Select a student</option>
+                        {students.map((student) => (
+                            <option key={student.id} value={student.id}>{student.id}</option>  // Changed to student.id
+                        ))}
+                    </select>
                 </div>
 
                 <div className="flex justify-center mt-4">
@@ -128,6 +160,20 @@ function FormComponent({ onSubmit, template }) {
                         {isLoading ? <LoadingOutlined spin /> : "Generate Certificate"}
                     </button>
                 </div>
+
+                {/* <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Select Student
+                    </label>
+                    <select className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        value={student}
+                        onChange={e => handleChange(e, setStudent)}>
+                        <option value="">Select a student</option>
+                        {students.map((student) => (
+                            <option key={student.id} value={student.email}>{student.email}</option>
+                        ))}
+                    </select>
+                </div> */}
 
 
             </form>
