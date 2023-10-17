@@ -19,6 +19,7 @@ function University() {
   const [walletAddress, setWalletAddress] = useState("");
   const [template, setTemplate] = useState("");
   const [universityName, setUniversityName] = useState('');
+  const [uniAddress, setUniAddress] = useState("");
 
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -26,7 +27,7 @@ function University() {
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticated");
     // Also fetch wallet address here, within useEffect.
-    setWalletAddress(localStorage.getItem('wallet_address'));
+    setUniAddress(localStorage.getItem('wallet_address'));
     setUniversityName(localStorage.getItem('university_name'));
 
     if (!isAuthenticated) {
@@ -34,16 +35,14 @@ function University() {
     }
   }, [router]);
 
-  console.log(walletAddress)
   //console.log(universityName)
 
-
-
-  const handleSubmit = ({ student, studentId, date, course }) => {
+  const handleSubmit = ({ student, studentId, date, course, walletAddress }) => {
     setStudent(student);
     setStudentId(studentId);
     setDate(date);
     setCourse(course);
+    setWalletAddress(walletAddress);
     setStep(3);
   };
 
@@ -68,6 +67,7 @@ function University() {
     setStep(1);
   };
 
+  console.log(uniAddress)
 
   const handleLogout = () => {
     // Your logout logic here. For example:
@@ -181,7 +181,7 @@ function University() {
 
         {step === 2 && (
           <div className="mx-auto md:max-w-2xl lg:max-w-4xl">
-            <FormComponent onSubmit={handleSubmit} template={template} />
+            <FormComponent onSubmit={handleSubmit} template={template} setWalletAddress={setWalletAddress} />
 
             {/* Go Back Button */}
             <div className="text-center mt-4">
@@ -221,8 +221,6 @@ function University() {
           </div>
         )}
 
-
-
         {step === 4 && (
           <div className="mb-3">
             <Minter
@@ -232,6 +230,7 @@ function University() {
               courseName={course}
               courseDate={date}
               walletAddress={walletAddress}
+              uniAddress={uniAddress}
             />
             <div className="text-center">
               <button

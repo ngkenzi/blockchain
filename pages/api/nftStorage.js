@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { name, description, studentId, image } = req.body;
+        const { name, description, studentId, image, ownerType } = req.body;
 
         // Construct the client
         const client = new NFTStorage({ token: NFT_STORAGE_KEY });
@@ -19,11 +19,11 @@ export default async function handler(req, res) {
         const imageBuffer = Buffer.from(image.split(',')[1], 'base64');
         const blob = new Blob([imageBuffer], { type: 'image/png' });
 
-        // Store the metadata and image
         const metadata = await client.store({
             name,
             description,
             studentId,
+            ownerType, 
             image: blob,
         });
 
@@ -33,4 +33,3 @@ export default async function handler(req, res) {
         res.status(500).json({ error: 'An error occurred while storing the NFT' });
     }
 }
-

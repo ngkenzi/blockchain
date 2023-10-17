@@ -63,20 +63,20 @@ class LazyMinter {
         const privateKey = "e58b8ac14e21ccaef4017ac44748fd3669a232a9ee7daf6a74aeb6279fa86add";
         const provider = new ethers.providers.JsonRpcProvider('https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL');
 
-        console.log('Token ff Id:', tokenId);
-
         const response = await axios.get(`/api/getWalletAddress?tokenId=${tokenId}`);
         const wAddress = response.data;
         console.log("w Address", wAddress);
 
-        console.log(util.CONTRACT_ADDRESS)
         //const wAddress = "0x01Ff83b084498CfDa27497F14D5c2AdbB5a7f73D"
         //const signer = provider.getSigner();
         const signer = new ethers.Wallet(privateKey).connect(provider); // ethers.Wallet constructor now takes a single argument and the connect method is used to associate a provider
-        console.log("SIGNER:", signer)
 
-        const gasPrice = await provider.getGasPrice();
+        let gasPrice = await provider.getGasPrice();
+        const MIN_GAS_PRICE = ethers.utils.parseUnits('50', 'gwei');
 
+        if (gasPrice.lt(MIN_GAS_PRICE)) { // If the fetched gas price is lower than the threshold
+            gasPrice = MIN_GAS_PRICE.mul(2); // Double the threshold gas price or set a specific value
+        }
 
         const lazyNFT = new ethers.Contract(
             util.CONTRACT_ADDRESS,
@@ -84,9 +84,13 @@ class LazyMinter {
             signer
         );
         //return lazyNFT.redeem(await signer.getAddress(), voucher);
-        return lazyNFT.redeem(wAddress, voucher, {
-            gasPrice: gasPrice
-        });
+        try {
+            return await lazyNFT.redeem(wAddress, voucher, {
+                gasPrice: gasPrice
+            });
+        } catch (error) {
+            console.error("Error in redeeming: ", error);
+        }
 
     }
 

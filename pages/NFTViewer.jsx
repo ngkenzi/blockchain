@@ -22,19 +22,29 @@ export default function NFTViewer() {
   const [currentMintCid, setCurrentMintCid] = useState(null);
   const [currentTokenId, setCurrentTokenId] = useState(null);
 
+  const [itemsToMint, setItemsToMint] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  function handleMint(cid, tokenId) {
-    setCurrentMintCid(cid);
-    setCurrentTokenId(tokenId);
+  async function handleMint(items) {
     setIsMintModalOpen(true);
+
+    // Sort items by tokenId in ascending order
+    items.sort((a, b) => parseInt(a.tokenId) - parseInt(b.tokenId));
+
+    for (const item of items) {
+      console.log("Starting minting for tokenId:", item.tokenId); // Log to observe the order
+      await redeem(item.cid, item.tokenId);
+      console.log("Finished minting for tokenId:", item.tokenId); // Log to observe when minting is done
+
+      // Introduce a delay before the next transaction
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // 5 seconds delay
+    }
   }
 
   function confirmMint() {
-    if (currentMintCid && currentTokenId) {
-      redeem(currentMintCid, currentTokenId);
-      setCurrentMintCid(null);
-      setCurrentTokenId(null);
+    if (itemsToMint.length > 0) {
+      handleMint(itemsToMint);
+      setItemsToMint([]);
     }
     setIsMintModalOpen(false);
   }
@@ -48,7 +58,8 @@ export default function NFTViewer() {
       var response = await lazyMinter.redeem(output[0], tokenId);
       updateRedeem(cid);
     } catch (error) {
-      console.error("An error occurred while redeeming:", error);
+      console.error("Detailed Error:", JSON.stringify(error, null, 2));
+      // You can include conditional checks for specific errors and handle them
     } finally {
       setRedeeming(false);
     }
@@ -261,7 +272,7 @@ export default function NFTViewer() {
 
   return (
     <div className="flex h-screen ">
-        <div className="bg-white w-1/9 p-8 border-r flex flex-col justify-between">
+      <div className="bg-white w-1/9 p-8 border-r flex flex-col justify-between">
         <div>
           <h1 className="text-2xl mb-6 font-semibold">Admin Panel</h1>
           <ul>
@@ -297,38 +308,51 @@ export default function NFTViewer() {
               Loading...
             </div>
           ) : (
-            galleryList
-              .filter((item) =>
+            (() => {
+              const filteredItems = galleryList.filter((item) =>
                 item.name.toLowerCase().includes(searchQuery.toLowerCase())
-              )
-              .map((item) => (
+              );
+
+              const groupedItems = filteredItems.reduce((acc, item) => {
+                acc[item.name] = acc[item.name] || [];
+                acc[item.name].push(item);
+                return acc;
+              }, {});
+
+              return Object.values(groupedItems).map((items) => (
                 <div
                   className="border border-gray-300 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-                  key={item.id}
+                  key={items[0].id}
                 >
-                  <h2 className="text-xl font-semibold mb-2">{item.name}</h2>
-                  <p className="text-gray-600 mb-4">{item.description}</p>
+                  <h2 className="text-xl font-semibold mb-2">
+                    {items[0].name}
+                  </h2>
+                  <p className="text-gray-600 mb-4">{items[0].description}</p>
                   <img
-                    src={item.imageURL}
-                    alt={item.name}
+                    src={items[0].imageURL}
+                    alt={items[0].name}
                     className="w-full h-56 object-cover mb-4 rounded"
                   />
                   <div className="flex space-x-4 mt-4">
                     <button
                       className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors duration-300"
-                      onClick={() => handleMint(item.cid, item.tokenId)}
+                      onClick={() => {
+                        setItemsToMint(items); // set items to be minted
+                        setIsMintModalOpen(true); // open the modal
+                      }}
                     >
                       Mint
                     </button>
                     <button
                       className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors duration-300"
-                      onClick={() => handleDelete(item.cid)}
+                      onClick={() => handleDelete(items[0].cid)}
                     >
                       Delete
                     </button>
                   </div>
                 </div>
-              ))
+              ));
+            })()
           )}
         </div>
       </div>

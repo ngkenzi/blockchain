@@ -19,6 +19,7 @@ async function mintNFT({
   generatedImageData,
   studentId,
   walletAddress,
+  ownerType,
 }) {
   //setStatus({ type: "loading", msg: "Uploading..." });
 
@@ -39,12 +40,12 @@ async function mintNFT({
   }
 
   try {
-    // Make a POST request to your new API endpoint
     const { data } = await axios.post("/api/nftStorage", {
       name,
       description,
       studentId,
-      image: generatedImageData, // Assuming the image is sent as a base64 string
+      ownerType, 
+      image: generatedImageData, 
     });
 
     setStatus({ type: "success", msg: "Upload complete!" });
@@ -99,7 +100,7 @@ async function getNumberOfRow() {
       // if (response.data[0]["MAX(id)"] == null) {
       //   return 1;
       // }
-      return value + 6000;
+      return value + 6100;
     })
     .catch((err) => {
       console.log(err);
@@ -116,6 +117,7 @@ export default function Minter({
   courseName,
   courseDate,
   walletAddress,
+  uniAddress,
 }) {
   const inputRef = useRef(null);
 
@@ -284,28 +286,56 @@ export default function Minter({
 
   const mintEnabled = generatedImageData != null && !!nftName;
 
-  const startMinting = () => {
-    console.log(`minting nft with name ${nftName}`);
-    //let studentIdInt = parseInt(studentId);
-
+  const startMinting = async () => {
     setMinting(true);
-    mintNFT({
-      setStatus,
-      name: nftName,
-      image: file,
-      description,
-      minPrice: matic,
-      generatedImageData,
-      studentId,
-      walletAddress,
-    }).then((response) => {
+
+    // First NFT with walletAddress
+    try {
+      const response1 = await mintNFT({
+        setStatus,
+        name: nftName,
+        image: file,
+        description,
+        minPrice: matic,
+        generatedImageData,
+        studentId,
+        walletAddress,
+        ownerType: "student",
+      });
+
+      if (response1.voucher) {
+        console.log("First minting complete with walletAddress");
+      }
+    } catch (error) {
+      console.log("Error during first minting:", error);
       setMinting(false);
-      if (response.voucher) {
-        console.log("minting complete");
-        setTokenId(response.voucher.tokenId);
+      return; 
+    }
+
+    // Second NFT with uniAddress
+    try {
+      const response2 = await mintNFT({
+        setStatus,
+        name: nftName,
+        image: file,
+        description,
+        minPrice: matic,
+        generatedImageData,
+        studentId,
+        walletAddress: uniAddress,
+        ownerType: "university",
+      });
+
+      if (response2.voucher) {
+        console.log("Second minting complete with uniAddress");
+        setTokenId(response2.voucher.tokenId); 
         setMintComplete(true);
       }
-    });
+    } catch (error) {
+      console.log("Error during second minting:", error);
+    }
+
+    setMinting(false);
   };
 
   console.log(mintComplete);

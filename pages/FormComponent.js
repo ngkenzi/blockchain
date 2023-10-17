@@ -13,6 +13,7 @@ function FormComponent({ onSubmit, template }) {
     const [studentIdError, setStudentIdError] = useState("");
     const isValid = student.trim() !== '' && date.trim() !== '' && course.trim() !== '' && studentId.trim() !== '' && !error && studentIdError === '';
     const [students, setStudents] = useState([]);
+    const [walletAddress, setWalletAddress] = useState("");
 
     const handleChange = (e, setter) => {
         setter(e.target.value);
@@ -35,7 +36,13 @@ function FormComponent({ onSubmit, template }) {
         } else {
             setError(false);
             setStudentIdError('');
-            onSubmit({ student, date, course, studentId });
+            onSubmit({
+                student,
+                date,
+                course,
+                studentId,
+                walletAddress
+            });
             setIsLoading(false); // Stop loading
         }
     };
@@ -56,7 +63,8 @@ function FormComponent({ onSubmit, template }) {
         const selectedStudent = students.find(student => student.id.toString() === selectedId);
         if (selectedStudent) {
             setStudentId(selectedId);
-            setStudent(selectedStudent.email);  
+            setStudent(selectedStudent.email);
+            setWalletAddress(selectedStudent.walletAddress);
         }
     };
 
@@ -76,7 +84,7 @@ function FormComponent({ onSubmit, template }) {
         } else {
             setStudentIdError('');
         }
-    }, [studentId, template]); // Trigger only when studentId or template changes
+    }, [studentId, template]); 
 
 
     useEffect(() => {
@@ -148,9 +156,20 @@ function FormComponent({ onSubmit, template }) {
                         onChange={handleStudentChange}>
                         <option value="">Select a student</option>
                         {students.map((student) => (
-                            <option key={student.id} value={student.id}>{student.id}</option>  // Changed to student.id
+                            <option key={student.id} value={student.id}>{student.id}</option>  
                         ))}
                     </select>
+                </div>
+
+                <div className="mb-4">
+                    <label className="block text-gray-700 text-sm font-bold mb-2">
+                        Wallet Address
+                    </label>
+                    <input className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        type="text"
+                        value={walletAddress} 
+                        readOnly 
+                    />
                 </div>
 
                 <div className="flex justify-center mt-4">
