@@ -59,7 +59,6 @@ export default function NFTViewer() {
       updateRedeem(cid);
     } catch (error) {
       console.error("Detailed Error:", JSON.stringify(error, null, 2));
-      // You can include conditional checks for specific errors and handle them
     } finally {
       setRedeeming(false);
     }
@@ -239,9 +238,9 @@ export default function NFTViewer() {
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticatedAdmin");
 
-    if (!isAuthenticated) {
-      router.push("/authentication");
-    }
+    // if (!isAuthenticated) {
+    //   router.push("/authentication");
+    // }
 
     async function fetchData() {
       const data = await fetchNFTDetails();
@@ -258,6 +257,7 @@ export default function NFTViewer() {
           imageURL,
           cid: item.cid,
           tokenId: item.tokenId,
+          studentID: item.studentID,
         };
       });
 
@@ -314,8 +314,18 @@ export default function NFTViewer() {
               );
 
               const groupedItems = filteredItems.reduce((acc, item) => {
-                acc[item.name] = acc[item.name] || [];
-                acc[item.name].push(item);
+                if (item.studentID === undefined) {
+                  console.error("Undefined studentID found in item:", item);
+                }
+
+                const key =
+                  item.studentID !== null && item.studentID !== undefined
+                    ? item.studentID.toString()
+                    : "null";
+
+                acc[key] = acc[key] || [];
+                acc[key].push(item);
+
                 return acc;
               }, {});
 
