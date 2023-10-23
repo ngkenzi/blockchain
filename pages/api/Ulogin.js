@@ -6,7 +6,6 @@ export default async function handler(req, res) {
             // Extract email and password from the request body
             const { email, password } = req.body;
 
-            // Make a POST request to the login endpoint of your backend
             const response = await axios.post('http://localhost:4000/Ulogin', {
                 email,
                 password,

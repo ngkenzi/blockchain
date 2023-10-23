@@ -5,7 +5,6 @@ export default async function handler(req, res) {
         try {
             const { name, description, minPrice, uri, tokenId, signature, cid, studentId, walletAddress } = req.body;
 
-            // Make a POST request to the /api/create endpoint on your server
             const response = await axios.post('http://localhost:4000/api/create', {
                 name, description, minPrice, uri, tokenId, signature, cid, studentId, walletAddress
             });

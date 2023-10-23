@@ -70,7 +70,6 @@ function University() {
   console.log(uniAddress)
 
   const handleLogout = () => {
-    // Your logout logic here. For example:
     localStorage.removeItem('isAuthenticated');
     router.push('/Login');
   }
