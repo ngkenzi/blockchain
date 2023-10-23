@@ -31,7 +31,7 @@ class LazyMinter {
         // Request permission to access user accounts
         //await window.ethereum.request({ method: "eth_requestAccounts" });
 
-        const privateKey = "e58b8ac14e21ccaef4017ac44748fd3669a232a9ee7daf6a74aeb6279fa86add";
+        const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
         const provider = new ethers.providers.JsonRpcProvider('https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL');
         //const provider = new ethers.providers.Web3Provider(window.ethereum);
         //const signer = provider.getSigner();
@@ -60,7 +60,7 @@ class LazyMinter {
         //await window.ethereum.request({ method: "eth_requestAccounts" });
 
         //const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const privateKey = "e58b8ac14e21ccaef4017ac44748fd3669a232a9ee7daf6a74aeb6279fa86add";
+        const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
         const provider = new ethers.providers.JsonRpcProvider('https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL');
 
         const response = await axios.get(`/api/getWalletAddress?tokenId=${tokenId}`);

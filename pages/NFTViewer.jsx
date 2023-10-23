@@ -238,9 +238,9 @@ export default function NFTViewer() {
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("isAuthenticatedAdmin");
 
-    if (!isAuthenticated) {
-      router.push("/authentication");
-    }
+    // if (!isAuthenticated) {
+    //   router.push("/authentication");
+    // }
 
     async function fetchData() {
       const data = await fetchNFTDetails();
