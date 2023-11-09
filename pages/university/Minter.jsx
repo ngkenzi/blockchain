@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { NFTStorage } from "nft.storage";
 const NFT_STORAGE_KEY =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDE4OGUwYzhCZjNFZTJlN2IzOGMzRTE5M0M1RDlmOUQ3NjU1NzhFOTYiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTY5MTU3Mjg4MTY3OCwibmFtZSI6IlVuaUNlcnQifQ.Zo89YeyQW0XnL15G9-9agkMM9BAda6VDkEoDAvvHFr8";
-import LazyMinter from "./helper/LazyMinter";
+import LazyMinter from "../helper/LazyMinter";
 import axios from "axios";
 import { useRef } from "react";
 
@@ -44,8 +44,8 @@ async function mintNFT({
       name,
       description,
       studentId,
-      ownerType, 
-      image: generatedImageData, 
+      ownerType,
+      image: generatedImageData,
     });
 
     setStatus({ type: "success", msg: "Upload complete!" });
@@ -309,7 +309,7 @@ export default function Minter({
     } catch (error) {
       console.log("Error during first minting:", error);
       setMinting(false);
-      return; 
+      return;
     }
 
     // Second NFT with uniAddress
@@ -328,7 +328,7 @@ export default function Minter({
 
       if (response2.voucher) {
         console.log("Second minting complete with uniAddress");
-        setTokenId(response2.voucher.tokenId); 
+        setTokenId(response2.voucher.tokenId);
         setMintComplete(true);
       }
     } catch (error) {

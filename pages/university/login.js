@@ -5,7 +5,7 @@ import { AiOutlineMail } from "react-icons/ai";
 import { FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import Link from 'next/link';
 
-function Login() {
+function login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isPasswordVisible, setPasswordVisibility] = useState(false);
@@ -26,7 +26,7 @@ function Login() {
                 localStorage.setItem('wallet_address', res.data.walletAddress);
                 localStorage.setItem('university_name', res.data.uniName);
 
-                router.push('/university-certs');
+                router.push('/university/university-certs');
             }
         } catch (err) {
             console.error(err);
@@ -92,7 +92,7 @@ function Login() {
                         </div>
                         <div className="text-center pt-3">
                             <p className="text-gray-600">Don't have an account?
-                                <Link href="/Signup" className="text-blue-600 underline ml-2">Sign up here</Link>
+                                <Link href="/university/register" className="text-blue-600 underline ml-2">Sign up here</Link>
                             </p>
                             <p className="text-gray-600 mt-2">
                                 <Link href="/" className="text-blue-600 underline">Navigate back to home</Link>
@@ -105,4 +105,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default login;

@@ -33,8 +33,8 @@ function AvatarPage() {
         setWalletAddress(localStorage.getItem("walletAddress"));
 
         if (!isAuthenticated) {
-            router.prefetch("/Ulogin");
-            router.push("/Ulogin");
+            router.prefetch("/user/login");
+            router.push("/user/login");
             return;
         }
     }, [router]);

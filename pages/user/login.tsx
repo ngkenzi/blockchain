@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { BeatLoader } from "react-spinners";
 
-const ULogin = () => {
+const login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -35,8 +35,12 @@ const ULogin = () => {
       if (response.data && response.data.token) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("walletAddress", response.data.walletAddress);
+        localStorage.setItem("walletAddress", response.data.walletAddress);
+        localStorage.setItem("FirstName", response.data.FirstName);
+        localStorage.setItem("LastName", response.data.LastName);
+
         setMessage("Logged in successfully.");
-        router.push("/user");
+        router.push("/user/profile");
       } else {
         setMessage("Login failed.");
       }
@@ -107,4 +111,4 @@ const ULogin = () => {
   );
 };
 
-export default ULogin;
+export default login;

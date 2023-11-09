@@ -5,7 +5,7 @@ import { AiOutlineMail, AiOutlineBook } from "react-icons/ai";
 import { FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 import Link from 'next/link';
 
-function Signup() {
+function register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [universityName, setUniversityName] = useState('');
@@ -24,7 +24,7 @@ function Signup() {
 
             if (res.status === 201) {
                 localStorage.setItem('isAuthenticated', 'true');
-                router.push('/university-certs');
+                router.push('/university/university-certs');
             }
 
         } catch (err) {
@@ -77,7 +77,7 @@ function Signup() {
                         </div>
                         <div className="text-center pt-3">
                             <p className="text-gray-600">Already registered your university?
-                                <Link href="/Login" className="text-blue-600 underline ml-2">Login here</Link>
+                                <Link href="/university/login" className="text-blue-600 underline ml-2">Login here</Link>
                             </p>
                             <p className="text-gray-600 mt-2">
                                 <Link href="/" className="text-blue-600 underline">Navigate back to home</Link>
@@ -90,4 +90,4 @@ function Signup() {
     );
 }
 
-export default Signup;
+export default register;

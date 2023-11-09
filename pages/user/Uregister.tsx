@@ -19,6 +19,8 @@ const URegister = () => {
     email: "",
     password: "",
     universityName: "",
+    FirstName: "",
+    LastName: "",
   });
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -94,6 +96,28 @@ const URegister = () => {
               >
                 User Registration
               </Text>
+
+              <div className="flex space-x-4 mb-4">
+                <TextInput
+                  placeholder="First Name"
+                  name="FirstName"
+                  value={formData.FirstName}
+                  onChange={handleChange}
+                  style={{ flex: 1 }}
+                  label="First Name"
+                  required
+                />
+                <TextInput
+                  placeholder="Last Name"
+                  name="LastName"
+                  value={formData.LastName}
+                  onChange={handleChange}
+                  style={{ flex: 1 }}
+                  label="Last Name"
+                  required
+                />
+              </div>
+
               <TextInput
                 placeholder="Email"
                 name="email"
@@ -153,7 +177,7 @@ const URegister = () => {
               <Text align="center" size="sm" style={{ marginTop: "2rem" }}>
                 Already have an account?{" "}
                 <Link
-                  href="/Ulogin"
+                  href="/user/login"
                   style={{ color: theme.colors[theme.primaryColor][6] }}
                 >
                   Login

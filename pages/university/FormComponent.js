@@ -63,7 +63,7 @@ function FormComponent({ onSubmit, template }) {
         const selectedStudent = students.find(student => student.id.toString() === selectedId);
         if (selectedStudent) {
             setStudentId(selectedId);
-            setStudent(selectedStudent.email);
+            setStudent(`${selectedStudent.FirstName} ${selectedStudent.LastName}`);
             setWalletAddress(selectedStudent.walletAddress);
         }
     };

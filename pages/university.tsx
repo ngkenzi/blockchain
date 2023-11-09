@@ -1,5 +1,5 @@
 import Head from "next/head";
-import Login from "./Login";
+import Login from "./university/login";
 
 const University: React.FC = () => {
   return (

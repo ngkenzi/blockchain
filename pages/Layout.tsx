@@ -16,6 +16,7 @@ const Layout = ({ title, description, children }: Props) => {
   const [actionType, setActionType] = useState<"SignIn" | "SignUp">("SignUp");
   const links = [
     { link: "/", label: "Home" },
+    { link: "/students", label: "Students" },
 
     // { link: "/upskill", label: "Online Courses" },
     // { link: "/authentication", label: "Admin" },
@@ -44,55 +45,59 @@ const Layout = ({ title, description, children }: Props) => {
         <title>{title}</title>
         <meta name="description" content={description} />
       </Head>
-      
+
       <HeaderResponsive links={links} toggleModal={toggleModal} />
-      <main className="flex-grow">
-        {children}
-      </main>
+      <main className="flex-grow">{children}</main>
 
       {isModalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center z-50 transition-all duration-300">
-              <div
-                className="fixed inset-0 bg-black opacity-40 transition-opacity duration-300 ease-in-out"
-                onClick={toggleModal}
-                style={{ zIndex: 100 }}
-              ></div>
-              <div
-                className="bg-white p-8 rounded-xl shadow-2xl relative transform transition-transform duration-300 ease-in-out"
-                style={{ zIndex: 101, width: "450px" }}
+        <div className="fixed inset-0 flex items-center justify-center z-50 transition-all duration-300">
+          <div
+            className="fixed inset-0 bg-black opacity-40 transition-opacity duration-300 ease-in-out"
+            onClick={toggleModal}
+            style={{ zIndex: 100 }}
+          ></div>
+          <div
+            className="bg-white p-8 rounded-xl shadow-2xl relative transform transition-transform duration-300 ease-in-out"
+            style={{ zIndex: 101, width: "450px" }}
+          >
+            <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">
+              {actionType === "SignUp" ? "Sign Up As" : "Sign In As"}
+            </h2>
+            <div className="mt-5 flex justify-center space-x-6">
+              <Link
+                href={
+                  actionType === "SignUp"
+                    ? "/university/register"
+                    : "/university/login"
+                }
+                className="flex flex-col items-center space-y-4 p-6 transition-all transform hover:bg-gray-100 hover:scale-105 rounded-xl focus:outline-none border-2 border-blue-200 rounded-lg w-56"
               >
-                <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">
-                  {actionType === "SignUp" ? "Sign Up As" : "Sign In As"}
-                </h2>
-                <div className="mt-5 flex justify-center space-x-6">
-                  <Link
-                    href={actionType === "SignUp" ? "/Signup" : "/Login"}
-                    className="flex flex-col items-center space-y-4 p-6 transition-all transform hover:bg-gray-100 hover:scale-105 rounded-xl focus:outline-none border-2 border-blue-200 rounded-lg w-56"
-                  >
-                    <FaUniversity size="3em" className="mb-2" />
-                    <span className="text-lg font-semibold text-blue-600">
-                      Universities
-                    </span>
-                  </Link>
-                  <Link
-                    href={actionType === "SignUp" ? "/Uregister" : "/Ulogin"}
-                    className="flex flex-col items-center space-y-4 p-6 transition-all transform hover:bg-gray-100 hover:scale-105 rounded-xl focus:outline-none border-2 border-blue-200 rounded-lg w-56"
-                  >
-                    <FaUser size="3em" className="mb-2" />
-                    <span className="text-lg font-semibold text-blue-600">
-                      Users
-                    </span>
-                  </Link>
-                </div>
-                <p
-                  className="absolute top-3 right-3 text-lg text-gray-500 cursor-pointer"
-                  onClick={toggleModal}
-                >
-                  Close
-                </p>
-              </div>
+                <FaUniversity size="3em" className="mb-2" />
+                <span className="text-lg font-semibold text-blue-600">
+                  Universities
+                </span>
+              </Link>
+              <Link
+                href={
+                  actionType === "SignUp" ? "/user/register" : "/user/login"
+                }
+                className="flex flex-col items-center space-y-4 p-6 transition-all transform hover:bg-gray-100 hover:scale-105 rounded-xl focus:outline-none border-2 border-blue-200 rounded-lg w-56"
+              >
+                <FaUser size="3em" className="mb-2" />
+                <span className="text-lg font-semibold text-blue-600">
+                  Users
+                </span>
+              </Link>
             </div>
-          )}
+            <p
+              className="absolute top-3 right-3 text-lg text-gray-500 cursor-pointer"
+              onClick={toggleModal}
+            >
+              Close
+            </p>
+          </div>
+        </div>
+      )}
       <FooterLinks data={footerLinks} />
     </div>
   );

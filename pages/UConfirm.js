@@ -27,9 +27,9 @@ const UConfirm = () => {
             if (response.status === 200) {
                 setMessage("Email confirmed successfully.");
 
-                // Redirect to Ulogin page after a slight delay
+                // Redirect to login page after a slight delay
                 setTimeout(() => {
-                    router.push("/Ulogin");
+                    router.push("/user/login");
                 }, 1500);
             } else {
                 // Handle other successful responses if any

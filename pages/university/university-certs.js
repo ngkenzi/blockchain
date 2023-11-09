@@ -20,6 +20,7 @@ function University() {
   const [template, setTemplate] = useState("");
   const [universityName, setUniversityName] = useState('');
   const [uniAddress, setUniAddress] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const router = useRouter();
   const [step, setStep] = useState(1);
@@ -31,11 +32,12 @@ function University() {
     setUniversityName(localStorage.getItem('university_name'));
 
     if (!isAuthenticated) {
-      router.push("/Login");
+      router.push("/university/login");
+    } else {
+      setLoading(false);
     }
   }, [router]);
 
-  //console.log(universityName)
 
   const handleSubmit = ({ student, studentId, date, course, walletAddress }) => {
     setStudent(student);
@@ -71,7 +73,7 @@ function University() {
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
-    router.push('/Login');
+    router.push('/university/login');
   }
 
   function StepIndicator({ currentStep }) {
@@ -109,6 +111,14 @@ function University() {
             )}
           </div>
         ))}
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen bg-white">
+        <BeatLoader color="#3498db" size={15} />
       </div>
     );
   }
