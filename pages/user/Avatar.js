@@ -74,7 +74,7 @@ function AvatarPage() {
                     });
                     if (updateResponse.ok) {
                         console.log('Avatar URL updated successfully');
-                        router.push('/user');
+                        router.push('/user/profile');
                     } else {
                         console.error('Failed to update avatar URL');
                     }
@@ -94,7 +94,7 @@ function AvatarPage() {
 
     const handleCancel = () => {
         // Redirect the user to the user page when the cancel button is clicked
-        router.push('/user');
+        router.push('/user/profile');
     };
 
     const config = genConfig(attributes);

@@ -81,7 +81,6 @@ const Profile = () => {
       const response = await axios.get(
         `http://localhost:4000/notifications/${walletAddress}`
       );
-      console.log(response.data);
       setNotifications(response.data);
     } catch (error) {
       console.error("Error fetching notifications", error);
@@ -132,23 +131,43 @@ const Profile = () => {
           },
         });
 
+        console.log(response.data);
+
         if (response.status !== 200) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const pageData = response.data.items.map((nft: any) => ({
-          name: nft.meta.name,
-          description: nft.meta.description,
-          image_url:
-            nft.meta.content && nft.meta.content.length > 0
-              ? nft.meta.content[0].url
-              : "",
-          contract: nft.contract.split(":")[1],
-          tokenId: nft.tokenId,
-          blockchain: nft.blockchain,
-        }));
+        const pageData = response.data.items.map((nft) => {
+          // Check if meta data exists
+          if (nft.meta) {
+            return {
+              name: nft.meta.name,
+              description: nft.meta.description,
+              image_url:
+                nft.meta.content && nft.meta.content.length > 0
+                  ? nft.meta.content[0].url
+                  : "",
+              contract: nft.contract.split(":")[1],
+              tokenId: nft.tokenId,
+              blockchain: nft.blockchain,
+            };
+          } else {
+            // Return a default or partial object if meta data does not exist
+            return {
+              name: "NFT Name Not Available",
+              description: "No description available",
+              image_url: "",
+              contract: nft.contract.split(":")[1],
+              tokenId: nft.tokenId,
+              blockchain: nft.blockchain,
+            };
+          }
+        });
 
-        nftData = [...nftData, ...pageData];
+        nftData = [
+          ...nftData,
+          ...pageData.filter((nft) => nft.name !== "NFT Name Not Available"),
+        ];
 
         moreDataExists = pageData.length === 100;
         page++;
@@ -263,11 +282,7 @@ const Profile = () => {
       const senderWalletAddress = notification.recipientWalletAddress;
       const contractAddress = "0x44AA144A60af0C745759912eA9C58476e49d9967";
       const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
-      console.log(notificationId);
 
-      console.log(recipientWalletAddress);
-      console.log(senderWalletAddress);
-      console.log(privateKey);
       // Connect to Polygon network
       const provider = new ethers.providers.JsonRpcProvider(
         "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
@@ -281,7 +296,6 @@ const Profile = () => {
 
       // Get gas price
       const gasPrice = await provider.getGasPrice();
-      console.log(gasPrice);
       // Execute transaction
       const tx = await contract.transferOnBehalf(
         senderWalletAddress,
@@ -436,7 +450,7 @@ const Profile = () => {
                 src={avatarUrl}
                 size="xl"
                 className="mr-4 lg:mr-6 cursor-pointer"
-                onClick={() => router.push("/AvatarPage")}
+                onClick={() => router.push("/user/AvatarPage")}
               />
               <div className="space-y-1">
                 <Text size="2xl" weight={700} className="text-gray-800">
@@ -509,7 +523,8 @@ const Profile = () => {
                         nft.name
                           ?.toLowerCase()
                           .includes(search.toLowerCase()) &&
-                        nft.description?.toLowerCase().includes("course")
+                        (nft.description?.toLowerCase().includes("course") ||
+                          nft.description?.toLowerCase().includes("tier"))
                     )
                     .map((nft, index) => (
                       <Col key={index} md={6} lg={4}>
@@ -547,7 +562,8 @@ const Profile = () => {
                 {nfts.filter(
                   (nft) =>
                     nft.name?.toLowerCase().includes(search.toLowerCase()) &&
-                    nft.description?.toLowerCase().includes("course")
+                    (nft.description?.toLowerCase().includes("course") ||
+                      nft.description?.toLowerCase().includes("tier"))
                 ).length === 0 &&
                   nfts.length !== 0 && (
                     <Text

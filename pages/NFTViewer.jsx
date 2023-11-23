@@ -318,10 +318,9 @@ export default function NFTViewer() {
                   console.error("Undefined studentID found in item:", item);
                 }
 
-                const key =
-                  item.studentID !== null && item.studentID !== undefined
-                    ? item.studentID.toString()
-                    : "null";
+                const hasTier = item.description.includes("Tier");
+
+                const key = `${item.name}-${hasTier ? "Tier" : "NoTier"}`;
 
                 acc[key] = acc[key] || [];
                 acc[key].push(item);
