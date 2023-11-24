@@ -3,7 +3,7 @@ import axios from "axios";
 import { Container, TextInput, Paper, Button, Text } from "@mantine/core";
 import { useRouter } from 'next/router';
 
-const UConfirm = () => {
+const Confirm = () => {
     const router = useRouter();
 
     const [formData, setFormData] = useState({
@@ -98,4 +98,4 @@ const UConfirm = () => {
     );
 };
 
-export default UConfirm;
+export default Confirm;

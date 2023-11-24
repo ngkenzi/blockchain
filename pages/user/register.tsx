@@ -59,7 +59,7 @@ const URegister = () => {
       setNotificationVisible(true);
       setTimeout(() => {
         router.push({
-          pathname: "/UConfirm",
+          pathname: "/user/confirm",
           query: { email: formData.email },
         });
         setNotificationVisible(false);

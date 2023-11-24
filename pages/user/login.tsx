@@ -99,7 +99,7 @@ const login = () => {
               </Text>
               <Text align="center" size="sm" style={{ marginTop: "1rem" }}>
                 Don't have an account?{" "}
-                <Link href="/Uregister" style={{ color: "blue" }}>
+                <Link href="/user/register" style={{ color: "blue" }}>
                   Register
                 </Link>
               </Text>
