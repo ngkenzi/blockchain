@@ -8,11 +8,14 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
     const [students, setStudents] = useState([]);
     const [checkedStudents, setCheckedStudents] = useState({});
     const [loading, setLoading] = useState(true);
+    const [filter, setFilter] = useState('All');
+    const [sortOrder, setSortOrder] = useState('Highest');
     const [companyWalletAddress, setCompanyWalletAddress] = useState('');
     const [disabledStudents, setDisabledStudents] = useState({});
     const [isFormOpen, setIsFormOpen] = useState(false); // State to control form visibility
     const [selectedStudent, setSelectedStudent] = useState(null); // State to hold the selected student for the job offer
     const isFirstRender = useRef(true);
+    const [showNotAvailable, setShowNotAvailable] = useState(true);
 
     useEffect(() => {
         const fetchCompanyWalletAddress = async () => {
@@ -154,18 +157,79 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
         });
     }, [checkedStudents]);
 
+    // Function to handle sorting
+    const sortStudents = (a, b) => {
+        if (showNotAvailable) {
+            const scoreA = a.totalScore !== "Not Available" ? Number(a.totalScore) : -1;
+            const scoreB = b.totalScore !== "Not Available" ? Number(b.totalScore) : -1;
+
+            if (sortOrder === 'Highest') {
+                return scoreB - scoreA;
+            } else {
+                return scoreA - scoreB;
+            }
+        } else {
+            if (a.totalScore === "Not Available" || b.totalScore === "Not Available") {
+                return 0;
+            }
+
+            return sortOrder === 'Highest' ? b.totalScore - a.totalScore : a.totalScore - b.totalScore;
+        }
+    };
+
+    const filteredAndSortedStudents = students
+        .filter(student => filter === 'All' || student.assessmentTier === filter)
+        .sort(sortStudents)
+        .filter(student => showNotAvailable || student.totalScore !== "Not Available");
+
     return (
         <div className="p-4">
             <h1 className="text-2xl font-semibold mb-4">Students</h1>
+
+            {/* Filter and Sorting Dropdowns */}
+            <div className="mb-4 flex gap-4">
+                <select
+                    className="block w-64 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    value={filter}
+                    onChange={(e) => setFilter(e.target.value)}
+                >
+                    <option value="All">All</option>
+                    <option value="Novice">Novice</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                    <option value="Expert">Expert</option>
+                </select>
+                <select
+                    className="block w-64 py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    value={sortOrder}
+                    onChange={(e) => setSortOrder(e.target.value)}
+                >
+                    <option value="Highest">Highest Score</option>
+                    <option value="Lowest">Lowest Score</option>
+
+                </select>
+                <label className="flex items-center">
+                    <input
+                        type="checkbox"
+                        checked={showNotAvailable}
+                        onChange={(e) => setShowNotAvailable(e.target.checked)}
+                        className="form-checkbox h-5 w-5 text-indigo-600"
+                    />
+                    <span className="ml-2 text-sm text-gray-600">Show Unassessed Users</span>
+                </label>
+            </div>
+
+
             {loading ? (
                 <div className="flex justify-center items-center h-20">
                     <AiOutlineLoading3Quarters className="animate-spin text-lg text-blue-500" />
                 </div>
             ) : (
                 <div>
-                    {students.length > 0 ? (
+                    {filteredAndSortedStudents.length > 0 ? (
                         <ul>
-                            {students.map((student) => (
+                            {filteredAndSortedStudents.map((student) => (
                                 <li key={student.id} className="mb-4">
                                     <div className="flex items-center">
                                         <div className="flex-1 p-4 border border-gray-300 rounded-md hover:shadow-md transition">
