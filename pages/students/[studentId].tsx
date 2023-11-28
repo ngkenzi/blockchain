@@ -167,8 +167,9 @@ const StudentDetail: FC = () => {
         try {
           // Fetch student details
           const response = await fetch(
-            `http://localhost:4000/students-info/${studentId}`
+            `/api/getStudentInfoById?studentId=${studentId}`
           );
+
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }

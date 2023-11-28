@@ -10,7 +10,7 @@ const StudentDetail = () => {
     useEffect(() => {
         const fetchStudent = async () => {
             try {
-                const response = await axios.get(`http://localhost:4000/students-info/${studentId}`);
+                const response = await axios.get(`/api/getStudentInfoById?studentId=${studentId}`);
                 setStudent(response.data);
             } catch (error) {
                 console.error('Error fetching student details', error);

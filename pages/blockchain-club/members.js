@@ -11,7 +11,7 @@ const Members = () => {
         const fetchMembers = async () => {
 
             try {
-                const studentsRes = await axios.get('http://localhost:4000/students-info');
+                const studentsRes = await axios.get("/api/getStudentsInfo");
                 const students = studentsRes.data;
 
                 const submittedStudents = await Promise.all(students.map(async (student) => {
