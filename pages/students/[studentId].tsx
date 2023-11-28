@@ -114,19 +114,37 @@ const StudentDetail: FC = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        const pageData = response.data.items.map((nft: any) => ({
-          name: nft.meta.name,
-          description: nft.meta.description,
-          image_url:
-            nft.meta.content && nft.meta.content.length > 0
-              ? nft.meta.content[0].url
-              : "",
-          contract: nft.contract.split(":")[1],
-          tokenId: nft.tokenId,
-          blockchain: nft.blockchain,
-        }));
+        const pageData = response.data.items.map((nft) => {
+          // Check if meta data exists
+          if (nft.meta) {
+            return {
+              name: nft.meta.name,
+              description: nft.meta.description,
+              image_url:
+                nft.meta.content && nft.meta.content.length > 0
+                  ? nft.meta.content[0].url
+                  : "",
+              contract: nft.contract.split(":")[1],
+              tokenId: nft.tokenId,
+              blockchain: nft.blockchain,
+            };
+          } else {
+            // Return a default or partial object if meta data does not exist
+            return {
+              name: "NFT Name Not Available",
+              description: "No description available",
+              image_url: "",
+              contract: nft.contract.split(":")[1],
+              tokenId: nft.tokenId,
+              blockchain: nft.blockchain,
+            };
+          }
+        });
 
-        nftData = [...nftData, ...pageData];
+        nftData = [
+          ...nftData,
+          ...pageData.filter((nft) => nft.name !== "NFT Name Not Available"),
+        ];
 
         moreDataExists = pageData.length === 100;
         page++;
@@ -304,8 +322,10 @@ const StudentDetail: FC = () => {
               <h2 className="text-2xl font-semibold mb-4">NFT Collection</h2>
               <div className="grid grid-cols-3 gap-4">
                 {nfts
-                  .filter((nft) =>
-                    nft.description?.toLowerCase().includes("course")
+                  .filter(
+                    (nft) =>
+                      nft.description?.toLowerCase().includes("course") ||
+                      nft.description?.toLowerCase().includes("tier")
                   )
                   .map((nft, index) => (
                     <div
