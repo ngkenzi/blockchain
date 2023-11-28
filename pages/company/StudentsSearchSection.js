@@ -31,7 +31,7 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
 
         const companyId = localStorage.getItem('companyId');
         console.log(companyId)
-        
+
         if (disabledStudents[studentId]) {
             return; // Do not send notification if the student is disabled
         }
@@ -88,13 +88,23 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
                 // Fetch the notification status for each student
                 for (const student of studentsData) {
                     try {
-                        const statusResponse = await axios.get(`http://localhost:4000/notifications/status/${student.walletAddress}`);
-                        const status = statusResponse.data.status;
+                        const statusResponse = await axios.get(`/api/getNotificationStatus?recipientWalletAddress=${student.walletAddress}`);
+                        if (statusResponse.status === 200) {
+                            const status = statusResponse.data.status;
+                            console.log('Yeah found one lol:', student.walletAddress);
 
-                        initialCheckedState[student.id] = status === 'pending' || status === 'accepted';
-                        initialDisabledState[student.id] = status === 'pending' || status === 'accepted';
+                            initialCheckedState[student.id] = status === 'pending' || status === 'Accepted';
+                            initialDisabledState[student.id] = status === 'pending' || status === 'Accepted';
+                        } else {
+                            initialCheckedState[student.id] = false;
+                            initialDisabledState[student.id] = false;
+                        }
                     } catch (error) {
-                        console.error('Error fetching notification status', error);
+                        if (error.response && error.response.status === 404) {
+                            console.log('No notifications found for this student:', student.walletAddress);
+                        } else {
+                            console.error('Error fetching notification status', error);
+                        }
                         initialCheckedState[student.id] = false;
                         initialDisabledState[student.id] = false;
                     }
