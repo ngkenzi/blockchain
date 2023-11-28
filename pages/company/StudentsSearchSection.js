@@ -79,7 +79,7 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const response = await axios.get('http://localhost:4000/students-info');
+                const response = await axios.get('/api/getStudentsInfo');
                 const studentsData = response.data;
 
                 const initialCheckedState = {};
