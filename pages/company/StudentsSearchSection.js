@@ -85,32 +85,31 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
                 const initialCheckedState = {};
                 const initialDisabledState = {};
 
-                // Fetch the notification status for each student
-                for (const student of studentsData) {
+                // Updated to use Promise.all for efficient asynchronous handling
+                const updatedStudents = await Promise.all(studentsData.map(async (student) => {
                     try {
                         const statusResponse = await axios.get(`/api/getNotificationStatus?recipientWalletAddress=${student.walletAddress}`);
-                        if (statusResponse.status === 200) {
-                            const status = statusResponse.data.status;
-                            console.log('Yeah found one lol:', student.walletAddress);
-
-                            initialCheckedState[student.id] = status === 'pending' || status === 'Accepted';
-                            initialDisabledState[student.id] = status === 'pending' || status === 'Accepted';
-                        } else {
-                            initialCheckedState[student.id] = false;
-                            initialDisabledState[student.id] = false;
-                        }
+                        initialCheckedState[student.id] = statusResponse.data.status === 'pending' || statusResponse.data.status === 'Accepted';
+                        initialDisabledState[student.id] = statusResponse.data.status === 'pending' || statusResponse.data.status === 'Accepted';
                     } catch (error) {
-                        if (error.response && error.response.status === 404) {
-                            console.log('No notifications found for this student:', student.walletAddress);
-                        } else {
-                            console.error('Error fetching notification status', error);
-                        }
                         initialCheckedState[student.id] = false;
                         initialDisabledState[student.id] = false;
                     }
-                }
 
-                setStudents(studentsData);
+                    // Fetching assessment details
+                    try {
+                        const assessmentRes = await axios.get(`/api/getAssessmentDetails?walletAddress=${student.walletAddress}`);
+                        student.assessmentTier = assessmentRes.data.assessment_tier;
+                        student.totalScore = assessmentRes.data.total_score;
+                    } catch (error) {
+                        student.assessmentTier = "Not Available";
+                        student.totalScore = "Not Available";
+                    }
+
+                    return student;
+                }));
+
+                setStudents(updatedStudents);
                 setCheckedStudents(initialCheckedState);
                 setDisabledStudents(initialDisabledState);
             } catch (error) {
@@ -184,6 +183,8 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
                                                     <p className="font-semibold text-xl">{`${student.FirstName} ${student.LastName}`}</p>
                                                     <p className=" text-lg">Email: {student.email}</p>
                                                     <p className=" text-lg">Wallet Address: {student.walletAddress}</p>
+                                                    <p className=" text-lg">Assessment Tier: {student.assessmentTier}</p>
+                                                    <p className=" text-lg">Total Score: {student.totalScore}</p>
                                                 </div>
                                             </div>
                                         </div>

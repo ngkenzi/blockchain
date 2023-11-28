@@ -18,7 +18,7 @@ const Members = () => {
                     const checkRes = await axios.get(`http://localhost:4000/api/check-submission/${student.walletAddress}`);
                     if (checkRes.data.exists) {
                         // Fetching additional assessment details if needed
-                        const assessmentRes = await axios.get(`http://localhost:4000/api/assessment-details/${student.walletAddress}`);
+                        const assessmentRes = await axios.get(`/api/getAssessmentDetails?walletAddress=${student.walletAddress}`);
                         return { ...student, assessmentDetails: assessmentRes.data };
                     }
                     return null;
