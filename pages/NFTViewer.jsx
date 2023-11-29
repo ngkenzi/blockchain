@@ -41,6 +41,20 @@ export default function NFTViewer() {
     }
   }
 
+  const handleMintAll = async () => {
+    setIsMintModalOpen(true);
+
+    // Mint all items in galleryList
+    for (const item of galleryList) {
+      console.log("Starting minting for tokenId:", item.tokenId);
+      await redeem(item.cid, item.tokenId);
+      console.log("Finished minting for tokenId:", item.tokenId);
+
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // 5 seconds delay
+    }
+    setIsMintModalOpen(false);
+  };
+
   function confirmMint() {
     if (itemsToMint.length > 0) {
       handleMint(itemsToMint);
@@ -274,15 +288,22 @@ export default function NFTViewer() {
     <div className="flex h-screen ">
       <div className="flex-1 p-10">
         <h2 className="text-xl font-semibold mb-6">NFT Management</h2>
-
-        <div className="mb-6">
+        {/* Mint All Button and Search Input */}
+        <div className="flex items-center mb-6">
+         
           <input
             type="text"
             placeholder="Search NFTs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="p-2 w-full border rounded"
+            className="flex-grow p-2 border rounded"
           />
+           <button
+            onClick={handleMintAll}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-colors duration-300 ml-4"
+          >
+            Mint All
+          </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
