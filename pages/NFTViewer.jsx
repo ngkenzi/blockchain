@@ -272,23 +272,6 @@ export default function NFTViewer() {
 
   return (
     <div className="flex h-screen ">
-      <div className="bg-white w-1/9 p-8 border-r flex flex-col justify-between">
-        <div>
-          <h1 className="text-2xl mb-6 font-semibold">Admin Panel</h1>
-          <ul>
-            <li className="mb-2 hover:text-blue-600 cursor-pointer">
-              Manage NFTs
-            </li>
-          </ul>
-        </div>
-        {/* <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors duration-300 w-full text-center"
-        >
-          Logout
-        </button> */}
-      </div>
-
       <div className="flex-1 p-10">
         <h2 className="text-xl font-semibold mb-6">NFT Management</h2>
 
