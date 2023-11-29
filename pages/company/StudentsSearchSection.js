@@ -78,7 +78,19 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
             console.error('Error sending notification', error);
         }
     };
+    // Function to handle sorting
+    const sortStudents = (a, b) => {
+        // Convert scores to numbers, treating "Not Available" as a null value
+        const scoreA = a.totalScore !== "Not Available" ? Number(a.totalScore) : null;
+        const scoreB = b.totalScore !== "Not Available" ? Number(b.totalScore) : null;
 
+        if (sortOrder === 'Highest') {
+            return scoreB - scoreA;
+        } else { // sortOrder === 'Lowest'
+            return scoreA - scoreB;
+        }
+    };
+    
     useEffect(() => {
         const fetchStudents = async () => {
             try {
@@ -157,31 +169,12 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
         });
     }, [checkedStudents]);
 
-    // Function to handle sorting
-    const sortStudents = (a, b) => {
-        if (showNotAvailable) {
-            const scoreA = a.totalScore !== "Not Available" ? Number(a.totalScore) : -1;
-            const scoreB = b.totalScore !== "Not Available" ? Number(b.totalScore) : -1;
 
-            if (sortOrder === 'Highest') {
-                return scoreB - scoreA;
-            } else {
-                return scoreA - scoreB;
-            }
-        } else {
-            if (a.totalScore === "Not Available" || b.totalScore === "Not Available") {
-                return 0;
-            }
-
-            return sortOrder === 'Highest' ? b.totalScore - a.totalScore : a.totalScore - b.totalScore;
-        }
-    };
 
     const filteredAndSortedStudents = students
         .filter(student => filter === 'All' || student.assessmentTier === filter)
         .sort(sortStudents)
         .filter(student => showNotAvailable || student.totalScore !== "Not Available");
-
     return (
         <div className="p-4">
             <h1 className="text-2xl font-semibold mb-4">Students</h1>
