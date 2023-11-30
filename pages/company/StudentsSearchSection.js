@@ -3,6 +3,7 @@ import axios from 'axios';
 import { FaCheckCircle, FaCircle } from 'react-icons/fa';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
 import JobDetailsForm from './JobDetailsForm';
+import Link from 'next/link';
 
 const StudentsSearchSection = ({ onSelectStudent }) => {
     const [students, setStudents] = useState([]);
@@ -90,7 +91,7 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
             return scoreA - scoreB;
         }
     };
-    
+
     useEffect(() => {
         const fetchStudents = async () => {
             try {
@@ -224,35 +225,43 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
                         <ul>
                             {filteredAndSortedStudents.map((student) => (
                                 <li key={student.id} className="mb-4">
-                                    <div className="flex items-center">
-                                        <div className="flex-1 p-4 border border-gray-300 rounded-md hover:shadow-md transition">
-                                            <div className="flex items-center">
-                                                <img
-                                                    src={student.imageURL || '/sample-profile.png'}
-                                                    alt={`${student.FirstName} ${student.LastName}`}
-                                                    className="w-20 h-20 rounded-full"
-                                                    onError={(e) => {
-                                                        e.target.src = "/sample-profile.png";
-                                                        e.target.alt = "Default Student Image";
-                                                    }}
-                                                />
-                                                <div className="ml-4">
-                                                    <p className="font-semibold text-xl">{`${student.FirstName} ${student.LastName}`}</p>
-                                                    <p className=" text-lg">Email: {student.email}</p>
-                                                    <p className=" text-lg">Wallet Address: {student.walletAddress}</p>
-                                                    <p className=" text-lg">Assessment Tier: {student.assessmentTier}</p>
-                                                    <p className=" text-lg">Total Score: {student.totalScore}</p>
+                                    <Link href={`/students/${student.id}`}>
+
+                                        <div
+                                            className="flex items-center cursor-pointer"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                window.open(`/students/${student.id}`, '_blank', 'noopener,noreferrer');
+                                            }}
+                                        >                                            <div className="flex-1 p-4 border border-gray-300 rounded-md hover:shadow-md transition">
+                                                <div className="flex items-center">
+                                                    <img
+                                                        src={student.imageURL || '/sample-profile.png'}
+                                                        alt={`${student.FirstName} ${student.LastName}`}
+                                                        className="w-20 h-20 rounded-full"
+                                                        onError={(e) => {
+                                                            e.target.src = "/sample-profile.png";
+                                                            e.target.alt = "Default Student Image";
+                                                        }}
+                                                    />
+                                                    <div className="ml-4">
+                                                        <p className="font-semibold text-xl">{`${student.FirstName} ${student.LastName}`}</p>
+                                                        <p className=" text-lg">Email: {student.email}</p>
+                                                        <p className=" text-lg">Wallet Address: {student.walletAddress}</p>
+                                                        <p className=" text-lg">Assessment Tier: {student.assessmentTier}</p>
+                                                        <p className=" text-lg">Total Score: {student.totalScore}</p>
+                                                    </div>
                                                 </div>
                                             </div>
+                                            <button
+                                                onClick={() => handleCheckClick(student)}
+                                                className={`ml-4 p-2 border rounded-md transition ${checkedStudents[student.id] ? "border-green-500 text-green-500" : "border-gray-300 text-gray-500"} ${disabledStudents[student.id] || checkedStudents[student.id] ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"}`}
+                                                disabled={disabledStudents[student.id] || checkedStudents[student.id]}
+                                            >
+                                                {checkedStudents[student.id] ? <FaCheckCircle size={24} /> : <FaCircle size={24} />}
+                                            </button>
                                         </div>
-                                        <button
-                                            onClick={() => handleCheckClick(student)}
-                                            className={`ml-4 p-2 border rounded-md transition ${checkedStudents[student.id] ? "border-green-500 text-green-500" : "border-gray-300 text-gray-500"} ${disabledStudents[student.id] || checkedStudents[student.id] ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"}`}
-                                            disabled={disabledStudents[student.id] || checkedStudents[student.id]}
-                                        >
-                                            {checkedStudents[student.id] ? <FaCheckCircle size={24} /> : <FaCircle size={24} />}
-                                        </button>
-                                    </div>
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
