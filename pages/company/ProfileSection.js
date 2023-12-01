@@ -13,7 +13,7 @@ const ProfileSection = () => {
     });
     const [editing, setEditing] = useState(false);
     const [message, setMessage] = useState('');
-    const backendBaseURL = "http://localhost:4000";
+    const backendBaseURL = "http://13.250.122.124";
 
     useEffect(() => {
         const fetchProfile = async () => {

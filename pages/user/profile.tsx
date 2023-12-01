@@ -367,7 +367,7 @@ const Profile = () => {
             <div className="p-6">
               <div className="flex items-center space-x-4 mb-4">
                 <Image
-                  src={`http://localhost:4000${selectedInvite.companyProfilePicture}`}
+                  src={`http://13.250.122.124${selectedInvite.companyProfilePicture}`}
                   alt="Company Profile Picture"
                   className="rounded-full"
                   width={100}
