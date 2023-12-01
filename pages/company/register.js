@@ -47,7 +47,7 @@ export default function Register() {
         });
 
         try {
-            await axios.post('http://localhost:4000/company/register', formDataToSend, {
+            await axios.post('/api/companyRegister', formDataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -109,7 +109,7 @@ export default function Register() {
                     <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-md">Register</button>
                 </form>
                 {message && <div className="mt-4 p-2 text-center">{message}</div>}
-                
+
                 <div className="mt-4 text-center">
                     <p className="text-sm text-gray-600">
                         Already have an account?{' '}

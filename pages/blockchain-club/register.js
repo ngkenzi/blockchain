@@ -15,7 +15,7 @@ const ClubRegister = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:4000/club/register', formData);
+            const response = await axios.post('/api/clubRegister', formData);
             console.log(response.data);
             alert('Club registered successfully!');
         } catch (error) {

@@ -18,7 +18,7 @@ export default function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:4000/company/login', formData);
+            const response = await axios.post('/api/companyLogin', formData);
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
                 localStorage.setItem('companyId', response.data.companyId);

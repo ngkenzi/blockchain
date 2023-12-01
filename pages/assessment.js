@@ -126,7 +126,7 @@ const Questionnaire = () => {
         }
         const checkSubmission = async () => {
             try {
-                const response = await axios.get(`http://localhost:4000/api/check-submission/${walletAddress}`);
+                const response = await axios.get(`/api/checkSubmissionStatus?walletAddress=${walletAddress}`);
                 if (response.data.exists) {
                     // User has already submitted, set state accordingly
                     setHasSubmitted(true);
@@ -300,7 +300,7 @@ const Questionnaire = () => {
         };
 
         try {
-            const response = await axios.post('http://localhost:4000/api/assessment', formData);
+            const response = await axios.post('/api/submitAssessment', formData);
 
             if (response.status === 200 || response.status === 201) {
                 const totalScore = calculateTotalScore();

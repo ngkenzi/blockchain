@@ -15,17 +15,17 @@ const JobOffersChartComponent = () => {
   useEffect(() => {
     const fetchJobOffers = async () => {
       try {
-        const response = await axios.get("/api/notifications");
-        const notifications = response.data;
+        const response = await axios.get("/api/invites");
+        const invites = response.data;
 
-        setJobOfferCount(notifications.length); // Set total job offers count
+        setJobOfferCount(invites.length); // Set total job offers count
 
         // Counting the status occurrences
         const counts = { accepted: 0, pending: 0, rejected: 0 };
-        notifications.forEach((notification) => {
-          if (notification.status === "Accepted") counts.accepted += 1;
-          else if (notification.status === "pending") counts.pending += 1;
-          else if (notification.status === "Rejected") counts.rejected += 1;
+        invites.forEach((invite) => {
+          if (invite.status === "Accepted") counts.accepted += 1;
+          else if (invite.status === "pending") counts.pending += 1;
+          else if (invite.status === "Rejected") counts.rejected += 1;
         });
 
         setStatusCounts(counts);

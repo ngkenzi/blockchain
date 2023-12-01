@@ -20,11 +20,8 @@ const ProfileSection = () => {
             try {
                 const token = localStorage.getItem('token');
                 const companyId = localStorage.getItem('companyId');
-                const response = await axios.get(`http://localhost:4000/company/profile/${companyId}`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
+                const response = await axios.get('/api/getCompanyProfile', { params: { companyId } });
+
                 setProfile(response.data);
             } catch (error) {
                 console.error('Error fetching profile', error);
@@ -43,11 +40,13 @@ const ProfileSection = () => {
         try {
             const token = localStorage.getItem('token');
             const companyId = localStorage.getItem('companyId');
-            await axios.put(`http://localhost:4000/company/updateProfile/${companyId}`, profile, {
+            await axios.put('/api/updateCompanyProfile', profile, {
+                params: { companyId },
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             });
+
             setMessage('Profile updated successfully');
             setEditing(false);
         } catch (error) {

@@ -53,7 +53,7 @@ function AvatarPage() {
             .then(async (blob) => {
                 const formData = new FormData();
                 formData.append('myAvatar', blob);
-                const response = await fetch('api/upload-avatar', {
+                const response = await fetch('/api/upload-avatar', {
                     method: 'POST',
                     body: formData,
                 });
@@ -62,7 +62,7 @@ function AvatarPage() {
 
                 // Update the imageURL in the users table with the file URL
                 if (walletAddress) {
-                    const updateResponse = await fetch('api/update-avatar-url', {
+                    const updateResponse = await fetch('/api/update-avatar-url', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -111,45 +111,6 @@ function AvatarPage() {
                 </div>
 
                 <div className="avatar-options bg-white p-6 rounded-lg shadow-lg space-y-4 w-full max-w-lg flex-auto">
-
-                    {/* Gender */}
-                    {/* <div className="form-group">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Gender</label>
-                        <select
-                            name="sex"
-                            onChange={handleChange}
-                            value={attributes.sex}
-                            className="block w-full p-2 border rounded"
-                        >
-                            <option value="man">Man</option>
-                            <option value="woman">Woman</option>
-                        </select>
-                    </div> */}
-
-                    {/* Shape */}
-                    {/* <div className="form-group">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Shape</label>
-                        <div className="flex space-x-2">
-                            <button
-                                className={`px-4 py-2 border rounded ${attributes.shape === 'circle' ? 'bg-blue-500 text-white' : ''}`}
-                                onClick={() => handleChange({ target: { name: 'shape', value: 'circle' } })}
-                            >
-                                Circle
-                            </button>
-                            <button
-                                className={`px-4 py-2 border rounded ${attributes.shape === 'rounded' ? 'bg-blue-500 text-white' : ''}`}
-                                onClick={() => handleChange({ target: { name: 'shape', value: 'rounded' } })}
-                            >
-                                Rounded
-                            </button>
-                            <button
-                                className={`px-4 py-2 border rounded ${attributes.shape === 'square' ? 'bg-blue-500 text-white' : ''}`}
-                                onClick={() => handleChange({ target: { name: 'shape', value: 'square' } })}
-                            >
-                                Square
-                            </button>
-                        </div>
-                    </div> */}
 
                     {/* Face Color */}
                     <div className="form-group">

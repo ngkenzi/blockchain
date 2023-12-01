@@ -26,8 +26,8 @@ const URegister = () => {
   const [loading, setLoading] = useState(false);
 
   const [message, setMessage] = useState(null);
-  const [notificationType, setNotificationType] = useState("info");
-  const [notificationVisible, setNotificationVisible] = useState(false);
+  const [inviteType, setInviteType] = useState("info");
+  const [inviteVisible, setInviteVisible] = useState(false);
   const [universities, setUniversities] = useState([]);
 
   useEffect(() => {
@@ -54,20 +54,20 @@ const URegister = () => {
     setLoading(true);
     try {
       const response = await axios.post("/api/Uregister", formData);
-      setNotificationType("success");
+      setInviteType("success");
       setMessage("User registered successfully");
-      setNotificationVisible(true);
+      setInviteVisible(true);
       setTimeout(() => {
         router.push({
           pathname: "/user/confirm",
           query: { email: formData.email },
         });
-        setNotificationVisible(false);
+        setInviteVisible(false);
       }, 2000);
     } catch (error) {
-      setNotificationType("error");
+      setInviteType("error");
       setMessage(error.response?.data?.message || "Registration failed.");
-      setNotificationVisible(true);
+      setInviteVisible(true);
     } finally {
       setLoading(false);
     }
@@ -165,11 +165,11 @@ const URegister = () => {
               >
                 Register
               </Button>
-              {notificationVisible && message && (
+              {inviteVisible && message && (
                 <Notification
                   style={{ marginTop: "2rem" }}
-                  color={notificationType}
-                  onClose={() => setNotificationVisible(false)}
+                  color={inviteType}
+                  onClose={() => setInviteVisible(false)}
                 >
                   {message}
                 </Notification>

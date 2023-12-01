@@ -6,6 +6,8 @@ const Members = () => {
     const [members, setMembers] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null);
+    const [retryCount, setRetryCount] = useState(0);
+    const maxRetries = 10;
 
     useEffect(() => {
         const fetchMembers = async () => {
@@ -15,7 +17,7 @@ const Members = () => {
                 const students = studentsRes.data;
 
                 const submittedStudents = await Promise.all(students.map(async (student) => {
-                    const checkRes = await axios.get(`http://localhost:4000/api/check-submission/${student.walletAddress}`);
+                    const checkRes = await axios.get(`/api/checkSubmissionStatus?walletAddress=${student.walletAddress}`);
                     if (checkRes.data.exists) {
                         // Fetching additional assessment details if needed
                         const assessmentRes = await axios.get(`/api/getAssessmentDetails?walletAddress=${student.walletAddress}`);
@@ -27,6 +29,9 @@ const Members = () => {
                 setMembers(submittedStudents.filter(Boolean));
             } catch (error) {
                 console.error('Error fetching members:', error);
+                if (retryCount < maxRetries) {
+                    setTimeout(() => setRetryCount(retryCount + 1), 3000); // Retry after 3 seconds
+                }
             }
         };
 

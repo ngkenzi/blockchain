@@ -61,9 +61,9 @@ const Home = () => {
   const fetchUniversities = async () => {
     try {
       const response = await axios.get("/api/universities");
-      return response.data.map((user) => ({
-        label: user.university_name,
-        value: user.wallet_address,
+      return response.data.map((university) => ({
+        label: university.university_name,
+        value: university.wallet_address,
       }));
     } catch (error) {
       console.error(error);

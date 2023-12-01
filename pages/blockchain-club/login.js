@@ -14,7 +14,7 @@ const ClubLogin = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:4000/club/login', formData);
+            const response = await axios.post('/api/clubLogin', formData);
             console.log(response.data);
             localStorage.setItem('token', response.data.token);
             alert('Logged in successfully!');

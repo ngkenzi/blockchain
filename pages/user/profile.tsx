@@ -33,12 +33,12 @@ const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState("/sample-profile.jpg"); // Initial value
   const [universityName, setUniversityName] = useState("");
   const [jobTokenBalance, setJobTokenBalance] = useState(0);
-  const [notifications, setNotifications] = useState([]);
+  const [invites, setInvites] = useState([]);
   const [activeTab, setActiveTab] = useState("profile");
   const [lastFetched, setLastFetched] = useState(Date.now());
 
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  const [selectedNotification, setSelectedNotification] = useState(null);
+  const [selectedInvite, setSelectedInvite] = useState(null);
 
   const router = useRouter();
 
@@ -59,37 +59,38 @@ const Profile = () => {
     fetchNFTs();
   }, [walletAddress]);
 
-  function handleNotificationClick(notification) {
-    console.log("Notification clicked", notification);
-    // Set the notification details to be displayed in the modal
-    setSelectedNotification(notification);
+  function handleInviteClick(invite) {
+    console.log("invite clicked", invite);
+    // Set the invite details to be displayed in the modal
+    setSelectedInvite(invite);
     setIsDetailsModalOpen(true);
   }
 
   const handleCloseModal = () => {
     setIsDetailsModalOpen(false);
-    setSelectedNotification(null);
+    setSelectedInvite(null);
   };
 
-  function handleNotificationAction(notification) {
-    console.log("Notification action clicked", notification);
-    // Implement your notification action handling logic here
+  function handleInviteAction(invite) {
+    console.log("invite action clicked", invite);
+    // Implement your invite action handling logic here
   }
 
-  const fetchNotifications = async () => {
+  const fetchInvites = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:4000/notifications/${walletAddress}`
-      );
-      setNotifications(response.data);
+      const response = await axios.get("/api/getInvites", {
+        params: { recipientWalletAddress: walletAddress },
+      });
+
+      setInvites(response.data);
     } catch (error) {
-      console.error("Error fetching notifications", error);
+      console.error("Error fetching invites", error);
     }
   };
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchNotifications();
+      fetchInvites();
       setLastFetched(Date.now());
     }, 5000); // Poll every 5 seconds
 
@@ -254,32 +255,32 @@ const Profile = () => {
     fetchJobTokenBalance();
   }, [walletAddress]);
 
-  const fetchNotificationById = async (notificationId) => {
+  const fetchInviteById = async (inviteId) => {
     try {
-      const response = await axios.get(
-        `http://localhost:4000/notifications/id/${notificationId}`
-      );
+      const response = await axios.get("/api/getInviteById", {
+        params: { inviteId },
+      });
       return response.data;
     } catch (error) {
-      console.error("Error fetching notification by ID", error);
+      console.error("Error fetching invite by ID", error);
     }
   };
 
-  const handleAccept = async (notificationId) => {
+  const handleAccept = async (inviteId) => {
     setIsDetailsModalOpen(false);
 
     setLoading(true);
 
     try {
-      // Fetch the full notification details
-      const notification = await fetchNotificationById(notificationId);
-      if (!notification) {
-        console.error("Notification not found");
+      // Fetch the full invite details
+      const invite = await fetchInviteById(inviteId);
+      if (!invite) {
+        console.error("invite not found");
         return;
       }
 
-      const recipientWalletAddress = notification.senderWalletAddress;
-      const senderWalletAddress = notification.recipientWalletAddress;
+      const recipientWalletAddress = invite.senderWalletAddress;
+      const senderWalletAddress = invite.recipientWalletAddress;
       const contractAddress = "0x44AA144A60af0C745759912eA9C58476e49d9967";
       const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
 
@@ -305,40 +306,30 @@ const Profile = () => {
       );
       await tx.wait();
 
-      // Update notification status on the backend
-      await axios
-        .post(`http://localhost:4000/notifications/${notificationId}/accept`)
-        .then((response) => {
-          console.log(
-            "Notification Accepted and Job Token Transferred successfully",
-            response
-          );
-        });
+      // Update invite status on the backend
+      await axios.post("/api/acceptInvite", null, {
+        params: { inviteId },
+      });
 
-      // Refetch notifications to update the UI
-      fetchNotifications();
+      // Refetch invites to update the UI
+      fetchInvites();
     } catch (error) {
-      console.error(
-        "Error accepting notification and transferring Job Token",
-        error
-      );
+      console.error("Error accepting invite and transferring Job Token", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDecline = async (notificationId) => {
+  const handleDecline = async (inviteId) => {
     setIsDetailsModalOpen(false);
 
     try {
-      axios
-        .post(`http://localhost:4000/notifications/${notificationId}/decline`)
-        .then((response) => {
-          console.log("Notification declined successfully", response);
-        });
-      fetchNotifications();
+      await axios.post("/api/declineInvite", null, {
+        params: { inviteId },
+      });
+      fetchInvites();
     } catch (error) {
-      console.error("Error declining notification", error);
+      console.error("Error declining invite", error);
     }
   };
 
@@ -372,11 +363,11 @@ const Profile = () => {
           title="Job Offer Details"
           className="bg-white rounded-lg shadow-xl"
         >
-          {selectedNotification && (
+          {selectedInvite && (
             <div className="p-6">
               <div className="flex items-center space-x-4 mb-4">
                 <Image
-                  src={`http://localhost:4000${selectedNotification.companyProfilePicture}`}
+                  src={`http://localhost:4000${selectedInvite.companyProfilePicture}`}
                   alt="Company Profile Picture"
                   className="rounded-full"
                   width={100}
@@ -387,53 +378,52 @@ const Profile = () => {
                     size="sm"
                     className="text-lg font-semibold text-gray-800"
                   >
-                    {selectedNotification.position}
+                    {selectedInvite.position}
                   </Text>
                   <Text size="sm" className="text-md text-gray-500">
-                    {selectedNotification.companyName}
+                    {selectedInvite.companyName}
                   </Text>
                 </div>
               </div>
               <div className="mb-4">
                 <Text size="sm" className="text-sm text-gray-600">
                   Description:{" "}
-                  {selectedNotification.job_description ||
-                    "No description provided."}
+                  {selectedInvite.job_description || "No description provided."}
                 </Text>
               </div>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <Text size="sm" className="text-sm text-gray-600">
-                  Monthly Salary: RM{selectedNotification.salary}
+                  Monthly Salary: RM{selectedInvite.salary}
                 </Text>
                 <Text size="sm" className="text-sm text-gray-600">
-                  Type: {selectedNotification.job_type}
+                  Type: {selectedInvite.job_type}
                 </Text>
                 <Text size="sm" className="text-sm text-gray-600">
-                  Company Email: {selectedNotification.companyEmail}
+                  Company Email: {selectedInvite.companyEmail}
                 </Text>
                 <Text size="sm" className="text-sm text-gray-600">
-                  Company Phone: {selectedNotification.companyPhone}
+                  Company Phone: {selectedInvite.companyPhone}
                 </Text>
                 <Text size="sm" className="text-sm text-gray-600 col-span-2">
-                  Company Address: {selectedNotification.companyAddress}
+                  Company Address: {selectedInvite.companyAddress}
                 </Text>
               </div>
               <Text size="sm" className="text-sm text-gray-400 mb-4">
-                Created At: {formatDate(selectedNotification.createdAt)}
+                Created At: {formatDate(selectedInvite.createdAt)}
               </Text>
 
               <div className="flex justify-end space-x-2">
                 <Button
                   className="bg-green-500 text-white active:bg-green-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
-                  onClick={() => handleAccept(selectedNotification.id)}
+                  onClick={() => handleAccept(selectedInvite.id)}
                 >
                   Accept
                 </Button>
                 <Button
                   className="bg-red-500 text-white active:bg-red-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="button"
-                  onClick={() => handleDecline(selectedNotification.id)}
+                  onClick={() => handleDecline(selectedInvite.id)}
                 >
                   Decline
                 </Button>
@@ -495,7 +485,7 @@ const Profile = () => {
             <Tabs.Tab value="profile" color="blue">
               NFT
             </Tabs.Tab>
-            <Tabs.Tab value="notifications" color="blue">
+            <Tabs.Tab value="invites" color="blue">
               Offers
             </Tabs.Tab>
           </Tabs.List>
@@ -577,28 +567,27 @@ const Profile = () => {
               </>
             )}
           </Tabs.Panel>
-          <Tabs.Panel value="notifications" pt="xs">
+          <Tabs.Panel value="invites" pt="xs">
             <div className="space-y-4">
-              {notifications.length > 0 ? (
-                notifications
-                  .filter((notification) => notification.status === "pending")
-                  .map((notification, index) => (
+              {invites.length > 0 ? (
+                invites
+                  .filter((invite) => invite.status === "pending")
+                  .map((invite, index) => (
                     <Notification
                       key={index}
-                      title={notification.title || "Offer"}
+                      title={invite.title || "Offer"}
                       color="blue"
                       icon={<FaBell />}
                       className="hover:bg-blue-50 cursor-pointer transition duration-300 ease-in-out transform hover:scale-105"
-                      onClick={() => handleNotificationClick(notification)}
+                      onClick={() => handleInviteClick(invite)}
                     >
                       <div className="flex justify-between items-center p-4 bg-white rounded-md shadow">
                         <div className="flex-grow">
                           <p className="text-gray-800">
-                            {notification.message ||
-                              "You have a new notification!"}
+                            {invite.message || "You have a new invite!"}
                           </p>
                           <p className="text-sm text-gray-500 mt-1">
-                            {formatDate(notification.createdAt)}
+                            {formatDate(invite.createdAt)}
                           </p>
                         </div>
                         <div className="flex-shrink-0 flex space-x-2">
@@ -608,7 +597,7 @@ const Profile = () => {
                             className="text-white bg-green-500 hover:bg-green-600 focus:ring-2 focus:ring-green-300 rounded-lg shadow px-3 py-1.5 transition ease-in-out duration-150"
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleAccept(notification.id);
+                              handleAccept(invite.id);
                             }}
                           >
                             Accept
@@ -619,7 +608,7 @@ const Profile = () => {
                             className="text-white bg-red-500 hover:bg-red-600 focus:ring-2 focus:ring-red-300 rounded-lg shadow px-3 py-1.5 transition ease-in-out duration-150"
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleDecline(notification.id);
+                              handleDecline(invite.id);
                             }}
                           >
                             Decline
@@ -629,7 +618,7 @@ const Profile = () => {
                             color="blue"
                             className="text-white bg-blue-500 hover:bg-blue-600 focus:ring-2 focus:ring-blue-300 rounded-lg shadow px-3 py-1.5 transition ease-in-out duration-150"
                             onClick={(e) => {
-                              handleNotificationAction(notification);
+                              handleInviteAction(invite);
                             }}
                           >
                             View Details
@@ -640,7 +629,7 @@ const Profile = () => {
                   ))
               ) : (
                 <Text align="center" size="md" color="gray">
-                  You have no pending notifications.
+                  You have no pending invites.
                 </Text>
               )}
             </div>

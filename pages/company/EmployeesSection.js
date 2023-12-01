@@ -14,7 +14,7 @@ const EmployeesSection = () => {
             const companyId = localStorage.getItem('companyId');
             setIsLoading(true);
             try {
-                const response = await axios.get(`http://localhost:4000/company/profile/${companyId}`);
+                const response = await axios.get('/api/getCompanyProfile', { params: { companyId } });
                 setCompanyWalletAddress(response.data.wallet_address);
             } catch (error) {
                 console.error('Error fetching company wallet address', error);
@@ -33,7 +33,7 @@ const EmployeesSection = () => {
             setIsLoading(true);
             try {
                 // Assuming your API requires the company wallet address to fetch the accepted students
-                const response = await axios.get(`http://localhost:4000/students-accepted-notifications`, {
+                const response = await axios.get('/api/getAcceptedStudents', {
                     params: { companyWalletAddress }
                 });
                 setAcceptedStudents(response.data);

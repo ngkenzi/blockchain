@@ -14,7 +14,7 @@ export default async function handler(req, res) {
             });
 
             // Forward the response back to the client
-            res.status(201).send('User registered successfully');
+            res.status(201).send('University registered successfully');
         } catch (error) {
             // If there's an error, respond with the appropriate status code and message
             if (error.response && error.response.status === 400) {

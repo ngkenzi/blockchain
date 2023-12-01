@@ -1,4 +1,4 @@
-// api/getNotificationStatus.js
+// api/getInviteStatus.js
 import axios from 'axios';
 
 export default async function handler(req, res) {
@@ -11,14 +11,14 @@ export default async function handler(req, res) {
         }
 
         try {
-            const response = await axios.get(`http://localhost:4000/notifications/status/${recipientWalletAddress}`);
+            const response = await axios.get(`http://localhost:4000/invites/status/${recipientWalletAddress}`);
             res.status(200).json(response.data);
         } catch (error) {
             console.error(error);
             if (error.response && error.response.status === 404) {
-                res.status(404).json({ message: 'No notifications found for this recipient' });
+                res.status(404).json({ message: 'No invites found for this recipient' });
             } else {
-                res.status(500).json({ message: 'Error fetching notification status' });
+                res.status(500).json({ message: 'Error fetching invite status' });
             }
         }
     } else {
