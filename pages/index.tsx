@@ -61,12 +61,18 @@ const Home = () => {
   const fetchUniversities = async () => {
     try {
       const response = await axios.get("/api/universities");
-      return response.data.map((university) => ({
-        label: university.university_name,
-        value: university.wallet_address,
-      }));
+      if (Array.isArray(response.data)) {
+        return response.data.map((university) => ({
+          label: university.university_name,
+          value: university.wallet_address,
+        }));
+      } else {
+        console.error("Received data is not an array");
+        return [];
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching universities:", error);
+      return [];
     }
   };
 
@@ -87,7 +93,6 @@ const Home = () => {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
-
 
   const fetchNFTs = async () => {
     let page = 1;
@@ -155,7 +160,10 @@ const Home = () => {
   }, [address]);
 
   return (
-  <Layout title={"Home"} description={"Verify and Validate your certificates with MSP Cert"} >
+    <Layout
+      title={"Home"}
+      description={"Verify and Validate your certificates with MSP Cert"}
+    >
       {/* <Head>
           <title>Home</title>
           <meta
@@ -165,127 +173,127 @@ const Home = () => {
         </Head>
 
         <HeaderResponsive links={links} toggleModal={toggleModal} /> */}
-        <div className="flex-grow container mx-auto p-4 sm:p-6 max-w-5xl">
-          {" "}
-          {/* Adjust container width */}
-          <Title
-            order={3}
-            className="text-center font-bold mb-6 sm:mb-10 text-3xl"
-          >
-            Students Certificates Ownership
-          </Title>
-          <div className="bg-white p-4 sm:p-6 rounded shadow-md">
-            <div className="mb-4 flex flex-col sm:flex-row sm:space-x-4 sm:items-end">
-              <div className="w-full sm:w-1/2">
-                <Text
-                  component="label"
-                  htmlFor="address-input"
-                  weight={700}
-                  className="block text-lg mb-1"
-                >
-                  Select your University
-                </Text>
-                <Select
-                  placeholder="Select a university"
-                  data={universities}
-                  value={address}
-                  onChange={setAddress}
-                  className="w-full p-3 text-lg rounded-md shadow-sm"
-                />
-              </div>
-              <div className="mt-4 sm:mt-0 w-full sm:w-1/2">
-                <Text
-                  component="label"
-                  htmlFor="search-input"
-                  weight={700}
-                  className="block text-lg mb-2"
-                >
-                  Search Student Name
-                </Text>
-                <Input
-                  id="search-input"
-                  type="text"
-                  placeholder="Search for Students Name..."
-                  value={search}
-                  onChange={handleSearchChange}
-                  className="w-full p-3 text-lg rounded-md shadow-sm"
-                />
-              </div>
+      <div className="flex-grow container mx-auto p-4 sm:p-6 max-w-5xl">
+        {" "}
+        {/* Adjust container width */}
+        <Title
+          order={3}
+          className="text-center font-bold mb-6 sm:mb-10 text-3xl"
+        >
+          Students Certificates Ownership
+        </Title>
+        <div className="bg-white p-4 sm:p-6 rounded shadow-md">
+          <div className="mb-4 flex flex-col sm:flex-row sm:space-x-4 sm:items-end">
+            <div className="w-full sm:w-1/2">
+              <Text
+                component="label"
+                htmlFor="address-input"
+                weight={700}
+                className="block text-lg mb-1"
+              >
+                Select your University
+              </Text>
+              <Select
+                placeholder="Select a university"
+                data={universities}
+                value={address}
+                onChange={setAddress}
+                className="w-full p-3 text-lg rounded-md shadow-sm"
+              />
             </div>
+            <div className="mt-4 sm:mt-0 w-full sm:w-1/2">
+              <Text
+                component="label"
+                htmlFor="search-input"
+                weight={700}
+                className="block text-lg mb-2"
+              >
+                Search Student Name
+              </Text>
+              <Input
+                id="search-input"
+                type="text"
+                placeholder="Search for Students Name..."
+                value={search}
+                onChange={handleSearchChange}
+                className="w-full p-3 text-lg rounded-md shadow-sm"
+              />
+            </div>
+          </div>
 
-            {loading ? (
-              <div className="flex justify-center items-center min-h-64">
-                <BeatLoader color={"#667EEA"} loading={loading} size={24} />
-              </div>
-            ) : (
-              <>
-                {nfts.length === 0 && address && (
+          {loading ? (
+            <div className="flex justify-center items-center min-h-64">
+              <BeatLoader color={"#667EEA"} loading={loading} size={24} />
+            </div>
+          ) : (
+            <>
+              {nfts.length === 0 && address && (
+                <div className="text-center mt-6 mb-6">
+                  <Text size="lg" weight={700} className="text-gray-600">
+                    No NFTs available for the selected university.
+                  </Text>
+                </div>
+              )}
+              <Grid gutter="md">
+                {nfts
+                  .filter(
+                    (nft) =>
+                      nft.name?.toLowerCase().includes(search.toLowerCase()) &&
+                      nft.description?.toLowerCase().includes("course")
+                  )
+                  .map((nft, index) => (
+                    <Col key={index} md={6} lg={4}>
+                      <a
+                        href={`https://rarible.com/token/${nft.blockchain.toLowerCase()}/${
+                          nft.contract
+                        }:${nft.tokenId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Paper
+                          elevation={3}
+                          className="transition-all duration-300 transform hover:scale-105 rounded-lg"
+                        >
+                          <Image
+                            src={nft.image_url || "/default-image-path.jpg"}
+                            alt="NFT"
+                            fit="cover"
+                            className="rounded-t-lg"
+                          />
+                          <div className="p-4">
+                            <Text
+                              size="xl"
+                              weight={700}
+                              className="mb-2 text-gray-700"
+                            >
+                              {nft.name}
+                            </Text>
+                            <Text size="sm" color="gray">
+                              {nft.description}
+                            </Text>
+                          </div>
+                        </Paper>
+                      </a>
+                    </Col>
+                  ))}
+              </Grid>
+              {nfts.filter(
+                (nft) =>
+                  nft.name?.toLowerCase().includes(search.toLowerCase()) &&
+                  nft.description?.toLowerCase().includes("course")
+              ).length === 0 &&
+                nfts.length !== 0 && (
                   <div className="text-center mt-6 mb-6">
                     <Text size="lg" weight={700} className="text-gray-600">
-                      No NFTs available for the selected university.
+                      No NFTs match the search criteria.
                     </Text>
                   </div>
                 )}
-                <Grid gutter="md">
-                  {nfts
-                    .filter(
-                      (nft) =>
-                        nft.name?.toLowerCase().includes(search.toLowerCase()) &&
-                        nft.description?.toLowerCase().includes("course")
-                    )
-                    .map((nft, index) => (
-                      <Col key={index} md={6} lg={4}>
-                        <a
-                          href={`https://rarible.com/token/${nft.blockchain.toLowerCase()}/${
-                            nft.contract
-                          }:${nft.tokenId}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Paper
-                            elevation={3}
-                            className="transition-all duration-300 transform hover:scale-105 rounded-lg"
-                          >
-                            <Image
-                              src={nft.image_url || "/default-image-path.jpg"}
-                              alt="NFT"
-                              fit="cover"
-                              className="rounded-t-lg"
-                            />
-                            <div className="p-4">
-                              <Text
-                                size="xl"
-                                weight={700}
-                                className="mb-2 text-gray-700"
-                              >
-                                {nft.name}
-                              </Text>
-                              <Text size="sm" color="gray">
-                                {nft.description}
-                              </Text>
-                            </div>
-                          </Paper>
-                        </a>
-                      </Col>
-                    ))}
-                </Grid>
-                {nfts.filter(
-                  (nft) =>
-                    nft.name?.toLowerCase().includes(search.toLowerCase()) &&
-                    nft.description?.toLowerCase().includes("course")
-                ).length === 0 &&
-                  nfts.length !== 0 && (
-                    <div className="text-center mt-6 mb-6">
-                      <Text size="lg" weight={700} className="text-gray-600">
-                        No NFTs match the search criteria.
-                      </Text>
-                    </div>
-                  )}
-              </>
-            )}
-          </div>
+            </>
+          )}
         </div>
-  </Layout>
+      </div>
+    </Layout>
   );
 };
 
