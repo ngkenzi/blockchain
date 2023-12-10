@@ -72,7 +72,7 @@ const login = () => {
                 size="xl"
                 style={{ marginBottom: "3rem", fontWeight: 600 }}
               >
-                User Login
+                User Logins
               </Text>
               <form onSubmit={loginUser}>
                 <TextInput
