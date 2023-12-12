@@ -26,7 +26,7 @@ function Students() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [copyStatus, setCopyStatus] = useState({});
-  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+  const [screenWidth, setScreenWidth] = useState(null);
 
   const handleCopy = (event, id, walletAddress) => {
     event.preventDefault();
@@ -41,11 +41,18 @@ function Students() {
     return hash.substring(0, 6) + "..." + hash.substring(hash.length - 6);
   };
 
-  useEffect(() => {
-    const handleResize = () => setScreenWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+   useEffect(() => {
+     // This code will only run in the browser
+     if (typeof window !== "undefined") {
+       setScreenWidth(window.innerWidth);
+
+       const handleResize = () => setScreenWidth(window.innerWidth);
+       window.addEventListener("resize", handleResize);
+
+       // Clean up the event listener when the component unmounts
+       return () => window.removeEventListener("resize", handleResize);
+     }
+   }, []);
 
   const getShortenedWalletAddress = (address) => {
     const length = screenWidth < 768 ? 6 : 9; // Shorten more for screens smaller than 768px
