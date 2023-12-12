@@ -199,7 +199,10 @@ function Students() {
                     >
                       <div className="flex-shrink-0">
                         <Image
-                          src={student.imageURL || "/sample-profile.png"}
+                          src={
+                            student.imageURL ||
+                            "https://i.imgur.com/mCHMpLT.png"
+                          }
                           alt={`${student.FirstName} ${student.LastName}`}
                           className="w-20 h-20 rounded-full object-cover"
                           style={{ maxWidth: "125px", maxHeight: "125px" }}
