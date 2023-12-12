@@ -18,7 +18,13 @@ import {
 
 import axios from "axios";
 import { useRouter } from "next/router";
-import { FaBoxOpen, FaSearch, FaBell, FaSignOutAlt } from "react-icons/fa";
+import {
+  FaBoxOpen,
+  FaSearch,
+  FaBell,
+  FaSignOutAlt,
+  FaClipboardList,
+} from "react-icons/fa";
 import { ethers } from "ethers";
 import JobToken from "../contracts/JobToken.json";
 
@@ -42,6 +48,10 @@ const Profile = () => {
   const [selectedInvite, setSelectedInvite] = useState(null);
 
   const router = useRouter();
+
+  const navigateToAssessment = () => {
+    router.push("/assessment");
+  };
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("token");
@@ -459,8 +469,8 @@ const Profile = () => {
           )}
         </Modal>
 
-        <header className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
+        <header className="flex flex-col md:flex-row justify-center items-center text-center mb-8">
+          <div className="flex flex-col items-center space-y-4">
             <Avatar
               src={avatarUrl}
               size="xl"
