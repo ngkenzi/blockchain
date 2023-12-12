@@ -200,7 +200,7 @@ function Students() {
                       <div className="flex-shrink-0">
                         <Image
                           src={
-                            student.imageURL ||
+                            // student.imageURL ||
                             "https://i.imgur.com/mCHMpLT.png"
                           }
                           alt={`${student.FirstName} ${student.LastName}`}
