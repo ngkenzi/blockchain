@@ -28,6 +28,7 @@ const Profile = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState("/sample-profile.jpg"); // Initial value
@@ -206,13 +207,6 @@ const Profile = () => {
     }
   }, [walletAddress]);
 
-  const handleLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
-      router.push("/user/login");
-    }
-  };
-
   function formatDate(dateString) {
     if (!dateString) {
       return "Unknown Date";
@@ -333,6 +327,13 @@ const Profile = () => {
     }
   };
 
+  const handleLogoutConfirmation = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+      router.push("/user/login");
+    }
+  };
+
   return (
     <div className="bg-gray-900 min-h-screen">
       <Container
@@ -342,12 +343,33 @@ const Profile = () => {
         {/* Logout Icon */}
         <div className="absolute top-4 right-4">
           <FaSignOutAlt
-            className="text-gray-500 cursor-pointer hover:text-red-400"
+            className="text-gray-500 cursor-pointer hover:text-red-500"
             size={24}
-            onClick={handleLogout}
+            onClick={() => setIsLogoutModalOpen(true)}
           />
-
         </div>
+
+        {/* Logout Confirmation Modal */}
+        <Modal
+          opened={isLogoutModalOpen}
+          onClose={() => setIsLogoutModalOpen(false)}
+          title="Logout Confirmation"
+        >
+          <Text size="sm">Are you sure you want to logout?</Text>
+          <div className="flex justify-end mt-4">
+            <Button
+              variant="outline"
+              className="mr-2"
+              onClick={() => setIsLogoutModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button color="red" onClick={handleLogoutConfirmation}>
+              Logout
+            </Button>
+          </div>
+        </Modal>
+
         {loading && (
           <LoadingOverlay
             visible={loading}
