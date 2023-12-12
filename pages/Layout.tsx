@@ -4,6 +4,7 @@ import { HeaderResponsive } from "../components/Header";
 import { FooterLinks } from "../components/Footer";
 import Link from 'next/link';
 import { FaUniversity, FaUser } from 'react-icons/fa';
+import { IoClose } from "react-icons/io5";
 
 interface Props {
   title: string;
@@ -58,7 +59,7 @@ const Layout = ({ title, description, children }: Props) => {
           ></div>
           <div
             className="bg-white p-8 rounded-xl shadow-2xl relative transform transition-transform duration-300 ease-in-out"
-            style={{ zIndex: 101, width: "450px" }}
+            style={{ zIndex: 101, width: "400px" }}
           >
             <h2 className="text-2xl font-semibold mb-6 text-gray-800 text-center">
               {actionType === "SignUp" ? "Sign Up As" : "Sign In As"}
@@ -89,12 +90,11 @@ const Layout = ({ title, description, children }: Props) => {
                 </span>
               </Link>
             </div>
-            <p
+            <IoClose
               className="absolute top-3 right-3 text-lg text-gray-500 cursor-pointer"
               onClick={toggleModal}
-            >
-              Close
-            </p>
+              size="1.5em"
+            />
           </div>
         </div>
       )}
