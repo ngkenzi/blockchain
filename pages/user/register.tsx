@@ -78,7 +78,7 @@ const URegister = () => {
       {loading ? ( // Conditional rendering based on loading state
         <BeatLoader color="#333" /> // Show loader when loading
       ) : (
-        <Container className="w-full sm:w-1/3 md:w-2/4 lg:w-1/3 xl:w-1/3 2xl:w-1/3 p-8 rounded-lg bg-gray-300">
+        <Container className="w-full sm:w-2/4 md:w-2/4 lg:w-1/3 xl:w-1/3 2xl:w-1/3 p-8 rounded-lg bg-gray-300">
           <div className="shadow-lg ">
             <Paper
               padding="xl"
@@ -182,6 +182,11 @@ const URegister = () => {
                 >
                   Login
                 </Link>
+                <p className="mt-2">
+                  <Link href="/" className="text-blue-600 underline">
+                    Navigate back to home
+                  </Link>
+                </p>
               </Text>
             </Paper>
           </div>
