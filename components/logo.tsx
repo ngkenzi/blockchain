@@ -10,8 +10,8 @@ export default function Logo({ className }: any) {
       <Image
         src="/images/logo.png"
         alt="logo"
-        width={90}
-        height={50}
+        width={40}
+        height={40}
         className={clsx([className])}
       />
     </Link>
