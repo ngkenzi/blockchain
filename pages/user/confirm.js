@@ -47,7 +47,7 @@ const Confirm = () => {
 
     return (
         <div className="bg-gray-300 h-screen">
-            <Container className="w-full sm:w-1/3 md:w-2/4 lg:w-1/3 xl:w-1/3 2xl:w-1/3 p-8 rounded-lg bg-gray-300">
+            <Container className="w-full sm:w-2/4 md:w-2/4 lg:w-1/3 xl:w-1/3 2xl:w-1/3 p-8 rounded-lg bg-gray-300">
                 <div className="shadow-lg">
                     <Paper
                         padding="xl"

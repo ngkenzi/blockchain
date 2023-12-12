@@ -12,6 +12,7 @@ import {
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { BeatLoader } from "react-spinners";
+import { IoEyeOff, IoEye } from "react-icons/io5";
 
 const URegister = () => {
   const theme = useMantineTheme();
@@ -29,6 +30,27 @@ const URegister = () => {
   const [inviteType, setInviteType] = useState("info");
   const [inviteVisible, setInviteVisible] = useState(false);
   const [universities, setUniversities] = useState([]);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // Function to toggle show/hide password
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  // Check if all required fields are filled and passwords match and are of minimum length
+  const isFormValid = () => {
+    return (
+      formData.email &&
+      formData.password &&
+      formData.universityName &&
+      formData.FirstName &&
+      formData.LastName &&
+      formData.password === confirmPassword &&
+      formData.password.length >= 8
+    );
+  };
 
   useEffect(() => {
     const fetchUniversities = async () => {
@@ -72,6 +94,12 @@ const URegister = () => {
       setLoading(false);
     }
   };
+
+    const PasswordInputRightIcon = () => (
+      <div onClick={toggleShowPassword} style={{ cursor: "pointer" }}>
+        {showPassword ? <IoEyeOff size="1.5em" /> : <IoEye size="1.5em" />}
+      </div>
+    );
 
   return (
     <div className="bg-gray-300 min-h-screen flex items-center justify-center">
@@ -127,16 +155,35 @@ const URegister = () => {
                 label="Email"
                 required
               />
+
+              <div className="mb-4 relative">
+                <TextInput
+                  placeholder="Password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleChange}
+                  label="Password"
+                  required
+                  rightSection={PasswordInputRightIcon()} // Set the icon as the right section of the input
+                  rightSectionWidth={40} // Adjust width as needed
+                  style={{ marginBottom: 30 }}
+                />
+              </div>
+
               <TextInput
-                placeholder="Password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                style={{ marginBottom: 30 }}
-                label="Password"
+                placeholder="Confirm Password"
+                name="confirmPassword"
+                type={showPassword ? "text" : "password"} // Match the type with password field
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                label="Confirm Password"
                 required
+                rightSection={PasswordInputRightIcon()} // Set the icon as the right section of the input
+                rightSectionWidth={40} // Adjust width as needed
+                style={{ marginBottom: 30 }}
               />
+
               <select
                 name="universityName"
                 value={formData.universityName}
@@ -161,6 +208,7 @@ const URegister = () => {
               <Button
                 onClick={registerUser}
                 fullWidth
+                disabled={!isFormValid()}
                 style={{ marginBottom: "2rem" }}
               >
                 Register
