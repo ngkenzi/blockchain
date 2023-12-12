@@ -124,7 +124,7 @@ export function HeaderResponsive({
     <Button
       leftIcon={<FaUserPlus size="1.5em" color="#FFF" />}
       onClick={() => toggleModal("SignUp")}
-      className={cx(classes.link, classes.signUpButton)}
+      className="bg-blue-600 text-white hover:bg-blue-700 p-2 rounded"
     >
       Register
     </Button>
