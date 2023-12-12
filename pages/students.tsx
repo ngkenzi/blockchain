@@ -16,6 +16,7 @@ import {
 import Layout from "./Layout";
 import Link from "next/link";
 import { FaCopy, FaCheck, FaSearch } from "react-icons/fa";
+import SHA256 from "crypto-js/sha256";
 
 function Students() {
   const [students, setStudents] = useState([]);
@@ -34,6 +35,11 @@ function Students() {
     setTimeout(() => setCopyStatus({ ...copyStatus, [id]: "Copy" }), 2000);
   };
 
+  // Function to display a shortened hash
+  const getShortenedHash = (hash) => {
+    return hash.substring(0, 6) + "..." + hash.substring(hash.length - 6);
+  };
+
   useEffect(() => {
     // Fetch students from the API
     fetch("/api/getStudentsInfo")
@@ -44,7 +50,17 @@ function Students() {
         return response.json();
       })
       .then((data) => {
-        setStudents(data);
+        if (!localStorage.getItem("token")) {
+          // User is not logged in, hash email addresses
+          const hashedData = data.map((student) => ({
+            ...student,
+            email: getShortenedHash(SHA256(student.email).toString()),
+          }));
+          setStudents(hashedData);
+        } else {
+          // User is logged in, use data as is
+          setStudents(data);
+        }
         setLoading(false);
       })
       .catch((error) => {

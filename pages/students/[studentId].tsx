@@ -31,6 +31,7 @@ import {
 import axios from "axios";
 import Layout from "./../Layout";
 import { Dialog } from "@headlessui/react";
+import SHA256 from "crypto-js/sha256";
 
 interface Student {
   id: number;
@@ -161,6 +162,11 @@ const StudentDetail: FC = () => {
     setNfts(nftData);
   };
 
+  // Function to display a shortened hash
+  const getShortenedHash = (hash) => {
+    return hash.substring(0, 6) + "..." + hash.substring(hash.length - 6);
+  };
+
   useEffect(() => {
     if (typeof studentId === "string") {
       const fetchStudent = async () => {
@@ -173,7 +179,14 @@ const StudentDetail: FC = () => {
           if (!response.ok) {
             throw new Error("Network response was not ok");
           }
-          const data: Student = await response.json();
+          let data: Student = await response.json();
+          
+          if (!localStorage.getItem("token")) {
+            data = {
+              ...data,
+              email: getShortenedHash(SHA256(data.email).toString()),
+            };
+          }
           setStudent(data);
 
           // Fetch token balance
