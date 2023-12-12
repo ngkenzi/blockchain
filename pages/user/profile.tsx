@@ -18,7 +18,7 @@ import {
 
 import axios from "axios";
 import { useRouter } from "next/router";
-import { FaBoxOpen, FaSearch, FaBell } from "react-icons/fa";
+import { FaBoxOpen, FaSearch, FaBell, FaSignOutAlt } from "react-icons/fa";
 import { ethers } from "ethers";
 import JobToken from "../contracts/JobToken.json";
 
@@ -333,16 +333,21 @@ const Profile = () => {
     }
   };
 
-  // If not authenticated, render nothing or a loading spinner
-  // const isAuthenticated = localStorage.getItem("token");
-  // if (!isAuthenticated) return <div></div>;
-
   return (
     <div className="bg-gray-900 min-h-screen">
       <Container
         size="lg"
-        className="p-10 bg-gray-100 shadow-lg rounded-lg min-h-screen relative"
+        className="p-4 md:p-10 bg-gray-100 shadow-lg rounded-lg min-h-screen relative"
       >
+        {/* Logout Icon */}
+        <div className="absolute top-4 right-4">
+          <FaSignOutAlt
+            className="text-gray-500 cursor-pointer hover:text-red-400"
+            size={24}
+            onClick={handleLogout}
+          />
+
+        </div>
         {loading && (
           <LoadingOverlay
             visible={loading}
@@ -432,51 +437,40 @@ const Profile = () => {
           )}
         </Modal>
 
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center space-x-4 lg:space-x-6">
-            <div className="flex items-center">
-              {/* Avatar & User Info */}
-              <Avatar
-                src={avatarUrl}
-                size="xl"
-                className="mr-4 lg:mr-6 cursor-pointer"
-                onClick={() => router.push("/user/AvatarPage")}
-              />
-              <div className="space-y-1">
-                <Text size="2xl" weight={700} className="text-gray-800">
-                  {FirstName && LastName ? `${FirstName} ${LastName}` : "User"}
-                </Text>
-                <Text size="md" weight={500} className="text-gray-600">
-                  University: {universityName}
-                </Text>
-                <Text size="md" weight={500} className="text-gray-600">
-                  Job Token Balance: {jobTokenBalance}
-                </Text>
-              </div>
-            </div>
-            {/* Search Bar */}
-            <div className="relative mb-6">
-              <Input
-                placeholder="Search NFTs..."
-                value={search}
-                onChange={(e) => setSearch(e.currentTarget.value)}
-                className="pl-10 pr-4 rounded-full border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-150 ease-in-out"
-                style={{ backgroundColor: "#F7F9FC" }}
-              />
-              <FaSearch
-                className="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400"
-                size={18}
-              />
+        <header className="flex flex-col md:flex-row justify-between items-center mb-8">
+          <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
+            <Avatar
+              src={avatarUrl}
+              size="xl"
+              className="cursor-pointer"
+              onClick={() => router.push("/user/AvatarPage")}
+            />
+            <div>
+              <Text size="lg" weight={700}>
+                {FirstName && LastName ? `${FirstName} ${LastName}` : "User"}
+              </Text>
+              <Text size="sm">
+                {universityName
+                  ? `University: ${universityName}`
+                  : "University not set"}
+              </Text>
+              <Text size="sm">Job Token Balance: {jobTokenBalance}</Text>
             </div>
           </div>
+        </header>
 
-          {/* Logout Button */}
-          <button
-            className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded-lg shadow transition duration-150 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-200 focus:ring-opacity-50"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
+        {/* Search Bar */}
+        <div className="mb-6 relative">
+          <Input
+            placeholder="Search NFTs..."
+            value={search}
+            onChange={(e) => setSearch(e.currentTarget.value)}
+            className="pl-10 pr-4 rounded-lg"
+          />
+          <FaSearch
+            className="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400"
+            size={18}
+          />
         </div>
 
         {/* Tabs */}
