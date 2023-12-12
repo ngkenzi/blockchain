@@ -509,7 +509,7 @@ const Profile = () => {
         <Tabs defaultValue="profile">
           <Tabs.List>
             <Tabs.Tab value="profile" color="blue">
-              NFT
+              Digital Cert
             </Tabs.Tab>
             <Tabs.Tab value="invites" color="blue">
               Offers

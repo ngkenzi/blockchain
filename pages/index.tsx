@@ -180,7 +180,7 @@ const Home = () => {
           order={3}
           className="text-center font-bold mb-6 sm:mb-10 text-3xl"
         >
-          Students Certificates Ownership
+          Digital Cert in Blockchain
         </Title>
         <div className="bg-white p-4 sm:p-6 rounded shadow-md">
           <div className="mb-4 flex flex-col sm:flex-row sm:space-x-4 sm:items-end">
@@ -191,7 +191,7 @@ const Home = () => {
                 weight={700}
                 className="block text-lg mb-1"
               >
-                Select your University
+                Select your Organisation
               </Text>
               <Select
                 placeholder="Select a university"
