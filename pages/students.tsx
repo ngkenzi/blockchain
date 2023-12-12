@@ -26,6 +26,7 @@ function Students() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [copyStatus, setCopyStatus] = useState({});
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
 
   const handleCopy = (event, id, walletAddress) => {
     event.preventDefault();
@@ -38,6 +39,17 @@ function Students() {
   // Function to display a shortened hash
   const getShortenedHash = (hash) => {
     return hash.substring(0, 6) + "..." + hash.substring(hash.length - 6);
+  };
+
+  useEffect(() => {
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const getShortenedWalletAddress = (address) => {
+    const length = screenWidth < 768 ? 6 : 9; // Shorten more for screens smaller than 768px
+    return address.slice(0, length) + "..." + address.slice(-length);
   };
 
   useEffect(() => {
@@ -198,7 +210,7 @@ function Students() {
                           <div className="flex items-center mt-2">
                             <i className="fas fa-wallet mr-2"></i>
                             <div
-                              className="flex justify-between items-center bg-gray-100 border rounded-lg px-3 py-1 w-full cursor-pointer hover:bg-gray-200 transition"
+                              className="flex justify-between items-center bg-gray-100 border rounded-lg px-3 py-1 w-auto cursor-pointer hover:bg-gray-200 transition"
                               onClick={(event) =>
                                 handleCopy(
                                   event,
@@ -214,9 +226,9 @@ function Students() {
                               }
                             >
                               <Text size="lg">
-                                {student.walletAddress.slice(0, 9) +
-                                  "............" +
-                                  student.walletAddress.slice(-9)}
+                                {getShortenedWalletAddress(
+                                  student.walletAddress
+                                )}
                               </Text>
                               <div className="ml-2">
                                 {copyStatus[student.id] ? (

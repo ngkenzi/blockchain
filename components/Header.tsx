@@ -11,7 +11,13 @@ import {
   rem,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { FaUserPlus } from "react-icons/fa";
+import {
+  FaUserPlus,
+  FaHome,
+  FaUserGraduate,
+  FaUser,
+  FaSignOutAlt,
+} from "react-icons/fa";
 import { Button } from "@mantine/core";
 
 import Link from "next/link";
@@ -117,8 +123,76 @@ export function HeaderResponsive({
 }: HeaderResponsiveProps) {
   const [opened, { toggle, close }] = useDisclosure(false);
   const [active, setActive] = useState(links[0].link);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { classes, cx } = useStyles();
   const router = useRouter(); // Get the router instance from Next.js
+
+  // Check if the user is authenticated
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
+
+  // Function to handle logout
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+    router.push("/");
+  };
+
+  const mobileMenuItems = [
+    {
+      label: "Home",
+      icon: <FaHome size="1.5em" />,
+      action: () => router.push("/"),
+    },
+    {
+      label: "Students",
+      icon: <FaUserGraduate size="1.5em" />,
+      action: () => router.push("/students"),
+    },
+    ...(!isAuthenticated
+      ? [
+          {
+            label: "Sign in",
+            icon: <FaUserPlus size="1.5em" />,
+            action: () => toggleModal("SignIn"),
+          },
+          {
+            label: "Register",
+            icon: <FaUserPlus size="1.5em" />,
+            action: () => toggleModal("SignUp"),
+          },
+        ]
+      : [
+          {
+            label: "My Account",
+            icon: <FaUser size="1.5em" />, // Use appropriate icon
+            action: () => router.push("/user/profile"),
+          },
+          {
+            label: "Logout",
+            icon: <FaSignOutAlt size="1.5em" />, // Use appropriate icon
+            action: handleLogout,
+          },
+        ]),
+  ];
+
+  const mobileMenu = mobileMenuItems.map((item, index) => (
+    <a
+      key={index}
+      href="#"
+      className="flex items-center py-2 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50"
+      onClick={(event) => {
+        event.preventDefault();
+        item.action();
+        close();
+      }}
+    >
+      {item.icon}
+      <span className="ml-2">{item.label}</span>
+    </a>
+  ));
 
   const SignUpButton = () => (
     <Button
@@ -170,19 +244,48 @@ export function HeaderResponsive({
     );
   });
 
+  // Add Sign In and Register components for mobile view
+  const mobileAuthItems = (
+    <>
+      <a
+        href="#"
+        className="block py-2 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50"
+        onClick={(event) => {
+          event.preventDefault();
+          toggleModal("SignIn");
+        }}
+      >
+        Sign in
+      </a>
+      <button
+        onClick={() => toggleModal("SignUp")}
+        className="block w-full py-2 px-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
+      >
+        Register
+      </button>
+    </>
+  );
+
   return (
     <Header height={HEADER_HEIGHT} mb={0} className={classes.root}>
       <Container className={classes.header}>
         <Logo />
 
-        <Group spacing={5} className={classes.links}>
+        <Burger
+          opened={opened}
+          onClick={toggle}
+          className={classes.burger}
+          size="sm"
+        />
+
+        <Group spacing={5} className={`${classes.links} hidden md:flex`}>
           {items}
         </Group>
 
-        <Group spacing={3} className="items-center">
+        {/* "Sign In" and "Register" buttons for larger screens */}
+        <Group spacing={3} className="items-center hidden md:flex">
           <Link
             href="#"
-            className={cx(classes.link)}
             onClick={(event) => {
               event.preventDefault();
               toggleModal("SignIn");
@@ -193,17 +296,10 @@ export function HeaderResponsive({
           <SignUpButton />
         </Group>
 
-        <Burger
-          opened={opened}
-          onClick={toggle}
-          className={classes.burger}
-          size="sm"
-        />
-
         <Transition transition="pop-top-right" duration={200} mounted={opened}>
           {(styles) => (
             <Paper className={classes.dropdown} withBorder style={styles}>
-              {items}
+              {mobileMenu}
             </Paper>
           )}
         </Transition>
