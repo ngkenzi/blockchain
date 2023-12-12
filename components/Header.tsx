@@ -156,12 +156,12 @@ export function HeaderResponsive({
           {
             label: "Sign in",
             icon: <FaUserPlus size="1.5em" />,
-            action: () => toggleModal("SignIn"),
+            action: () => router.push("/user/login"),
           },
           {
             label: "Register",
             icon: <FaUserPlus size="1.5em" />,
-            action: () => toggleModal("SignUp"),
+            action: () => router.push("/user/register"),
           },
         ]
       : [
