@@ -204,7 +204,7 @@ const Profile = () => {
           `/api/avatar-url?walletAddress=${walletAddress}`
         );
         if (response.data.avatarUrl && response.data.avatarUrl !== "") {
-          setAvatarUrl("https://i.imgur.com/mCHMpLT.png");
+          setAvatarUrl(response.data.avatarUrl);
         }
       } catch (error) {
         console.error("Error fetching avatar URL", error);

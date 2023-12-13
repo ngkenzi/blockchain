@@ -47,12 +47,13 @@ function AvatarPage() {
     };
 
     const handleSave = () => {
-        const node = document.getElementById('myAvatar');
+        const node = document.getElementById('avatar');
 
-        domtoimage.toBlob(node)
+        domtoimage.toBlob(node, { type: 'image/png' })
             .then(async (blob) => {
+                console.log(blob.type); 
                 const formData = new FormData();
-                formData.append('myAvatar', blob);
+                formData.append('avatar', blob, 'avatar.png');
                 const response = await fetch('/api/upload-avatar', {
                     method: 'POST',
                     body: formData,
@@ -102,7 +103,7 @@ function AvatarPage() {
     return (
         <div className="App flex flex-col min-h-screen bg-gray-100">
             <main className="flex-1 flex flex-row items-center justify-center p-4">
-                <div id="myAvatar" className="mr-10 mb-10 flex-none">
+                <div id="avatar" className="mr-10 mb-10 flex-none">
                     <NiceAvatar
                         className="w-64 h-64"
                         hairColorRandom
