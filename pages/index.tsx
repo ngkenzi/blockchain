@@ -109,7 +109,7 @@ const Home = () => {
       nfts.map(async (nft) => {
         try {
           const response = await axios.get(
-            `http://localhost:4000/getNFTByTokenId?tokenId=${nft.tokenId}`
+            `/api/getNFTDetailsById?tokenId=${nft.tokenId}`
           );
           return {
             ...nft,
