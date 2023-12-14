@@ -114,34 +114,35 @@ const Questionnaire = () => {
     const router = useRouter();
     const [walletAddress, setWalletAddress] = useState("");
     const [hasSubmitted, setHasSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const isAuthenticated = localStorage.getItem("token");
         setWalletAddress(localStorage.getItem("walletAddress"));
 
         if (!isAuthenticated) {
-            router.prefetch("/user/login");
-            router.push("/user/login");
-            return;
-        }
-        const checkSubmission = async () => {
-            try {
-                const response = await axios.get(`/api/checkSubmissionStatus?walletAddress=${walletAddress}`);
-                if (response.data.exists) {
-                    // User has already submitted, set state accordingly
-                    setHasSubmitted(true);
-                    toast.info("You have already submitted your assessment. Redirecting back to profile...");
-                    setTimeout(() => {
-                        router.push('/user/profile');
-                    }, 5000);
+            router.prefetch("/user/register");
+            router.push("/user/register");
+        } else {
+            const checkSubmission = async () => {
+                try {
+                    const response = await axios.get(`/api/checkSubmissionStatus?walletAddress=${walletAddress}`);
+                    if (response.data.exists) {
+                        setHasSubmitted(true);
+                        toast.info("You have already submitted your assessment. Redirecting back to profile...");
+                        setTimeout(() => {
+                            router.push('/user/profile');
+                        }, 5000);
+                    }
+                } catch (error) {
+                    console.error("Error checking submission status:", error);
                 }
-            } catch (error) {
-                console.error("Error checking submission status:", error);
-            }
-        };
+                setIsLoading(false);  // Set loading to false after check is complete
+            };
 
-        if (walletAddress) {
-            checkSubmission();
+            if (walletAddress) {
+                checkSubmission();
+            }
         }
     }, [walletAddress, router]);
 
@@ -333,6 +334,10 @@ const Questionnaire = () => {
     const handleBack = () => {
         router.push('/user/profile');
     };
+
+    if (isLoading) {
+        return <div>Loading...</div>;  // You can replace this with a loading spinner or similar component
+    }
 
     if (hasSubmitted) {
         return (

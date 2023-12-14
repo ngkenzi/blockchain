@@ -22,11 +22,13 @@ import {
   FaBoxOpen,
   FaSearch,
   FaBell,
+  FaHome,
   FaSignOutAlt,
   FaClipboardList,
 } from "react-icons/fa";
 import { ethers } from "ethers";
 import JobToken from "../contracts/JobToken.json";
+import SelfAssessmentCTA from "../../components/SelfAssessmentCTA";
 
 const Profile = () => {
   const [nfts, setNfts] = useState([]);
@@ -47,10 +49,18 @@ const Profile = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedInvite, setSelectedInvite] = useState(null);
 
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isSubmissionStatusLoaded, setIsSubmissionStatusLoaded] =
+    useState(false);
+
   const router = useRouter();
 
   const navigateToAssessment = () => {
     router.push("/assessment");
+  };
+
+  const navigateHome = () => {
+    router.push("/");
   };
 
   useEffect(() => {
@@ -126,6 +136,26 @@ const Profile = () => {
       fetchUniversityInfo();
     }
   }, [walletAddress]);
+
+  const checkSubmission = async () => {
+    const userWAddress = localStorage.getItem("walletAddress");
+    try {
+      const response = await axios.get(
+        `/api/checkSubmissionStatus?walletAddress=${userWAddress}`
+      );
+      if (response.data.exists) {
+        setHasSubmitted(true);
+      }
+      setIsSubmissionStatusLoaded(true);
+    } catch (error) {
+      console.error("Error checking submission status:", error);
+      setIsSubmissionStatusLoaded(true);
+    }
+  };
+
+  useEffect(() => {
+    checkSubmission();
+  }, []);
 
   const fetchNFTs = async () => {
     let page = 1;
@@ -350,8 +380,16 @@ const Profile = () => {
         size="lg"
         className="p-4 md:p-10 bg-gray-100 shadow-lg rounded-lg min-h-screen relative"
       >
-        {/* Logout Icon */}
-        <div className="absolute top-4 right-4">
+        {/* Icons */}
+        <div className="flex justify-between items-center p-4">
+          {/* Home Icon */}
+          <FaHome
+            className="text-gray-500 cursor-pointer hover:text-blue-500"
+            size={24}
+            onClick={navigateHome}
+          />
+
+          {/* Logout Icon */}
           <FaSignOutAlt
             className="text-gray-500 cursor-pointer hover:text-red-500"
             size={24}
@@ -662,6 +700,7 @@ const Profile = () => {
           </Tabs.Panel>
         </Tabs>
       </Container>
+      {isSubmissionStatusLoaded && !hasSubmitted && <SelfAssessmentCTA />}
     </div>
   );
 };
