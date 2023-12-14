@@ -380,15 +380,16 @@ const StudentDetail: FC = () => {
             className="fixed inset-0 z-10 overflow-y-auto"
           >
             <Dialog.Overlay className="fixed inset-0 bg-black opacity-0" />
-            <div className="min-h-screen px-4 text-center">
-              <Dialog.Title className="text-lg font-medium">
+            <div className="min-h-screen px-4 text-center flex items-center justify-center">
+              <Dialog.Title className="text-lg font-medium hidden">
                 Click anywhere outside the image to close
               </Dialog.Title>
-              <div className="mt-4">
+              <div className="mt-4 flex justify-center items-center p-4 bg-white rounded-lg shadow">
                 <img
                   src={selectedImage}
                   alt="Zoomed NFT"
-                  className="m-auto p-2 max-w-6xl max-h-6xl"
+                  className="max-w-full max-h-full h-auto"
+                  style={{ maxHeight: "80vh" }} // Limit the height to 80% of the viewport height
                 />
               </div>
             </div>
