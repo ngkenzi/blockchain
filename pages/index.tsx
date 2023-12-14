@@ -18,6 +18,7 @@ import { BeatLoader } from "react-spinners";
 import Link from "next/link";
 import { FaUniversity, FaUser } from "react-icons/fa";
 import Layout from "./Layout";
+import SelfAssessmentCTA from "../components/SelfAssessmentCTA";
 interface NFT {
   name: string;
   description: string;
@@ -25,29 +26,12 @@ interface NFT {
   tokenId: string;
   contract: string;
   blockchain: string;
+  studentID?: string;
+  imageURL?: string;
 }
+import { useRouter } from "next/router";
 
 const Home = () => {
-  // const links = [
-  //   { link: "/", label: "Home" },
-  //   { link: "/about", label: "About Us" },
-
-  //   // { link: "/upskill", label: "Online Courses" },
-  //   // { link: "/authentication", label: "Admin" },
-  //   // { link: "/university", label: "University" },
-  //   // Add more links as needed
-  // ];
-  // const footerLinks = [
-  //   {
-  //     title: "Company",
-  //     links: [
-  //       { label: "About", link: "/about" },
-  //       // Add more links as needed
-  //     ],
-  //   },
-  //   // Add more groups as needed
-  // ];
-
   const [address, setAddress] = useState("");
   const [selectedUniversity, setSelectedUniversity] = useState("");
   const [nfts, setNfts] = useState<NFT[]>([]);
@@ -57,6 +41,12 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   // const [isModalOpen, setIsModalOpen] = useState(false);
   const [actionType, setActionType] = useState<"SignIn" | "SignUp">("SignUp");
+
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isSubmissionStatusLoaded, setIsSubmissionStatusLoaded] =
+    useState(false);
+
+  const router = useRouter();
 
   const fetchUniversities = async () => {
     try {
@@ -76,6 +66,26 @@ const Home = () => {
     }
   };
 
+  const checkSubmission = async () => {
+    const userWAddress = localStorage.getItem("walletAddress");
+    try {
+      const response = await axios.get(
+        `/api/checkSubmissionStatus?walletAddress=${userWAddress}`
+      );
+      if (response.data.exists) {
+        setHasSubmitted(true);
+      }
+      setIsSubmissionStatusLoaded(true);
+    } catch (error) {
+      console.error("Error checking submission status:", error);
+      setIsSubmissionStatusLoaded(true);
+    }
+  };
+
+  useEffect(() => {
+    checkSubmission();
+  }, []);
+
   useEffect(() => {
     const getUniversities = async () => {
       const universities = await fetchUniversities();
@@ -94,10 +104,31 @@ const Home = () => {
     setSearch(event.target.value);
   };
 
+  const enrichNFTDataWithDetails = async (nfts) => {
+    return Promise.all(
+      nfts.map(async (nft) => {
+        try {
+          const response = await axios.get(
+            `http://localhost:4000/getNFTByTokenId?tokenId=${nft.tokenId}`
+          );
+          return {
+            ...nft,
+            studentID: response.data.studentID,
+            imageURL: response.data.imageURL,
+          };
+        } catch (error) {
+          console.error("Error fetching NFT details:", error);
+          return nft;
+        }
+      })
+    );
+  };
+
   const fetchNFTs = async () => {
     let page = 1;
     let moreDataExists = true;
     let nftData: NFT[] = [];
+
     setLoading(true);
 
     while (moreDataExists) {
@@ -109,9 +140,6 @@ const Home = () => {
             "x-api-key": "d94d0879-f919-4803-b293-11ea277a2982",
           },
         });
-
-        console.log(address);
-        console.log(response.data);
 
         if (response.status !== 200) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -151,6 +179,8 @@ const Home = () => {
       }
     }
     setLoading(false);
+
+    nftData = await enrichNFTDataWithDetails(nftData);
 
     setNfts(nftData);
   };
@@ -238,8 +268,8 @@ const Home = () => {
                 {nfts
                   .filter(
                     (nft) =>
-                      nft.name?.toLowerCase().includes(search.toLowerCase()) &&
-                      nft.description?.toLowerCase().includes("course")
+                      nft.name.toLowerCase().includes(search.toLowerCase()) &&
+                      nft.description.toLowerCase().includes("course")
                   )
                   .map((nft, index) => (
                     <Col key={index} md={6} lg={4}>
@@ -255,7 +285,7 @@ const Home = () => {
                           className="transition-all duration-300 transform hover:scale-105 rounded-lg"
                         >
                           <Image
-                            src={nft.image_url || "/default-image-path.jpg"}
+                            src={nft.image_url || "/default-nft-image.jpg"}
                             alt="NFT"
                             fit="cover"
                             className="rounded-t-lg"
@@ -270,6 +300,15 @@ const Home = () => {
                             </Text>
                             <Text size="sm" color="gray">
                               {nft.description}
+                            </Text>
+                            <div>
+                              <img
+                                src={nft.imageURL || "default-image.jpg"}
+                                alt="Student"
+                              />
+                            </div>
+                            <Text size="sm" color="gray">
+                              Student ID: {nft.studentID || "N/A"}
                             </Text>
                           </div>
                         </Paper>
@@ -293,6 +332,7 @@ const Home = () => {
           )}
         </div>
       </div>
+      {isSubmissionStatusLoaded && !hasSubmitted && <SelfAssessmentCTA />}
     </Layout>
   );
 };

@@ -244,26 +244,37 @@ export function HeaderResponsive({
     );
   });
 
-  // Add Sign In and Register components for mobile view
-  const mobileAuthItems = (
-    <>
-      <a
-        href="#"
-        className="block py-2 px-4 text-sm font-medium text-gray-700 hover:bg-gray-50"
+  // Desktop Menu - Sign In and Register or My Account and Logout
+  const desktopMenu = isAuthenticated ? (
+    <Group spacing={3} className="items-center hidden md:flex">
+      <Link href="/user/profile" passHref>
+        <Button
+          component="a"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+        >
+          My Account
+        </Button>
+      </Link>
+      <Button
+        onClick={handleLogout}
+        className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
+      >
+        Log out
+      </Button>
+    </Group>
+  ) : (
+    <Group spacing={3} className="items-center hidden md:flex">
+      <Button
         onClick={(event) => {
           event.preventDefault();
           toggleModal("SignIn");
         }}
+        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
       >
         Sign in
-      </a>
-      <button
-        onClick={() => toggleModal("SignUp")}
-        className="block w-full py-2 px-4 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded"
-      >
-        Register
-      </button>
-    </>
+      </Button>
+      <SignUpButton />
+    </Group>
   );
 
   return (
@@ -282,8 +293,10 @@ export function HeaderResponsive({
           {items}
         </Group>
 
+        {desktopMenu}
+
         {/* "Sign In" and "Register" buttons for larger screens */}
-        <Group spacing={3} className="items-center hidden md:flex">
+        {/* <Group spacing={3} className="items-center hidden md:flex">
           <Link
             href="#"
             onClick={(event) => {
@@ -294,7 +307,7 @@ export function HeaderResponsive({
             Sign in
           </Link>
           <SignUpButton />
-        </Group>
+        </Group> */}
 
         <Transition transition="pop-top-right" duration={200} mounted={opened}>
           {(styles) => (
