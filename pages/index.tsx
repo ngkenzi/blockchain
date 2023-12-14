@@ -290,32 +290,39 @@ const Home = () => {
                             fit="cover"
                             className="rounded-t-lg"
                           />
-                          <div className="p-4">
-                            <Text
-                              size="xl"
-                              weight={700}
-                              className="mb-2 text-gray-700"
-                            >
-                              {nft.name}
-                            </Text>
-                            <Text size="sm" color="gray">
-                              {nft.description}
-                            </Text>
-                            <div>
+                          <div className="p-4 flex items-center space-x-4">
+                            <div className="flex-shrink-0">
                               <img
-                                src={nft.imageURL || "default-image.jpg"}
+                                src={
+                                  nft.imageURL ||
+                                  "https://i.imgur.com/mCHMpLT.png"
+                                }
                                 alt="Student"
+                                className="h-20 w-20 object-cover rounded-full"
                               />
                             </div>
-                            <Text size="sm" color="gray">
-                              Student ID: {nft.studentID || "N/A"}
-                            </Text>
+                            <div>
+                              <Text
+                                size="xl"
+                                weight={700}
+                                className="mb-2 text-gray-700"
+                              >
+                                {nft.name}
+                              </Text>
+                              <Text size="sm" color="gray">
+                                {nft.description}
+                              </Text>
+                              <Text size="sm" color="gray">
+                                Student ID: {nft.studentID || "N/A"}
+                              </Text>
+                            </div>
                           </div>
                         </Paper>
                       </a>
                     </Col>
                   ))}
               </Grid>
+
               {nfts.filter(
                 (nft) =>
                   nft.name?.toLowerCase().includes(search.toLowerCase()) &&
