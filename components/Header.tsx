@@ -197,7 +197,7 @@ export function HeaderResponsive({
   const SignUpButton = () => (
     <Button
       leftIcon={<FaUserPlus size="1.5em" color="#FFF" />}
-      onClick={() => toggleModal("SignUp")}
+      onClick={() => router.push("/user/register")}
       className="bg-blue-600 text-white hover:bg-blue-700 p-2 rounded"
     >
       Register
@@ -267,7 +267,7 @@ export function HeaderResponsive({
       <Button
         onClick={(event) => {
           event.preventDefault();
-          toggleModal("SignIn");
+          router.push("/user/login");
         }}
         className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
       >
