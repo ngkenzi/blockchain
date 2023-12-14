@@ -102,16 +102,16 @@ function AvatarPage() {
 
     return (
         <div className="App flex flex-col min-h-screen bg-gray-100">
-            <main className="flex-1 flex flex-row items-center justify-center p-4">
-                <div id="avatar" className="mr-10 mb-10 flex-none">
+            <main className="flex-1 flex flex-col lg:flex-row items-center justify-center p-4 gap-4">
+                <div id="avatar" className="flex-none w-full md:w-auto">
                     <NiceAvatar
-                        className="w-64 h-64"
+                        className="w-64 h-64 lg:w-64 lg:h-64 mx-auto" // Adjust avatar size for smaller screens
                         hairColorRandom
                         {...config}
                     />
                 </div>
 
-                <div className="avatar-options bg-white p-6 rounded-lg shadow-lg space-y-4 w-full max-w-lg flex-auto">
+                <div className="avatar-options bg-white p-6 rounded-lg shadow-lg space-y-4 w-full max-w-lg">
 
                     {/* Face Color */}
                     <div className="form-group">
@@ -249,11 +249,11 @@ function AvatarPage() {
                     </div>
 
                     {/* Save Button */}
-                    <div className="form-group">
-                        <button onClick={handleSave} className="mt-4 w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    <div className="form-group flex flex-col gap-2">
+                        <button onClick={handleSave} className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                             Save
                         </button>
-                        <button onClick={handleCancel} className="mt-4 w-full p-2 bg-red-500 text-white rounded hover:bg-red-600">
+                        <button onClick={handleCancel} className="w-full p-2 bg-red-500 text-white rounded hover:bg-red-600">
                             Cancel
                         </button>
                     </div>

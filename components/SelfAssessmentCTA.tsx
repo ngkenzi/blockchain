@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Text, ActionIcon } from "@mantine/core";
 import { useRouter } from "next/router";
-import { FaTimes } from "react-icons/fa";
+import { FaTimes } from "react-icons/fa"; 
 
 const SelfAssessmentCTA = () => {
   const router = useRouter();

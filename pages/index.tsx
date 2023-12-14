@@ -213,13 +213,13 @@ const Home = () => {
           Digital Cert in Blockchain
         </Title>
         <div className="bg-white p-4 sm:p-6 rounded shadow-md">
-          <div className="mb-4 flex flex-col sm:flex-row sm:space-x-4 sm:items-end">
+          <div className="flex flex-col sm:flex-row sm:justify-center sm:space-x-4 sm:items-end">
             <div className="w-full sm:w-1/2">
               <Text
                 component="label"
                 htmlFor="address-input"
                 weight={700}
-                className="block text-lg mb-1"
+                className="block text-lg mb-1 text-center sm:text-left"
               >
                 Select your Organisation
               </Text>
@@ -236,7 +236,7 @@ const Home = () => {
                 component="label"
                 htmlFor="search-input"
                 weight={700}
-                className="block text-lg mb-2"
+                className="block text-lg mb-2 text-center sm:text-left"
               >
                 Search Student Name
               </Text>
