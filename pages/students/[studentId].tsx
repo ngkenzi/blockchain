@@ -268,9 +268,9 @@ const StudentDetail: FC = () => {
       description={`Details of ${student.FirstName} ${student.LastName}`}
     >
       <div className="container mx-auto p-4">
-        <div className="grid grid-cols-12 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
           {/* Profile Section */}
-          <div className="col-span-3">
+          <div className="col-span-1 md:col-span-3">
             <div className="bg-white p-4 rounded-lg shadow-lg text-center">
               <img
                 src={student.imageURL || "/sample-profile.png"}
@@ -331,10 +331,10 @@ const StudentDetail: FC = () => {
           </div>
 
           {/* NFT Collection */}
-          <div className="col-span-9">
+          <div className="col-span-1 md:col-span-9">
             <div className="bg-white p-4 rounded-lg shadow-lg">
               <h2 className="text-2xl font-semibold mb-4">NFT Collection</h2>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {nfts
                   .filter(
                     (nft) =>
