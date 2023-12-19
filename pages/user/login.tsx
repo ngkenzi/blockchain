@@ -46,6 +46,7 @@ const login = () => {
       }
     } catch (error) {
       setMessage(error.response ? error.response.data : "Login failed.");
+      setIsLoading(false);
     } finally {
     }
   };

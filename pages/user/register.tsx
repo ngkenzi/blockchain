@@ -90,16 +90,16 @@ const URegister = () => {
       setInviteType("error");
       setMessage(error.response?.data?.message || "Registration failed.");
       setInviteVisible(true);
-    } finally {
       setLoading(false);
+    } finally {
     }
   };
 
-    const PasswordInputRightIcon = () => (
-      <div onClick={toggleShowPassword} style={{ cursor: "pointer" }}>
-        {showPassword ? <IoEyeOff size="1.5em" /> : <IoEye size="1.5em" />}
-      </div>
-    );
+  const PasswordInputRightIcon = () => (
+    <div onClick={toggleShowPassword} style={{ cursor: "pointer" }}>
+      {showPassword ? <IoEyeOff size="1.5em" /> : <IoEye size="1.5em" />}
+    </div>
+  );
 
   return (
     <div className="bg-gray-300 min-h-screen flex items-center justify-center">
