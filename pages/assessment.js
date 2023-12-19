@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ClipLoader from "react-spinners/ClipLoader";
 
 const sliderDescriptions = {
     blockchainKnowledge: [
@@ -109,12 +110,19 @@ const CheckboxQuestion = ({ question, onChange, checked }) => (
     </div>
 );
 
+const Spinner = () => (
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex justify-center items-center">
+        <ClipLoader color="#FFFFFF" size={150} />
+    </div>
+);
+
 const Questionnaire = () => {
     const [responses, setResponses] = useState({});
     const router = useRouter();
     const [walletAddress, setWalletAddress] = useState("");
     const [hasSubmitted, setHasSubmitted] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [disableSubmit, setDisableSubmit] = useState(false);
 
     useEffect(() => {
         const isAuthenticated = localStorage.getItem("token");
@@ -256,6 +264,7 @@ const Questionnaire = () => {
         const totalScore = calculateTotalScore();
         const tier = determineTier(totalScore);
         console.log(walletAddress)
+        setIsLoading(true);
 
         // Prepare the data to be sent to the backend
         const formData = {
@@ -306,6 +315,7 @@ const Questionnaire = () => {
             if (response.status === 200 || response.status === 201) {
                 const totalScore = calculateTotalScore();
                 const tier = determineTier(totalScore);
+                setDisableSubmit(true)
 
                 toast(`Total Score: ${totalScore} - Tier: ${tier}. Redirecting back to profile...`, {
                     position: "top-center",
@@ -328,15 +338,16 @@ const Questionnaire = () => {
             console.error('Error:', error);
             alert('There was an error submitting the form. Please try again.');
         }
-    };
 
+        setIsLoading(false);
+    };
 
     const handleBack = () => {
         router.push('/user/profile');
     };
 
     if (isLoading) {
-        return <div>Loading...</div>;  // You can replace this with a loading spinner or similar component
+        return <Spinner />;
     }
 
     if (hasSubmitted) {
@@ -363,60 +374,63 @@ const Questionnaire = () => {
 
 
     return (
-        <form onSubmit={handleSubmit} className="p-4 border border-gray-200 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Blockchain Developer Self-Assessment</h2>
-            {questions.map(question => (
-                <div key={question.name}>
-                    {question.type === 'checkbox' &&
-                        <CheckboxQuestion
-                            question={question}
-                            onChange={handleChange}
-                            checked={responses[question.name] || false}
-                        />
-                    }
-                    {question.type === 'slider' &&
-                        <SliderQuestion
-                            question={question}
-                            onChange={handleChange}
-                            value={responses[question.name] || 1}
-                        />
-                    }
-                    {question.type === 'text' &&
-                        <div className="mb-4">
-                            <label className="block mb-2">{question.label}</label>
-                            <input
-                                type="text"
-                                name={question.name}
-                                value={responses[question.name] || ''}
+        <>
+            {isLoading && <Spinner />}
+            <form onSubmit={handleSubmit} className="p-4 border border-gray-200 rounded-lg">
+                <h2 className="text-xl font-semibold mb-4">Blockchain Developer Self-Assessment</h2>
+                {questions.map(question => (
+                    <div key={question.name}>
+                        {question.type === 'checkbox' &&
+                            <CheckboxQuestion
+                                question={question}
                                 onChange={handleChange}
-                                className="w-full p-2 border border-gray-300 rounded-md"
+                                checked={responses[question.name] || false}
                             />
-                        </div>
-                    }
-                    {question.type === 'textarea' &&
-                        <div className="mb-4">
-                            <label className="block mb-2">{question.label}</label>
-                            <textarea
-                                name={question.name}
-                                value={responses[question.name] || ''}
+                        }
+                        {question.type === 'slider' &&
+                            <SliderQuestion
+                                question={question}
                                 onChange={handleChange}
-                                className="w-full p-2 border border-gray-300 rounded-md"
-                                rows="4"
-                            ></textarea>
-                        </div>
-                    }
+                                value={responses[question.name] || 1}
+                            />
+                        }
+                        {question.type === 'text' &&
+                            <div className="mb-4">
+                                <label className="block mb-2">{question.label}</label>
+                                <input
+                                    type="text"
+                                    name={question.name}
+                                    value={responses[question.name] || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+                            </div>
+                        }
+                        {question.type === 'textarea' &&
+                            <div className="mb-4">
+                                <label className="block mb-2">{question.label}</label>
+                                <textarea
+                                    name={question.name}
+                                    value={responses[question.name] || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                    rows="4"
+                                ></textarea>
+                            </div>
+                        }
+                    </div>
+                ))}
+                <div className="flex justify-between mt-4">
+                    <button type="button" onClick={handleBack} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                        Back
+                    </button>
+                    <button type="submit" disabled={disableSubmit}
+                        className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${disableSubmit ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                        Submit
+                    </button>
                 </div>
-            ))}
-            <div className="flex justify-between mt-4">
-                <button type="button" onClick={handleBack} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                    Back
-                </button>
-                <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                    Submit
-                </button>
-            </div>
-
-        </form>
+            </form>
+        </>
     );
 };
 
