@@ -29,9 +29,11 @@ const Members = () => {
                 setMembers(submittedStudents.filter(Boolean));
             } catch (error) {
                 console.error('Error fetching members:', error);
-                if (retryCount < maxRetries) {
-                    setTimeout(() => setRetryCount(retryCount + 1), 3000); // Retry after 3 seconds
-                }
+                console.log(error.response);
+
+                // if (retryCount < maxRetries) {
+                //     setTimeout(() => setRetryCount(retryCount + 1), 3000); // Retry after 3 seconds
+                // }
             }
         };
 
