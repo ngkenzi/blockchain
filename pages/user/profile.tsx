@@ -81,7 +81,6 @@ const Profile = () => {
   }, [walletAddress]);
 
   function handleInviteClick(invite) {
-    console.log("invite clicked", invite);
     // Set the invite details to be displayed in the modal
     setSelectedInvite(invite);
     setIsDetailsModalOpen(true);
@@ -151,6 +150,11 @@ const Profile = () => {
       console.error("Error checking submission status:", error);
       setIsSubmissionStatusLoaded(true);
     }
+  };
+
+  // Function to handle the claim token action
+  const handleClaimTokens = async () => {
+    console.log("Claiming 5 Job Tokens");
   };
 
   useEffect(() => {
@@ -525,6 +529,16 @@ const Profile = () => {
                   : "University not set"}
               </Text>
               <Text size="sm">Job Token Balance: {jobTokenBalance}</Text>
+              {/* Claim Tokens Button */}
+              {hasSubmitted && (
+                <Button
+                  color="green"
+                  onClick={handleClaimTokens}
+                  className="mt-4"
+                >
+                  Claim your 5 Job Tokens
+                </Button>
+              )}
             </div>
           </div>
         </header>
