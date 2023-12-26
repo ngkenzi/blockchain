@@ -41,6 +41,7 @@ const Profile = () => {
 
   const [loading, setLoading] = useState(false);
   const [loadingClaim, setLoadingClaim] = useState(false);
+  const [tokensClaimed, setTokensClaimed] = useState(false);
 
   const [avatarUrl, setAvatarUrl] = useState("/sample-profile.jpg"); // Initial value
   const [universityName, setUniversityName] = useState("");
@@ -145,8 +146,14 @@ const Profile = () => {
       const response = await axios.get(
         `/api/checkSubmissionStatus?walletAddress=${userWAddress}`
       );
+      console.log("Submission Status Response:", response.data); // For debugging
+
       if (response.data.exists) {
         setHasSubmitted(true);
+        setTokensClaimed(response.data.tokensClaimed);
+      } else {
+        setHasSubmitted(false);
+        setTokensClaimed(false);
       }
       setIsSubmissionStatusLoaded(true);
     } catch (error) {
@@ -201,7 +208,10 @@ const Profile = () => {
       // Wait for the transaction to be mined
       await tx.wait();
 
-      console.log("5 Job Tokens successfully claimed");
+      // Update the database status
+      await axios.post(`/api/claimTokens?walletAddress=${walletAddress}`);
+      console.log("5 Job Tokens successfully transferred and recorded.");
+      setTokensClaimed(true);
     } catch (error) {
       console.error("Error claiming Job Tokens:", error);
     } finally {
@@ -582,7 +592,7 @@ const Profile = () => {
               </Text>
               <Text size="sm">Job Token Balance: {jobTokenBalance}</Text>
               {/* Claim Tokens Button */}
-              {hasSubmitted && (
+              {hasSubmitted && !tokensClaimed && (
                 <Button
                   color={loadingClaim ? "gray" : "green"}
                   onClick={handleClaimTokens}
