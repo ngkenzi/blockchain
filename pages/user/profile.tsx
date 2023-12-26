@@ -29,6 +29,7 @@ import {
 import { ethers } from "ethers";
 import JobToken from "../contracts/JobToken.json";
 import SelfAssessmentCTA from "../../components/SelfAssessmentCTA";
+import { ClipLoader } from "react-spinners";
 
 const Profile = () => {
   const [nfts, setNfts] = useState([]);
@@ -39,6 +40,8 @@ const Profile = () => {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const [loading, setLoading] = useState(false);
+  const [loadingClaim, setLoadingClaim] = useState(false);
+
   const [avatarUrl, setAvatarUrl] = useState("/sample-profile.jpg"); // Initial value
   const [universityName, setUniversityName] = useState("");
   const [jobTokenBalance, setJobTokenBalance] = useState(0);
@@ -154,7 +157,56 @@ const Profile = () => {
 
   // Function to handle the claim token action
   const handleClaimTokens = async () => {
-    console.log("Claiming 5 Job Tokens");
+    setLoadingClaim(true);
+
+    // Sender's wallet address (fixed)
+    const senderWalletAddress = "0x01Ff83b084498CfDa27497F14D5c2AdbB5a7f73D";
+
+    // Recipient's wallet address (user's address)
+    const recipientWalletAddress = walletAddress;
+
+    // Contract address for the Job Token
+    const contractAddress = "0x44AA144A60af0C745759912eA9C58476e49d9967";
+
+    // Sender's private key (stored in environment variables)
+    const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
+
+    try {
+      // Connect to the Ethereum network (Polygon Mainnet in this case)
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
+      );
+
+      // Create a new instance of the wallet with the private key and connect it to the provider
+      const signer = new ethers.Wallet(privateKey, provider);
+
+      // Create a new instance of the contract
+      const contract = new ethers.Contract(
+        contractAddress,
+        JobToken.abi,
+        signer
+      );
+
+      // Get the current gas price from the network
+      const gasPrice = await provider.getGasPrice();
+
+      // Execute the transaction to transfer the tokens
+      const tx = await contract.transferOnBehalf(
+        senderWalletAddress,
+        recipientWalletAddress,
+        ethers.utils.parseEther("5"), // Send 5 tokens
+        { gasPrice }
+      );
+
+      // Wait for the transaction to be mined
+      await tx.wait();
+
+      console.log("5 Job Tokens successfully claimed");
+    } catch (error) {
+      console.error("Error claiming Job Tokens:", error);
+    } finally {
+      setLoadingClaim(false);
+    }
   };
 
   useEffect(() => {
@@ -532,11 +584,18 @@ const Profile = () => {
               {/* Claim Tokens Button */}
               {hasSubmitted && (
                 <Button
-                  color="green"
+                  color={loadingClaim ? "gray" : "green"}
                   onClick={handleClaimTokens}
-                  className="mt-4"
+                  className={`mt-4 ${
+                    loadingClaim ? "bg-gray-500" : "bg-green-500"
+                  }`}
+                  disabled={loadingClaim}
                 >
-                  Claim your 5 Job Tokens
+                  {loadingClaim ? (
+                    <ClipLoader color="#ffffff" size={20} />
+                  ) : (
+                    "Claim your 5 Job Tokens 🎁"
+                  )}
                 </Button>
               )}
             </div>
