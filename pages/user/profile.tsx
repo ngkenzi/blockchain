@@ -52,6 +52,8 @@ const Profile = () => {
 
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [selectedInvite, setSelectedInvite] = useState(null);
+  const [isConfirmAcceptModalOpen, setIsConfirmAcceptModalOpen] =
+    useState(false);
 
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isSubmissionStatusLoaded, setIsSubmissionStatusLoaded] =
@@ -366,8 +368,15 @@ const Profile = () => {
     }
   };
 
-  const handleAccept = async (inviteId) => {
+  const handleAccept = (inviteId) => {
+    setSelectedInvite(inviteId);
+    // Show confirmation modal
+    setIsConfirmAcceptModalOpen(true);
+  };
+
+  const confirmAccept = async (inviteId) => {
     setIsDetailsModalOpen(false);
+    setIsConfirmAcceptModalOpen(false);
 
     setLoading(true);
 
@@ -571,6 +580,29 @@ const Profile = () => {
               </div>
             </div>
           )}
+        </Modal>
+
+        <Modal
+          opened={isConfirmAcceptModalOpen}
+          onClose={() => setIsConfirmAcceptModalOpen(false)}
+          title="Accept Offer Confirmation"
+        >
+          <Text size="sm">
+            Accepting this offer will cost you <strong>5 Job Tokens</strong>.
+            Are you sure you want to proceed?
+          </Text>
+          <div className="flex justify-end mt-4">
+            <Button
+              variant="outline"
+              className="mr-2"
+              onClick={() => setIsConfirmAcceptModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button color="green" onClick={confirmAccept}>
+              Confirm
+            </Button>
+          </div>
         </Modal>
 
         <header className="flex flex-col md:flex-row justify-center items-center text-center mb-8">
