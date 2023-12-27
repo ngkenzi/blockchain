@@ -164,6 +164,25 @@ const Profile = () => {
     }
   };
 
+  // Define fetchJobTokenBalance outside of useEffect
+  const fetchJobTokenBalance = async () => {
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
+      );
+      const contractAddress = "0x44AA144A60af0C745759912eA9C58476e49d9967";
+      const contract = new ethers.Contract(
+        contractAddress,
+        JobToken.abi,
+        provider
+      );
+      const balance = await contract.balanceOf(walletAddress);
+      setJobTokenBalance(parseFloat(ethers.utils.formatUnits(balance, 18)));
+    } catch (error) {
+      console.error("Error fetching JobToken balance:", error);
+    }
+  };
+
   // Function to handle the claim token action
   const handleClaimTokens = async () => {
     setLoadingClaim(true);
@@ -197,7 +216,9 @@ const Profile = () => {
       );
 
       // Get the current gas price from the network
-      const gasPrice = await provider.getGasPrice();
+      const currentGasPrice = await provider.getGasPrice();
+
+      const gasPrice = currentGasPrice.mul(ethers.BigNumber.from(2)); // Increase gas price by a factor of 2
 
       // Execute the transaction to transfer the tokens
       const tx = await contract.transferOnBehalf(
@@ -214,6 +235,7 @@ const Profile = () => {
       await axios.post(`/api/claimTokens?walletAddress=${walletAddress}`);
       console.log("5 Job Tokens successfully transferred and recorded.");
       setTokensClaimed(true);
+      fetchJobTokenBalance();
     } catch (error) {
       console.error("Error claiming Job Tokens:", error);
     } finally {
@@ -336,24 +358,6 @@ const Profile = () => {
   }
 
   useEffect(() => {
-    const fetchJobTokenBalance = async () => {
-      try {
-        const provider = new ethers.providers.JsonRpcProvider(
-          "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
-        );
-        const contractAddress = "0x44AA144A60af0C745759912eA9C58476e49d9967";
-        const contract = new ethers.Contract(
-          contractAddress,
-          JobToken.abi,
-          provider
-        );
-        const balance = await contract.balanceOf(walletAddress);
-        setJobTokenBalance(parseFloat(ethers.utils.formatUnits(balance, 18)));
-      } catch (error) {
-        console.error("Error fetching JobToken balance:", error);
-      }
-    };
-
     fetchJobTokenBalance();
   }, [walletAddress]);
 
