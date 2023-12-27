@@ -409,7 +409,9 @@ const Profile = () => {
       );
 
       // Get gas price
-      const gasPrice = await provider.getGasPrice();
+      const currentGasPrice = await provider.getGasPrice();
+
+      const gasPrice = currentGasPrice.mul(ethers.BigNumber.from(3)); // Increase gas price by a factor of 2
       // Execute transaction
       const tx = await contract.transferOnBehalf(
         senderWalletAddress,
@@ -423,6 +425,8 @@ const Profile = () => {
       await axios.post("/api/acceptInvite", null, {
         params: { inviteId },
       });
+
+      fetchJobTokenBalance();
 
       // Refetch invites to update the UI
       fetchInvites();
@@ -605,8 +609,8 @@ const Profile = () => {
             </Button>
             <Button
               color="green"
-              onClick={confirmAccept}
-              disabled={jobTokenBalance < 5} // Disable if user has less than 5 tokens
+              onClick={() => confirmAccept(selectedInvite)}
+              disabled={jobTokenBalance < 1} // Disable if user has less than 5 tokens
             >
               Confirm
             </Button>
