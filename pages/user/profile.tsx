@@ -599,7 +599,11 @@ const Profile = () => {
             >
               Cancel
             </Button>
-            <Button color="green" onClick={confirmAccept}>
+            <Button
+              color="green"
+              onClick={confirmAccept}
+              disabled={jobTokenBalance < 5} // Disable if user has less than 5 tokens
+            >
               Confirm
             </Button>
           </div>
