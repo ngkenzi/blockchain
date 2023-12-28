@@ -25,11 +25,22 @@ import {
   FaHome,
   FaSignOutAlt,
   FaClipboardList,
-} from "react-icons/fa";
+  FaTimes,
+  FaCheckCircle,
+  FaHourglassStart,
+  FaSpinner,
+  FaEdit,
+  FaCoins,
+  FaLayerGroup,
+} from "react-icons/fa"; // Icons from react-icons
+import Minter from "./Minter";
+
 import { ethers } from "ethers";
 import JobToken from "../contracts/JobToken.json";
 import SelfAssessmentCTA from "../../components/SelfAssessmentCTA";
-import { ClipLoader } from "react-spinners";
+import { BeatLoader, ClipLoader } from "react-spinners";
+
+import EmploymentBadge from "./EmploymentBadge";
 
 const Profile = () => {
   const [nfts, setNfts] = useState([]);
@@ -37,7 +48,10 @@ const Profile = () => {
   const [walletAddress, setWalletAddress] = useState("");
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [studentId, setStudentId] = useState(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [formattedDate, setFormattedDate] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [loadingClaim, setLoadingClaim] = useState(false);
@@ -55,19 +69,101 @@ const Profile = () => {
   const [isConfirmAcceptModalOpen, setIsConfirmAcceptModalOpen] =
     useState(false);
 
+  //issuing employment badge
+  const [generatedImageData, setGeneratedImageData] = useState(null);
+  const [isMinting, setIsMinting] = useState(false);
+
   const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isSubmissionStatusLoaded, setIsSubmissionStatusLoaded] =
     useState(false);
 
   const router = useRouter();
+  const [step, setStep] = useState(1);
+  const uniAddress = "0xbaeb7bcfa679bf0132df2a1b8d273f327cfb0542";
 
   const navigateToAssessment = () => {
     router.push("/assessment");
   };
 
+  const handleImageGenerate = (imgData) => {
+    console.log("handleImageGenerate called", imgData);
+    setGeneratedImageData(imgData);
+    setStep(2);
+  };
+
+  const onMintingComplete = () => {
+    setIsMinting(false); // Reset minting status
+    setTimeout(() => {
+      setIsConfirmAcceptModalOpen(false);
+    }, 3000);
+  };
+
+  const onMintingStart = () => {
+    setIsMinting(true);
+  };
+
+  function StepIndicator({ currentStep }) {
+    const steps = [
+      {
+        number: 1,
+        label: "Generating Certificate",
+        icon: <FaHourglassStart />,
+      },
+      { number: 2, label: "Minting", icon: <FaCoins /> },
+    ];
+
+    return (
+      <div className="flex justify-center items-center space-x-4 my-8">
+        {steps.map((step, index) => (
+          <div key={step.number} className="flex items-center">
+            {/* Step Circle */}
+            <div
+              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                currentStep === step.number
+                  ? "bg-blue-600"
+                  : currentStep > step.number
+                  ? "bg-green-500"
+                  : "bg-gray-300"
+              } text-white`}
+            >
+              {currentStep === step.number && step.number === 2 ? (
+                <FaSpinner className="animate-spin" />
+              ) : currentStep > step.number ? (
+                <FaCheckCircle />
+              ) : (
+                step.icon
+              )}
+            </div>
+            {/* Step Label */}
+            <span
+              className={`ml-2 ${
+                currentStep === step.number
+                  ? "text-blue-600"
+                  : currentStep > step.number
+                  ? "text-green-500"
+                  : "text-gray-400"
+              }`}
+            >
+              {step.label}
+            </span>
+
+            {/* Connector Line (if not the last item) */}
+            {index < steps.length - 1 && (
+              <div className="w-4 border-t-2 transition-all duration-300 mx-2 border-gray-300"></div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   const navigateHome = () => {
     router.push("/");
   };
+
+  useEffect(() => {
+    setFullName(`${FirstName} ${LastName}`);
+  }, [FirstName, LastName]);
 
   useEffect(() => {
     const isAuthenticated = localStorage.getItem("token");
@@ -140,6 +236,24 @@ const Profile = () => {
     if (walletAddress) {
       fetchUniversityInfo();
     }
+  }, [walletAddress]);
+
+  const fetchStudentInfo = async () => {
+    if (walletAddress) {
+      try {
+        const response = await axios.get(
+          `/api/getStudentInfoByWalletAddress?walletAddress=${walletAddress}`
+        );
+        const studentData = response.data;
+        setStudentId(studentData.id);
+      } catch (error) {
+        console.error("Error fetching student info:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchStudentInfo();
   }, [walletAddress]);
 
   const checkSubmission = async () => {
@@ -372,10 +486,17 @@ const Profile = () => {
     }
   };
 
-  const handleAccept = (inviteId) => {
+  const handleAccept = async (inviteId) => {
     setSelectedInvite(inviteId);
     // Show confirmation modal
     setIsConfirmAcceptModalOpen(true);
+    const invite = await fetchInviteById(inviteId);
+    if (invite) {
+      setSelectedInvite(invite);
+
+      // Format the date and set it
+      setFormattedDate(formatDate(invite.createdAt));
+    }
   };
 
   const confirmAccept = async (inviteId) => {
@@ -595,6 +716,39 @@ const Profile = () => {
           onClose={() => setIsConfirmAcceptModalOpen(false)}
           title="Accept Offer Confirmation"
         >
+          <StepIndicator currentStep={step} />
+          {step === 1 && (
+            <div className="relative flex justify-center items-center min-h-screen">
+              <BeatLoader color="#3498db" className="absolute z-10 top-1/4" />
+              <EmploymentBadge
+                student={fullName}
+                studentId={studentId}
+                date={formattedDate}
+                company={selectedInvite ? selectedInvite.companyName : ""}
+                onImageGenerate={handleImageGenerate}
+              />
+            </div>
+          )}
+
+          {step === 2 && (
+            <div className="mb-3">
+              <Minter
+                generatedImageData={generatedImageData}
+                student={fullName}
+                studentId={parseInt(studentId)}
+                courseName={selectedInvite ? selectedInvite.companyName : ""}
+                courseDate={formattedDate}
+                walletAddress={walletAddress}
+                uniAddress={uniAddress}
+                onMintingStart={onMintingStart}
+                onMintingComplete={onMintingComplete}
+                web3Modal={undefined}
+                loadWeb3Modal={undefined}
+                price={undefined}
+              />
+            </div>
+          )}
+
           <Text size="sm">
             Accepting this offer will cost you <strong>5 Job Tokens</strong>.
             Are you sure you want to proceed?

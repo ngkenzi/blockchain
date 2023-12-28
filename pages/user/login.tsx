@@ -35,7 +35,6 @@ const login = () => {
       if (response.data && response.data.token) {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("walletAddress", response.data.walletAddress);
-        localStorage.setItem("walletAddress", response.data.walletAddress);
         localStorage.setItem("FirstName", response.data.FirstName);
         localStorage.setItem("LastName", response.data.LastName);
 
