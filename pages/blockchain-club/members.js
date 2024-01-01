@@ -7,21 +7,30 @@ const Members = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedMember, setSelectedMember] = useState(null);
     const [retryCount, setRetryCount] = useState(0);
-    const maxRetries = 10;
+    const maxRetries = 3;
 
     useEffect(() => {
         const fetchMembers = async () => {
-
             try {
                 const studentsRes = await axios.get("/api/getStudentsInfo");
                 const students = studentsRes.data;
 
                 const submittedStudents = await Promise.all(students.map(async (student) => {
-                    const checkRes = await axios.get(`/api/checkSubmissionStatus?walletAddress=${student.walletAddress}`);
-                    if (checkRes.data.exists) {
-                        // Fetching additional assessment details if needed
-                        const assessmentRes = await axios.get(`/api/getAssessmentDetails?walletAddress=${student.walletAddress}`);
-                        return { ...student, assessmentDetails: assessmentRes.data };
+                    try {
+                        const checkRes = await axios.get(`/api/checkSubmissionStatus?walletAddress=${student.walletAddress}`);
+                        if (checkRes.data.exists) {
+                            const assessmentRes = await axios.get(`/api/getAssessmentDetails?walletAddress=${student.walletAddress}`);
+                            return { ...student, assessmentDetails: assessmentRes.data };
+                        }
+                    } catch (error) {
+                        console.error(`Error fetching data for walletAddress: ${student.walletAddress}`, error);
+                        // Implement retry with exponential backoff
+                        if (retryCount < maxRetries) {
+                            const newRetryCount = retryCount + 1;
+                            setRetryCount(newRetryCount);
+                            await new Promise(resolve => setTimeout(resolve, Math.pow(2, newRetryCount) * 1000));
+                            return fetchMembers();
+                        }
                     }
                     return null;
                 }));
@@ -29,16 +38,11 @@ const Members = () => {
                 setMembers(submittedStudents.filter(Boolean));
             } catch (error) {
                 console.error('Error fetching members:', error);
-                console.log(error.response);
-
-                // if (retryCount < maxRetries) {
-                //     setTimeout(() => setRetryCount(retryCount + 1), 3000); // Retry after 3 seconds
-                // }
             }
         };
 
         fetchMembers();
-    }, []);
+    }, [retryCount]); // Dependency array includes retryCount
 
     // Function to open the modal
     const openModal = (member) => {

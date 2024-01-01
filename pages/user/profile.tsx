@@ -68,6 +68,7 @@ const Profile = () => {
   const [selectedInvite, setSelectedInvite] = useState(null);
   const [isConfirmAcceptModalOpen, setIsConfirmAcceptModalOpen] =
     useState(false);
+  const [triggerMinting, setTriggerMinting] = useState(false);
 
   //issuing employment badge
   const [generatedImageData, setGeneratedImageData] = useState(null);
@@ -92,6 +93,7 @@ const Profile = () => {
   };
 
   const onMintingComplete = () => {
+    setTriggerMinting(false);
     setIsMinting(false); // Reset minting status
     setTimeout(() => {
       setIsConfirmAcceptModalOpen(false);
@@ -106,55 +108,11 @@ const Profile = () => {
     const steps = [
       {
         number: 1,
-        label: "Generating Certificate",
-        icon: <FaHourglassStart />,
       },
-      { number: 2, label: "Minting", icon: <FaCoins /> },
+      { number: 2 },
     ];
 
-    return (
-      <div className="flex justify-center items-center space-x-4 my-8">
-        {steps.map((step, index) => (
-          <div key={step.number} className="flex items-center">
-            {/* Step Circle */}
-            <div
-              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
-                currentStep === step.number
-                  ? "bg-blue-600"
-                  : currentStep > step.number
-                  ? "bg-green-500"
-                  : "bg-gray-300"
-              } text-white`}
-            >
-              {currentStep === step.number && step.number === 2 ? (
-                <FaSpinner className="animate-spin" />
-              ) : currentStep > step.number ? (
-                <FaCheckCircle />
-              ) : (
-                step.icon
-              )}
-            </div>
-            {/* Step Label */}
-            <span
-              className={`ml-2 ${
-                currentStep === step.number
-                  ? "text-blue-600"
-                  : currentStep > step.number
-                  ? "text-green-500"
-                  : "text-gray-400"
-              }`}
-            >
-              {step.label}
-            </span>
-
-            {/* Connector Line (if not the last item) */}
-            {index < steps.length - 1 && (
-              <div className="w-4 border-t-2 transition-all duration-300 mx-2 border-gray-300"></div>
-            )}
-          </div>
-        ))}
-      </div>
-    );
+    return <div></div>;
   }
 
   const navigateHome = () => {
@@ -477,9 +435,12 @@ const Profile = () => {
 
   const fetchInviteById = async (inviteId) => {
     try {
+      console.log("Fetching invite by ID:", inviteId);
+
       const response = await axios.get("/api/getInviteById", {
         params: { inviteId },
       });
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching invite by ID", error);
@@ -489,6 +450,7 @@ const Profile = () => {
   const handleAccept = async (inviteId) => {
     setSelectedInvite(inviteId);
     // Show confirmation modal
+    setIsDetailsModalOpen(false);
     setIsConfirmAcceptModalOpen(true);
     const invite = await fetchInviteById(inviteId);
     if (invite) {
@@ -500,14 +462,18 @@ const Profile = () => {
   };
 
   const confirmAccept = async (inviteId) => {
-    setIsDetailsModalOpen(false);
+    //setIsDetailsModalOpen(false);
     setIsConfirmAcceptModalOpen(false);
 
     setLoading(true);
+    setTriggerMinting(true);
 
     try {
+      console.log("INVOTE", inviteId);
       // Fetch the full invite details
-      const invite = await fetchInviteById(inviteId);
+      const id = inviteId.id;
+
+      const invite = await fetchInviteById(id);
       if (!invite) {
         console.error("invite not found");
         return;
@@ -543,9 +509,7 @@ const Profile = () => {
       await tx.wait();
 
       // Update invite status on the backend
-      await axios.post("/api/acceptInvite", null, {
-        params: { inviteId },
-      });
+      await axios.post(`/api/acceptInvite?inviteId=${id}`);
 
       fetchJobTokenBalance();
 
@@ -736,7 +700,7 @@ const Profile = () => {
                 generatedImageData={generatedImageData}
                 student={fullName}
                 studentId={parseInt(studentId)}
-                courseName={selectedInvite ? selectedInvite.companyName : ""}
+                courseName={"Yo"}
                 courseDate={formattedDate}
                 walletAddress={walletAddress}
                 uniAddress={uniAddress}
@@ -745,12 +709,13 @@ const Profile = () => {
                 web3Modal={undefined}
                 loadWeb3Modal={undefined}
                 price={undefined}
+                triggerMint={triggerMinting}
               />
             </div>
           )}
 
           <Text size="sm">
-            Accepting this offer will cost you <strong>5 Job Tokens</strong>.
+            Accepting this offer will cost you <strong>1 Job Tokens</strong>.
             Are you sure you want to proceed?
           </Text>
           <div className="flex justify-end mt-4">
@@ -789,6 +754,7 @@ const Profile = () => {
                   : "University not set"}
               </Text>
               <Text size="sm">Job Token Balance: {jobTokenBalance}</Text>
+
               {/* Claim Tokens Button */}
               {hasSubmitted && !tokensClaimed && (
                 <Button
@@ -859,7 +825,8 @@ const Profile = () => {
                           ?.toLowerCase()
                           .includes(search.toLowerCase()) &&
                         (nft.description?.toLowerCase().includes("course") ||
-                          nft.description?.toLowerCase().includes("tier"))
+                          nft.description?.toLowerCase().includes("tier") ||
+                          nft.description?.toLowerCase().includes("company"))
                     )
                     .map((nft, index) => (
                       <Col key={index} md={6} lg={4}>
@@ -898,7 +865,8 @@ const Profile = () => {
                   (nft) =>
                     nft.name?.toLowerCase().includes(search.toLowerCase()) &&
                     (nft.description?.toLowerCase().includes("course") ||
-                      nft.description?.toLowerCase().includes("tier"))
+                      nft.description?.toLowerCase().includes("tier") ||
+                      nft.description?.toLowerCase().includes("company"))
                 ).length === 0 &&
                   nfts.length !== 0 && (
                     <Text

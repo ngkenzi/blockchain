@@ -121,7 +121,7 @@ const Questionnaire = () => {
     const router = useRouter();
     const [walletAddress, setWalletAddress] = useState("");
     const [hasSubmitted, setHasSubmitted] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [disableSubmit, setDisableSubmit] = useState(false);
 
     useEffect(() => {
@@ -131,27 +131,32 @@ const Questionnaire = () => {
         if (!isAuthenticated) {
             router.prefetch("/user/register");
             router.push("/user/register");
-        } else {
-            const checkSubmission = async () => {
-                try {
-                    const response = await axios.get(`/api/checkSubmissionStatus?walletAddress=${walletAddress}`);
-                    if (response.data.exists) {
-                        setHasSubmitted(true);
-                        toast.info("You have already submitted your assessment. Redirecting back to profile...");
-                        setTimeout(() => {
-                            router.push('/user/profile');
-                        }, 5000);
-                    }
-                } catch (error) {
-                    console.error("Error checking submission status:", error);
-                }
-                setIsLoading(false);  // Set loading to false after check is complete
-            };
-
-            if (walletAddress) {
-                checkSubmission();
-            }
+            return;
         }
+
+
+        const checkSubmission = async () => {
+            if (!walletAddress) {
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                const response = await axios.get(`/api/checkSubmissionStatus?walletAddress=${walletAddress}`);
+                if (response.data.exists) {
+                    setHasSubmitted(true);
+                    toast.info("You have already submitted your assessment. Redirecting back to profile...");
+                    setTimeout(() => {
+                        router.push('/user/profile');
+                    }, 5000);
+                }
+            } catch (error) {
+                console.error("Error checking submission status:", error);
+            }
+            setIsLoading(false);
+        };
+
+        checkSubmission();
     }, [walletAddress, router]);
 
     // All questions

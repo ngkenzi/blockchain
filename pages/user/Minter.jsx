@@ -120,6 +120,7 @@ export default function Minter({
   uniAddress,
   onMintingStart,
   onMintingComplete,
+  triggerMint,
 }) {
   const inputRef = useRef(null);
 
@@ -147,7 +148,9 @@ export default function Minter({
   }, [student]);
 
   useEffect(() => {
-    setDescription(`Company: ${courseName}, Submission Date: ${courseDate}`);
+    setDescription(
+      `Company: ${courseName}, Submission Date: ${courseDate}`
+    );
   }, [courseName, courseDate]);
 
   useEffect(() => {
@@ -248,8 +251,22 @@ export default function Minter({
   );
 
   const mintEnabled = generatedImageData != null && !!nftName;
+  const mintedRef = useRef(false);
+
+  useEffect(() => {
+    if (triggerMint && mintEnabled && !mintedRef.current) {
+      mintedRef.current = true; // Set flag to true
+      startMinting();
+    }
+
+    return () => {
+      mintedRef.current = false;
+    };
+  }, [triggerMint, mintEnabled]);
 
   const startMinting = async () => {
+    if (minting) return;
+
     setMinting(true);
     onMintingStart();
     // First NFT with walletAddress
@@ -300,6 +317,10 @@ export default function Minter({
     }
 
     setMinting(false);
+
+    if (onMintingComplete) {
+      onMintingComplete();
+    }
   };
 
   console.log(mintComplete);
@@ -319,22 +340,9 @@ export default function Minter({
   );
 
   const minterForm = (
-    <div
-      className="flex flex-col items-center sm:pt-0 md:px-4"
-      style={{ minHeight: "50vh" }}
-    >
-      <h1 className="text-center w-full py-4 text-4xl font-bold text-blue-700">
-        Summary
-      </h1>
-      <div className="w-full sm:max-w-7xl sm:px-4 lg:px-6 bg-white rounded-lg shadow mt-6 py-4 ">
-        <div className="flex flex-col items-center justify-between lg:flex-row lg:mx-10">
-          <div className="flex flex-col items-center lg:mb-0">
-            {file == null && !generatedImageData}
-            {(file != null || generatedImageData) && preview}
-          </div>
-
-          {/*Field section*/}
-          <div className="flex flex-col items-center space-y-4 lg:items-start lg:mt-16">
+    <div className="flex flex-col items-center sm:pt-0 md:px-4">
+      {/*Field section*/}
+      {/* <div className="flex flex-col items-center space-y-4 lg:items-start lg:mt-16">
             <div className="w-full">
               <label className="block text-gray-700 text-sm font-bold mb-2">
                 Name
@@ -353,13 +361,10 @@ export default function Minter({
               </label>
               {studentIdField}
             </div>
-            <div className="mt-2 flex justify-center w-full">{mintButton}</div>
             <div className="h-20">
               <div className="h-20">{statusDisplay()}</div>
             </div>
-          </div>
-        </div>
-      </div>
+          </div> */}
     </div>
   );
 
