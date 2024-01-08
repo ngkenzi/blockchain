@@ -17,6 +17,8 @@ import {
   FaUserGraduate,
   FaUser,
   FaSignOutAlt,
+  FaSearch,
+  FaBuilding,
 } from "react-icons/fa";
 import { Button } from "@mantine/core";
 
@@ -147,6 +149,11 @@ export function HeaderResponsive({
       action: () => router.push("/"),
     },
     {
+      label: "Search",
+      icon: <FaSearch size="1.5em" />,
+      action: () => router.push("/search"),
+    },
+    {
       label: "Students",
       icon: <FaUserGraduate size="1.5em" />,
       action: () => router.push("/students"),
@@ -154,15 +161,15 @@ export function HeaderResponsive({
     ...(!isAuthenticated
       ? [
           {
-            label: "Sign in",
+            label: "Login",
             icon: <FaUserPlus size="1.5em" />,
             action: () => router.push("/user/login"),
           },
-          {
-            label: "Register",
-            icon: <FaUserPlus size="1.5em" />,
-            action: () => router.push("/user/register"),
-          },
+          // {
+          //   label: "Company",
+          //   icon: <FaBuilding size="1.5em" />,
+          //   action: () => router.push("/user/register"),
+          // },
         ]
       : [
           {
@@ -196,11 +203,11 @@ export function HeaderResponsive({
 
   const SignUpButton = () => (
     <Button
-      leftIcon={<FaUserPlus size="1.5em" color="#FFF" />}
+      leftIcon={<FaBuilding size="1.5em" color="#FFF" />}
       onClick={() => router.push("/user/register")}
       className="bg-blue-600 text-white hover:bg-blue-700 p-2 rounded"
     >
-      Register
+      Company
     </Button>
   );
 
@@ -271,9 +278,9 @@ export function HeaderResponsive({
         }}
         className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
       >
-        Sign in
+        Login
       </Button>
-      <SignUpButton />
+      {/* <SignUpButton /> */}
     </Group>
   );
 

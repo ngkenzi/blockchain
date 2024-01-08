@@ -1,9 +1,9 @@
-import Head from 'next/head';
-import { ReactNode, useState } from 'react';
+import Head from "next/head";
+import { ReactNode, useState } from "react";
 import { HeaderResponsive } from "../components/Header";
 import { FooterLinks } from "../components/Footer";
-import Link from 'next/link';
-import { FaUniversity, FaUser } from 'react-icons/fa';
+import Link from "next/link";
+import { FaUniversity, FaUser } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 
 interface Props {
@@ -17,6 +17,7 @@ const Layout = ({ title, description, children }: Props) => {
   const [actionType, setActionType] = useState<"SignIn" | "SignUp">("SignUp");
   const links = [
     { link: "/", label: "Home" },
+    { link: "/search", label: "Search" },
     { link: "/students", label: "Students" },
 
     // { link: "/upskill", label: "Online Courses" },
@@ -41,7 +42,7 @@ const Layout = ({ title, description, children }: Props) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col bg-gradient-to-r from-blue-200 via-white to-blue-200">
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
