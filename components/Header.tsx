@@ -158,6 +158,11 @@ export function HeaderResponsive({
       icon: <FaUserGraduate size="1.5em" />,
       action: () => router.push("/students"),
     },
+    {
+      label: "Companies",
+      icon: <FaBuilding size="1.5em" />,
+      action: () => router.push("/companies"),
+    },
     ...(!isAuthenticated
       ? [
           {
@@ -262,12 +267,12 @@ export function HeaderResponsive({
           My Account
         </Button>
       </Link>
-      <Button
+      {/* <Button
         onClick={handleLogout}
         className="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded"
       >
         Log out
-      </Button>
+      </Button> */}
     </Group>
   ) : (
     <Group spacing={3} className="items-center hidden md:flex">

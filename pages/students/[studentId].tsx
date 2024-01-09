@@ -193,7 +193,7 @@ const StudentDetail: FC = () => {
           const provider = new ethers.providers.JsonRpcProvider(
             "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
           );
-          const contractAddress = "0xc104e87E8769981FeAA64666164adeEeba4A0C8d";
+          const contractAddress = "0x44AA144A60af0C745759912eA9C58476e49d9967";
           const contract = new ethers.Contract(
             contractAddress,
             JobToken.abi,
