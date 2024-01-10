@@ -137,10 +137,18 @@ const CompanyDetail = () => {
   const handleApplySubmit = async (event) => {
     event.preventDefault();
 
+    const companyId =
+      typeof router.query.companyId === "string"
+        ? parseInt(router.query.companyId)
+        : null;
+
+    console.log(companyId);
+
     try {
       await axios.post("/api/applyForJob", {
         jobId: selectedJob.id,
         studentId,
+        companyId,
         coverLetter,
         resumeURL,
         experience,

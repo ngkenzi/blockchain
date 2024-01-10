@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import ProfileSection from './ProfileSection';
 import EmployeesSection from './EmployeesSection';
 import StudentsSearchSection from './StudentsSearchSection';
+import RequestSection from './RequestSection';
+import JobsSection from './JobsSection';
 import { useRouter } from 'next/router';
 
 export default function Dashboard() {
@@ -25,6 +27,10 @@ export default function Dashboard() {
                 return <EmployeesSection />;
             case 'students':
                 return <StudentsSearchSection />;
+            case 'requests':
+                return <RequestSection />;
+            case 'jobs':
+                return <JobsSection />;
             default:
                 return <ProfileSection />;
         }
@@ -56,6 +62,16 @@ export default function Dashboard() {
                     <li>
                         <a onClick={() => setActiveTab('students')} className="flex items-center p-4 cursor-pointer hover:bg-indigo-100">
                             <span>Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a onClick={() => setActiveTab('requests')} className="flex items-center p-4 cursor-pointer hover:bg-indigo-100">
+                            <span>Requests</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a onClick={() => setActiveTab('jobs')} className="flex items-center p-4 cursor-pointer hover:bg-indigo-100">
+                            <span>Jobs</span>
                         </a>
                     </li>
                 </ul>
