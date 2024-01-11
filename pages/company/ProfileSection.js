@@ -77,7 +77,7 @@ const ProfileSection = () => {
             {profile.profile_picture && (
                 <div className="flex justify-center mb-6">
                     <img
-                        src={`${backendBaseURL}${profile.profile_picture}`}
+                        src={`${profile.profile_picture}`}
                         alt={`${profile.name}'s profile`}
                         className="w-24 h-24 rounded-full border-2 border-gray-300"
                         onError={(e) => {

@@ -224,8 +224,8 @@ const CompanyDetail = () => {
                   company.profile_picture || "https://i.imgur.com/mCHMpLT.png"
                 }
                 alt={`${company.name}`}
-                height={160}
-                width={160}
+                height={100}
+                width={190}
                 className="mx-auto"
               />
               <Title order={3} className="mt-4">

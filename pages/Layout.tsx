@@ -43,7 +43,10 @@ const Layout = ({ title, description, children }: Props) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col bg-gradient-to-r from-blue-200 via-white to-blue-200">
+    <div
+      className="min-h-scree flex flex-col"
+      style={{ backgroundColor: "#E6EAF5" }}
+    >
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
