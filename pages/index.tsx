@@ -70,12 +70,17 @@ const Home = () => {
                   alt="MSP Icon"
                   className="ml-2 w-20 h-10 align-middle"
                 />
+                <img
+                  src="/assets/polygon-logo-colored.svg"
+                  alt="Polygon Logo"
+                  className="ml-2 w-30 h-10 align-middle"
+                />
               </div>
 
               <div className="mt-12 flex justify-center lg:justify-start gap-6">
                 <button
                   onClick={() => router.push("/user/register")}
-                  className="px-6 py-3 lg:text-lg font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+                  className="px-5 py-3 lg:text-lg font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
                 >
                   Get Started
                 </button>
@@ -84,7 +89,7 @@ const Home = () => {
               </button> */}
                 <button
                   onClick={() => router.push("/assessment")}
-                  className="px-6 py-3 lg:text-lg font-semibold text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                  className="px-4 py-3 lg:text-lg font-semibold text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
                 >
                   Claim Job Tokens
                 </button>
