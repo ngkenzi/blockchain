@@ -124,6 +124,19 @@ const Questionnaire = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [disableSubmit, setDisableSubmit] = useState(false);
 
+
+    const handleNextPage = () => {
+        if (currentPage < 2) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
     useEffect(() => {
         const isAuthenticated = localStorage.getItem("token");
         setWalletAddress(localStorage.getItem("walletAddress"));
@@ -234,6 +247,12 @@ const Questionnaire = () => {
             type: 'textarea'
         },
     ];
+
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const pageOneQuestions = questions.slice(0, 14);
+    const pageTwoQuestions = questions.slice(14, 26);
+    const pageThreeQuestions = questions.slice(26);
 
     const handleChange = (event) => {
         const { name, value, checked, type } = event.target;
@@ -377,13 +396,13 @@ const Questionnaire = () => {
         );
     }
 
-
     return (
         <>
             {isLoading && <Spinner />}
             <form onSubmit={handleSubmit} className="p-4 border border-gray-200 rounded-lg">
                 <h2 className="text-xl font-semibold mb-4">Blockchain Developer Self-Assessment</h2>
-                {questions.map(question => (
+
+                {currentPage === 1 && pageOneQuestions.map(question => (
                     <div key={question.name}>
                         {question.type === 'checkbox' &&
                             <CheckboxQuestion
@@ -425,15 +444,117 @@ const Questionnaire = () => {
                         }
                     </div>
                 ))}
+
+                {currentPage === 2 && pageTwoQuestions.map(question => (
+                    <div key={question.name}>
+                        {question.type === 'checkbox' &&
+                            <CheckboxQuestion
+                                question={question}
+                                onChange={handleChange}
+                                checked={responses[question.name] || false}
+                            />
+                        }
+                        {question.type === 'slider' &&
+                            <SliderQuestion
+                                question={question}
+                                onChange={handleChange}
+                                value={responses[question.name] || 1}
+                            />
+                        }
+                        {question.type === 'text' &&
+                            <div className="mb-4">
+                                <label className="block mb-2">{question.label}</label>
+                                <input
+                                    type="text"
+                                    name={question.name}
+                                    value={responses[question.name] || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+                            </div>
+                        }
+                        {question.type === 'textarea' &&
+                            <div className="mb-4">
+                                <label className="block mb-2">{question.label}</label>
+                                <textarea
+                                    name={question.name}
+                                    value={responses[question.name] || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                    rows="4"
+                                ></textarea>
+                            </div>
+                        }
+                    </div>
+                ))}
+
+                {currentPage === 3 && pageThreeQuestions.map(question => (
+                    <div key={question.name}>
+                        {question.type === 'checkbox' &&
+                            <CheckboxQuestion
+                                question={question}
+                                onChange={handleChange}
+                                checked={responses[question.name] || false}
+                            />
+                        }
+                        {question.type === 'slider' &&
+                            <SliderQuestion
+                                question={question}
+                                onChange={handleChange}
+                                value={responses[question.name] || 1}
+                            />
+                        }
+                        {question.type === 'text' &&
+                            <div className="mb-4">
+                                <label className="block mb-2">{question.label}</label>
+                                <input
+                                    type="text"
+                                    name={question.name}
+                                    value={responses[question.name] || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                />
+                            </div>
+                        }
+                        {question.type === 'textarea' &&
+                            <div className="mb-4">
+                                <label className="block mb-2">{question.label}</label>
+                                <textarea
+                                    name={question.name}
+                                    value={responses[question.name] || ''}
+                                    onChange={handleChange}
+                                    className="w-full p-2 border border-gray-300 rounded-md"
+                                    rows="4"
+                                ></textarea>
+                            </div>
+                        }
+                    </div>
+                ))}
+
                 <div className="flex justify-between mt-4">
-                    <button type="button" onClick={handleBack} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
-                        Back
-                    </button>
-                    <button type="submit" disabled={disableSubmit}
-                        className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${disableSubmit ? 'opacity-50 cursor-not-allowed' : ''}`}>
-                        Submit
-                    </button>
+                    {/* Previous Button */}
+                    {currentPage > 1 && (
+                        <button type="button" onClick={() => setCurrentPage(currentPage - 1)} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                            Previous
+                        </button>
+                    )}
+
+                    {/* Next Button */}
+                    {currentPage < 3 && (
+                        <button type="button" onClick={() => setCurrentPage(currentPage + 1)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            Next
+                        </button>
+                    )}
+
+                    {/* Submit Button */}
+                    {currentPage === 3 && (
+                        <button type="submit" disabled={disableSubmit}
+                            className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ${disableSubmit ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                            Submit
+                        </button>
+                    )}
                 </div>
+
             </form>
         </>
     );
