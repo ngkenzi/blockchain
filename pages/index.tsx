@@ -6,6 +6,18 @@ import { FooterLinks } from "../components/Footer";
 import SelfAssessmentCTA from "../components/SelfAssessmentCTA";
 import Layout from "./Layout";
 import { useRouter } from "next/router";
+import { Carousel } from "react-responsive-carousel";
+import { FaAward, FaCogs, FaUserSecret } from "react-icons/fa";
+
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+
+const ServiceCard = ({ Icon, title, description }) => (
+  <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out h-60 md:h-auto">
+    <Icon className="w-16 h-16 text-blue-600 mb-4" />
+    <h3 className="text-lg font-semibold mb-2 text-center">{title}</h3>
+    <p className="text-sm text-gray-600 text-center flex-grow">{description}</p>
+  </div>
+);
 
 const Home = () => {
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -68,7 +80,7 @@ const Home = () => {
                 <img
                   src="/assets/MSPSystems.png"
                   alt="MSP Icon"
-                  className="ml-2 w-20 h-10 align-middle"
+                  className="ml-2 w-24 h-12 align-middle"
                 />
                 <img
                   src="/assets/polygon-logo-colored.svg"
@@ -106,6 +118,94 @@ const Home = () => {
             </div>
           </div>
         </div>
+
+        {/* What We Do Section */}
+        <section className="py-12 bg-gray-100">
+          <div className="container mx-auto px-4">
+            <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+              What We Do
+            </h2>
+            <Carousel
+              showArrows={true}
+              showThumbs={false}
+              showStatus={false}
+              infiniteLoop
+              useKeyboardArrows
+              autoPlay
+              interval={5000}
+              transitionTime={350}
+              emulateTouch
+              swipeable
+              dynamicHeight={false}
+              className="md:hidden"
+              showIndicators={true}
+              renderIndicator={(onClickHandler, isSelected, index, label) => {
+                const style = isSelected
+                  ? {
+                      background: "#000",
+                      width: 8,
+                      height: 8,
+                      display: "inline-block",
+                      margin: "0 8px",
+                      borderRadius: "50%",
+                    }
+                  : {
+                      background: "#ccc",
+                      width: 8,
+                      height: 8,
+                      display: "inline-block",
+                      margin: "0 8px",
+                      borderRadius: "50%",
+                    };
+                return (
+                  <button
+                    type="button"
+                    style={style}
+                    onClick={onClickHandler}
+                    onKeyDown={onClickHandler}
+                    key={index}
+                    title={`${label} ${index + 1}`}
+                    aria-label={`${label} ${index + 1}`}
+                  />
+                );
+              }}
+            >
+              <ServiceCard
+                Icon={FaAward}
+                title="Simplify Your Certification Processes"
+                description="Leverage blockchain technology for secure and efficient certification management."
+              />
+              <ServiceCard
+                Icon={FaCogs}
+                title="Innovative Solutions"
+                description="Implement cutting-edge technology to enhance operational efficiency."
+              />
+              <ServiceCard
+                Icon={FaUserSecret}
+                title="User Privacy Protection"
+                description="Ensure the utmost privacy and security for user data."
+              />
+            </Carousel>
+            <div className="hidden md:grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+              {/* Grid layout visible on medium and larger screens */}
+              <ServiceCard
+                Icon={FaAward}
+                title="Simplify Your Certification Processes"
+                description="Leverage blockchain technology for secure and efficient certification management."
+              />
+              <ServiceCard
+                Icon={FaCogs}
+                title="Innovative Solutions"
+                description="Implement cutting-edge technology to enhance operational efficiency."
+              />
+              <ServiceCard
+                Icon={FaUserSecret}
+                title="User Privacy Protection"
+                description="Ensure the utmost privacy and security for user data."
+              />
+            </div>
+          </div>
+        </section>
       </div>
 
       {isSubmissionStatusLoaded && !hasSubmitted && <SelfAssessmentCTA />}

@@ -83,12 +83,7 @@ const Profile = () => {
   const [step, setStep] = useState(1);
   const uniAddress = "0xbaeb7bcfa679bf0132df2a1b8d273f327cfb0542";
 
-  const [jobListings, setJobListings] = useState([]);
-  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
-  const [selectedJob, setSelectedJob] = useState(null);
-  const [coverLetter, setCoverLetter] = useState("");
-  const [resumeURL, setResumeURL] = useState("");
-  const [experience, setExperience] = useState("");
+  const [transactionHistory, setTransactionHistory] = useState([]);
 
   const navigateToAssessment = () => {
     router.push("/assessment");
@@ -550,41 +545,49 @@ const Profile = () => {
     }
   };
 
-  // const handleApplySubmit = async (event) => {
-  //   event.preventDefault();
+  const fetchTransactionHistory = async () => {
+    try {
+      const response = await axios.post(
+        "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL",
+        {
+          jsonrpc: "2.0",
+          method: "alchemy_getAssetTransfers",
+          params: [
+            {
+              fromBlock: "0x0",
+              toBlock: "latest",
+              //fromAddress: walletAddress,
+              category: ["erc20", "erc721"],
+              withMetadata: false,
+              excludeZeroValue: true,
+              maxCount: "0x3e8",
+              contractAddresses: [
+                "0x44AA144A60af0C745759912eA9C58476e49d9967",
+                "0x9214a1B70a0F348dB103552c83A11b02a5D9fF90",
+              ],
+            },
+          ],
+        }
+      );
 
-  //   try {
-  //     await axios.post("http://localhost:4000/applyForJob", {
-  //       jobId: selectedJob.id,
-  //       studentId,
-  //       coverLetter,
-  //       resumeURL,
-  //       experience,
-  //     });
+      if (response.data && response.data.result) {
+        setTransactionHistory(response.data.result);
+        console.log(transactionHistory);
+      }
+    } catch (error) {
+      console.error("Error fetching transaction history:", error);
+    }
+  };
 
-  //     alert("Application submitted successfully!");
-  //     setIsApplyModalOpen(false);
-  //     setCoverLetter("");
-  //     setResumeURL("");
-  //   } catch (error) {
-  //     console.error("Error submitting application:", error);
-  //     alert("Failed to submit application.");
-  //   }
-  // };
+  useEffect(() => {
+    if (walletAddress) {
+      fetchTransactionHistory();
+    }
+  }, [walletAddress]);
 
-  // useEffect(() => {
-  //   const fetchJobListings = async () => {
-  //     try {
-  //       const response = await axios.get("http://localhost:4000/allJobOffers");
-  //       console.log("Job listings fetched:", response.data); // Logging the response data
-  //       setJobListings(response.data);
-  //     } catch (error) {
-  //       console.error("Error fetching job listings:", error);
-  //     }
-  //   };
-
-  //   fetchJobListings();
-  // }, []);
+  useEffect(() => {
+    console.log("HI", transactionHistory);
+  }, [transactionHistory]);
 
   return (
     <div className="bg-gray-900 min-h-screen">
@@ -629,49 +632,6 @@ const Profile = () => {
             </Button>
           </div>
         </Modal>
-
-        {/* <Modal
-          opened={isApplyModalOpen}
-          onClose={() => {
-            setIsApplyModalOpen(false);
-            setCoverLetter("");
-            setResumeURL("");
-            setExperience("");
-          }}
-          title={`Apply for ${selectedJob?.position}`}
-        >
-          <form onSubmit={handleApplySubmit} className="space-y-4">
-            <div className="text-lg font-semibold">{`Application form for ${selectedJob?.position}`}</div>
-            <input
-              type="number"
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-              placeholder={`Years of experience as ${selectedJob?.position}`}
-              min="0"
-              value={experience}
-              onChange={(e) => setExperience(e.target.value)}
-            />
-            <textarea
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-              placeholder="Cover letter"
-              required
-              value={coverLetter}
-              onChange={(e) => setCoverLetter(e.target.value)}
-            />
-            <input
-              className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-              placeholder="Resume URL"
-              required
-              value={resumeURL}
-              onChange={(e) => setResumeURL(e.target.value)}
-            />
-            <button
-              type="submit"
-              className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
-            >
-              Submit Application
-            </button>
-          </form>
-        </Modal> */}
 
         {loading && (
           <LoadingOverlay
@@ -886,9 +846,9 @@ const Profile = () => {
             <Tabs.Tab value="invites" color="blue">
               Offers
             </Tabs.Tab>
-            {/* <Tabs.Tab value="jobs" color="blue">
-              Jobs
-            </Tabs.Tab> */}
+            <Tabs.Tab value="history" color="blue">
+              History
+            </Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="profile" pt="xs">
@@ -1039,40 +999,49 @@ const Profile = () => {
             </div>
           </Tabs.Panel>
 
-          {/* <Tabs.Panel value="jobs" pt="xs" className="p-4">
-            {jobListings.length === 0 ? (
-              <Text align="center" size="lg" className="text-gray-600">
-                No job listings available.
-              </Text>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {jobListings.map((job, index) => (
-                  <div
-                    key={index}
-                    className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
-                  >
-                    <h3 className="text-xl font-semibold mb-2">
-                      {job.position}
-                    </h3>
-                    <p className="text-gray-600 mb-1">{job.jobDescription}</p>
-                    <p className="text-sm mb-1">Type: {job.jobType}</p>
-                    <p className="text-sm mb-4">
-                      Monthly salary: {job.salary}RM
-                    </p>
-                    <button
-                      onClick={() => {
-                        setSelectedJob(job);
-                        setIsApplyModalOpen(true);
-                      }}
-                      className="w-full bg-green-500 text-white p-3 rounded hover:bg-green-600 transition-colors duration-200"
+          <Tabs.Panel value="history" pt="xs">
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">
+                      Transaction Hash
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      From Address
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      To Address
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Category
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {transactionHistory.transfers.map((tx, index) => (
+                    <tr
+                      key={index}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                     >
-                      Apply
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
-          </Tabs.Panel> */}
+                      <td className="px-6 py-4">
+                        <a
+                          href={`https://polygonscan.com/tx/${tx.hash}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {tx.hash}
+                        </a>
+                      </td>
+                      <td className="px-6 py-4">{tx.from}</td>
+                      <td className="px-6 py-4">{tx.to}</td>
+                      <td className="px-6 py-4">{tx.category}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Tabs.Panel>
         </Tabs>
       </Container>
       {isSubmissionStatusLoaded && !hasSubmitted && <SelfAssessmentCTA />}

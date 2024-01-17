@@ -40,6 +40,7 @@
     "react-icons": "^4.10.1",
     "react-nice-avatar": "^1.4.1",
     "react-phone-input-2": "^2.15.1",
+    "react-responsive-carousel": "^3.2.23",
     "react-spinners": "^0.13.8",
     "react-toastify": "^9.1.3"
   },

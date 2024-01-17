@@ -47,9 +47,7 @@ const CompanyDetail = () => {
   const [error, setError] = useState<Error | null>(null);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<JobOffer | null>(null);
-  const [coverLetter, setCoverLetter] = useState("");
-  const [resumeURL, setResumeURL] = useState("");
-  const [experience, setExperience] = useState("");
+  const [experience, setExperience] = useState("0");
   const [studentId, setStudentId] = useState(null);
   const [walletAddress, setWalletAddress] = useState("");
 
@@ -149,8 +147,6 @@ const CompanyDetail = () => {
         jobId: selectedJob.id,
         studentId,
         companyId,
-        coverLetter,
-        resumeURL,
         experience,
       });
 
@@ -159,8 +155,6 @@ const CompanyDetail = () => {
 
       alert("Application submitted successfully!");
       setIsApplyModalOpen(false);
-      setCoverLetter("");
-      setResumeURL("");
     } catch (error) {
       console.error("Error submitting application:", error);
       alert("Failed to submit application.");
@@ -298,8 +292,6 @@ const CompanyDetail = () => {
         opened={isApplyModalOpen}
         onClose={() => {
           setIsApplyModalOpen(false);
-          setCoverLetter("");
-          setResumeURL("");
           setExperience("");
         }}
         title={`Apply for ${selectedJob?.position}`}
@@ -313,20 +305,6 @@ const CompanyDetail = () => {
             min="0"
             value={experience}
             onChange={(e) => setExperience(e.target.value)}
-          />
-          <textarea
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-            placeholder="Cover letter"
-            required
-            value={coverLetter}
-            onChange={(e) => setCoverLetter(e.target.value)}
-          />
-          <input
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-            placeholder="Resume URL"
-            required
-            value={resumeURL}
-            onChange={(e) => setResumeURL(e.target.value)}
           />
           <button
             type="submit"
