@@ -556,7 +556,6 @@ const Profile = () => {
             {
               fromBlock: "0x0",
               toBlock: "latest",
-              //fromAddress: walletAddress,
               category: ["erc20", "erc721"],
               withMetadata: false,
               excludeZeroValue: true,
@@ -1019,25 +1018,30 @@ const Profile = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {transactionHistory.transfers.map((tx, index) => (
-                    <tr
-                      key={index}
-                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                    >
-                      <td className="px-6 py-4">
-                        <a
-                          href={`https://polygonscan.com/tx/${tx.hash}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          {tx.hash}
-                        </a>
-                      </td>
-                      <td className="px-6 py-4">{tx.from}</td>
-                      <td className="px-6 py-4">{tx.to}</td>
-                      <td className="px-6 py-4">{tx.category}</td>
-                    </tr>
-                  ))}
+                  {transactionHistory.transfers
+                    .filter(
+                      (tx) =>
+                        tx.from === walletAddress || tx.to === walletAddress
+                    )
+                    .map((tx, index) => (
+                      <tr
+                        key={index}
+                        className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                      >
+                        <td className="px-6 py-4">
+                          <a
+                            href={`https://polygonscan.com/tx/${tx.hash}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {tx.hash}
+                          </a>
+                        </td>
+                        <td className="px-6 py-4">{tx.from}</td>
+                        <td className="px-6 py-4">{tx.to}</td>
+                        <td className="px-6 py-4">{tx.category}</td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
