@@ -50,6 +50,7 @@ const CompanyDetail = () => {
   const [experience, setExperience] = useState("0");
   const [studentId, setStudentId] = useState(null);
   const [walletAddress, setWalletAddress] = useState("");
+  const [cvFile, setCvFile] = useState(null);
 
   useEffect(() => {
     setWalletAddress(localStorage.getItem("walletAddress"));
@@ -143,12 +144,33 @@ const CompanyDetail = () => {
     console.log(companyId);
 
     try {
-      await axios.post("/api/applyForJob", {
+      let cvUrl = "";
+
+      // Check if a file is selected
+      if (cvFile) {
+        const formData = new FormData();
+        formData.append("cv", cvFile);
+
+        // Upload the file first
+        const uploadResponse = await axios.post("/api/upload-cv", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        cvUrl = uploadResponse.data.fileUrl;
+      }
+
+      // Then, submit the application with the CV URL
+      const applicationData = {
         jobId: selectedJob.id,
         studentId,
         companyId,
         experience,
-      });
+        cvUrl,
+      };
+
+      // Send application data to your application processing route
+      await axios.post("/api/applyForJob", applicationData);
 
       console.log(selectedJob.id);
       console.log(studentId);
@@ -306,6 +328,13 @@ const CompanyDetail = () => {
             value={experience}
             onChange={(e) => setExperience(e.target.value)}
           />
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={(e) => setCvFile(e.target.files[0])} // Add a new state setter for the CV file
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+          />
+
           <button
             type="submit"
             className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
