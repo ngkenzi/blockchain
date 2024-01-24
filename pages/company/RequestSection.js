@@ -63,6 +63,15 @@ const RequestSection = () => {
         fetchRequests();
     }, []);
 
+    const updateApplicationStatus = async (studentId, newStatus) => {
+        try {
+            // Replace this URL with your actual API endpoint
+            await axios.post('/api/updateApplicationStatus', { studentId, status: newStatus });
+        } catch (error) {
+            console.error('Error updating application status', error);
+        }
+    };
+
     const sendInvite = async (studentWalletAddress, studentId, jobDetails) => {
 
         const companyId = localStorage.getItem('companyId');
@@ -104,6 +113,10 @@ const RequestSection = () => {
             const response = await axios.post('/api/createInvite', inviteData);
             if (response.data.success) {
                 console.log('invite sent successfully');
+                await updateApplicationStatus(studentId, 'Offer Sent');
+                setRequests(prevRequests => prevRequests.map(req =>
+                    req.studentId === studentId ? { ...req, status: 'Offer Sent' } : req
+                ));
             } else {
                 console.warn('invite could not be sent:', response.data.message);
             }
@@ -111,6 +124,17 @@ const RequestSection = () => {
             console.error('Error sending invite', error);
         }
         setDisabledStudents(prev => ({ ...prev, [studentId]: true }));
+    };
+
+    const rejectRequest = async (studentId) => {
+        try {
+            await updateApplicationStatus(studentId, 'Rejected');
+            setRequests(prevRequests => prevRequests.map(req =>
+                req.studentId === studentId ? { ...req, status: 'Rejected' } : req
+            ));
+        } catch (error) {
+            console.error('Error rejecting request', error);
+        }
     };
 
     const handleSendInviteClick = (student) => {
@@ -156,6 +180,12 @@ const RequestSection = () => {
                                     onClick={() => handleSendInviteClick({ walletAddress: students[request.studentId]?.walletAddress, id: request.studentId })}
                                     className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                     Send Offer
+                                </button>
+                                <button
+                                    onClick={() => rejectRequest(request.studentId)}
+                                    className="mt-2 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                >
+                                    Reject
                                 </button>
                             </div>
                         </div>
