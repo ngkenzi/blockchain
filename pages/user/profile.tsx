@@ -73,6 +73,7 @@ const Profile = () => {
     useState(false);
   const [triggerMinting, setTriggerMinting] = useState(false);
 
+  const [meetings, setMeetings] = useState([]);
   //issuing employment badge
   const [generatedImageData, setGeneratedImageData] = useState(null);
   const [isMinting, setIsMinting] = useState(false);
@@ -144,6 +145,28 @@ const Profile = () => {
   useEffect(() => {
     fetchNFTs();
   }, [walletAddress]);
+
+  // Function to fetch meetings for the user
+  const fetchMeetings = async () => {
+    
+    try {
+      const response = await axios.get("/api/getMeetingsByUserId", {
+        params: { studentId: studentId },
+      });
+
+      console.log("MEETINGS", response.data.meetings);
+      setMeetings(response.data.meetings);
+    } catch (error) {
+      console.error("Error fetching meetings:", error);
+    }
+  };
+
+  // useEffect to fetch meetings when the studentId changes
+  useEffect(() => {
+    if (studentId) {
+      fetchMeetings();
+    }
+  }, [studentId]);
 
   function handleInviteClick(invite) {
     // Set the invite details to be displayed in the modal
@@ -933,6 +956,9 @@ const Profile = () => {
             <Tabs.Tab value="history" color="blue">
               History
             </Tabs.Tab>
+            <Tabs.Tab value="meetings" color="blue">
+              Meetings
+            </Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="profile" pt="xs">
@@ -1146,6 +1172,43 @@ const Profile = () => {
                       ))}
                 </tbody>
               </table>
+            </div>
+          </Tabs.Panel>
+
+          {/* Meetings Tab Panel */}
+          <Tabs.Panel value="meetings" pt="xs">
+            <div className="space-y-4">
+              {meetings.length > 0 ? (
+                meetings.map((meeting, index) => (
+                  // Layout for each meeting item
+                  <div key={index} className="p-4 bg-white rounded-lg shadow">
+                    <p>
+                      <strong>Meeting ID:</strong> {meeting.id}
+                    </p>
+                    <p>
+                      <strong>Meeting Link:</strong>{" "}
+                      <a
+                        href={meeting.meetingLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {meeting.meetingLink}
+                      </a>
+                    </p>
+                    <p>
+                      <strong>Scheduled Time:</strong>{" "}
+                      {new Date(meeting.scheduledTime).toLocaleString()}
+                    </p>
+                    <p>
+                      <strong>Status:</strong> {meeting.status}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <Text align="center" size="md" color="gray">
+                  No meetings scheduled.
+                </Text>
+              )}
             </div>
           </Tabs.Panel>
         </Tabs>
