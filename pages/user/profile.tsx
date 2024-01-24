@@ -53,6 +53,8 @@ const Profile = () => {
   const [studentId, setStudentId] = useState(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [formattedDate, setFormattedDate] = useState("");
+  const [cvUrl, setCvUrl] = useState("");
+  const [CVFreeJobTokenStatus, setCVFreeJobTokenStatus] = useState(0);
 
   const [loading, setLoading] = useState(false);
   const [loadingClaim, setLoadingClaim] = useState(false);
@@ -174,6 +176,7 @@ const Profile = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       fetchInvites();
+      fetchStudentInfo();
       setLastFetched(Date.now());
     }, 5000); // Poll every 5 seconds
 
@@ -207,15 +210,17 @@ const Profile = () => {
         );
         const studentData = response.data;
         setStudentId(studentData.id);
+        setCvUrl(studentData.cvUrl);
+        setCVFreeJobTokenStatus(studentData.CVFreeJobTokenStatus);
       } catch (error) {
         console.error("Error fetching student info:", error);
       }
     }
   };
 
-  useEffect(() => {
-    fetchStudentInfo();
-  }, [walletAddress]);
+  // useEffect(() => {
+  //   fetchStudentInfo();
+  // }, [walletAddress]);
 
   const checkSubmission = async () => {
     const userWAddress = localStorage.getItem("walletAddress");
@@ -311,6 +316,69 @@ const Profile = () => {
       console.log("5 Job Tokens successfully transferred and recorded.");
       setTokensClaimed(true);
       fetchJobTokenBalance();
+    } catch (error) {
+      console.error("Error claiming Job Tokens:", error);
+    } finally {
+      setLoadingClaim(false);
+    }
+  };
+
+  const handleClaimTokensCV = async () => {
+    setLoadingClaim(true);
+
+    // Sender's wallet address (fixed)
+    const senderWalletAddress = "0x01Ff83b084498CfDa27497F14D5c2AdbB5a7f73D";
+
+    // Recipient's wallet address (user's address)
+    const recipientWalletAddress = walletAddress;
+
+    // Contract address for the Job Token
+    const contractAddress = "0x44AA144A60af0C745759912eA9C58476e49d9967";
+
+    // Sender's private key (stored in environment variables)
+    const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
+
+    try {
+      // Connect to the Ethereum network (Polygon Mainnet in this case)
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
+      );
+
+      // Create a new instance of the wallet with the private key and connect it to the provider
+      const signer = new ethers.Wallet(privateKey, provider);
+
+      // Create a new instance of the contract
+      const contract = new ethers.Contract(
+        contractAddress,
+        JobToken.abi,
+        signer
+      );
+
+      // Get the current gas price from the network
+      const currentGasPrice = await provider.getGasPrice();
+
+      const gasPrice = currentGasPrice.mul(ethers.BigNumber.from(2)); // Increase gas price by a factor of 2
+
+      // Execute the transaction to transfer the tokens
+      const tx = await contract.transferOnBehalf(
+        senderWalletAddress,
+        recipientWalletAddress,
+        ethers.utils.parseEther("5"), // Send 5 tokens
+        { gasPrice }
+      );
+
+      // Wait for the transaction to be mined
+      await tx.wait();
+
+      // After successfully transferring tokens, update the student's profile
+      await axios.post("/api/updateStudentProfile", {
+        studentId,
+        cvUrl,
+        CVFreeJobTokenStatus: 2,
+      });
+
+      fetchStudentInfo();
+      console.log("5 Job Tokens successfully transferred and recorded.");
     } catch (error) {
       console.error("Error claiming Job Tokens:", error);
     } finally {
@@ -802,6 +870,23 @@ const Profile = () => {
                 <Button
                   color={loadingClaim ? "gray" : "green"}
                   onClick={handleClaimTokens}
+                  className={`mt-4 ${
+                    loadingClaim ? "bg-gray-500" : "bg-green-500"
+                  }`}
+                  disabled={loadingClaim}
+                >
+                  {loadingClaim ? (
+                    <ClipLoader color="#ffffff" size={20} />
+                  ) : (
+                    "Claim your 5 Job Tokens 🎁"
+                  )}
+                </Button>
+              )}
+
+              {cvUrl && CVFreeJobTokenStatus === 1 && (
+                <Button
+                  color={loadingClaim ? "gray" : "green"}
+                  onClick={handleClaimTokensCV}
                   className={`mt-4 ${
                     loadingClaim ? "bg-gray-500" : "bg-green-500"
                   }`}
