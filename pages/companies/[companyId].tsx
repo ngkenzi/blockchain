@@ -15,7 +15,13 @@ import {
   Center,
   Modal,
 } from "@mantine/core";
-import { FaEnvelope, FaWallet, FaCoins, FaRegSadCry } from "react-icons/fa";
+import {
+  FaEnvelope,
+  FaWallet,
+  FaCoins,
+  FaRegSadCry,
+  FaFilePdf,
+} from "react-icons/fa";
 import Layout from "../Layout";
 import axios from "axios";
 
@@ -51,6 +57,7 @@ const CompanyDetail = () => {
   const [studentId, setStudentId] = useState(null);
   const [walletAddress, setWalletAddress] = useState("");
   const [cvFile, setCvFile] = useState(null);
+  const [cvUrl, setCvUrl] = useState("");
 
   useEffect(() => {
     setWalletAddress(localStorage.getItem("walletAddress"));
@@ -64,12 +71,14 @@ const CompanyDetail = () => {
         );
         const studentData = response.data;
         setStudentId(studentData.id);
+        setCvUrl(studentData.cvUrl);
       } catch (error) {
         console.error("Error fetching student info:", error);
       }
     }
   };
 
+  console.log(cvUrl);
   useEffect(() => {
     fetchStudentInfo();
   }, [walletAddress]);
@@ -140,14 +149,18 @@ const CompanyDetail = () => {
       typeof router.query.companyId === "string"
         ? parseInt(router.query.companyId)
         : null;
-
     const numericExperience = experience ? parseInt(experience, 10) : 0;
 
-    try {
-      let cvUrl = "N/A";
-      let CVFreeJobTokenStatus = 0;
+    // Initialize applicationData with default values
+    let applicationData = {
+      jobId: selectedJob.id,
+      studentId,
+      companyId,
+      experience: numericExperience,
+      cvUrl,
+    };
 
-      // Check if a file is selected
+    try {
       if (cvFile) {
         const formData = new FormData();
         formData.append("cv", cvFile);
@@ -158,25 +171,25 @@ const CompanyDetail = () => {
             "Content-Type": "multipart/form-data",
           },
         });
+        let cvUrl = "N/A"; // Default value for cvUrl
+
         cvUrl = uploadResponse.data.fileUrl;
-        CVFreeJobTokenStatus = 1;
+
+        // Update applicationData with the new cvUrl
+        applicationData = { ...applicationData, cvUrl };
 
         // Update student's profile
         await axios.post("/api/updateStudentProfile", {
           studentId,
           cvUrl,
-          CVFreeJobTokenStatus,
+          CVFreeJobTokenStatus: 1,
         });
+      } else if (cvUrl !== "") {
+        // If CV already exists, use the existing cvUrl
+        applicationData.cvUrl = cvUrl;
       }
 
       // Then, submit the application with the CV URL
-      const applicationData = {
-        jobId: selectedJob.id,
-        studentId,
-        companyId,
-        experience: numericExperience,
-        cvUrl,
-      };
 
       // Send application data to your application processing route
       await axios.post("/api/applyForJob", applicationData);
@@ -336,11 +349,21 @@ const CompanyDetail = () => {
             value={experience}
             onChange={(e) => setExperience(e.target.value)}
           />
+
+          {cvUrl && cvUrl !== "N/A" && (
+            <div className="text-sm text-gray-500 flex items-center">
+              <span>You already have a CV uploaded.</span>
+              <a href={cvUrl} target="_blank" rel="noopener noreferrer">
+                <FaFilePdf className="ml-2 text-red-500" size="1.25em" />
+              </a>
+            </div>
+          )}
+
           <input
             type="file"
             accept="application/pdf"
-            onChange={(e) => setCvFile(e.target.files[0])} // Add a new state setter for the CV file
-            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
+            onChange={(e) => setCvFile(e.target.files[0])}
+            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500 mb-2"
           />
 
           <button
