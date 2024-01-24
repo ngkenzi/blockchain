@@ -11,7 +11,7 @@ const MeetingsSection = () => {
 
     const fetchMeetings = async () => {
         try {
-            const response = await axios.get(`http://localhost:4000/getMeetings?companyId=${companyId}`);
+            const response = await axios.get(`/api/getMeetingsByCompanyID?companyId=${companyId}`);
             setMeetings(response.data.meetings);
         } catch (error) {
             console.error('Error fetching meetings:', error);
@@ -20,7 +20,7 @@ const MeetingsSection = () => {
 
     const updateMeetingStatus = async (meetingId, newStatus) => {
         try {
-            await axios.post(`http://localhost:4000/updateMeetingStatus`, { meetingId, status: newStatus });
+            await axios.post(`/api/updateMeetingStatus`, { meetingId, status: newStatus });
             fetchMeetings(); // Refetch meetings to update the list
         } catch (error) {
             console.error('Error updating meeting status:', error);
