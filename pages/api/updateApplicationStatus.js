@@ -3,16 +3,16 @@ import axios from 'axios';
 
 export default async function handler(req, res) {
     if (req.method === 'POST') {
-        const { studentId, status } = req.body;
+        const { applicationId, status } = req.body;
 
-        // Check if both studentId and status are provided
-        if (!studentId || !status) {
-            return res.status(400).json({ message: 'Student ID and status are required' });
+        // Check if both applicationId and status are provided
+        if (!applicationId || !status) {
+            return res.status(400).json({ message: 'Application ID and status are required' });
         }
 
         try {
             // Making a request to the actual API endpoint
-            const response = await axios.post('http://localhost:4000/updateApplicationStatus', { studentId, status });
+            const response = await axios.post('http://localhost:4000/updateApplicationStatus', { applicationId, status });
             res.status(200).json(response.data);
         } catch (error) {
             console.error('Error updating application status', error);
