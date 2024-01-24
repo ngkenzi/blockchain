@@ -378,6 +378,7 @@ const Profile = () => {
       });
 
       fetchStudentInfo();
+      fetchTransactionHistory();
       console.log("5 Job Tokens successfully transferred and recorded.");
       alert(
         "5 Job Tokens have been successfully claimed! You can check the transaction details in the History tab."
@@ -1088,6 +1089,9 @@ const Profile = () => {
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-3">
+                      Function
+                    </th>
+                    <th scope="col" className="px-6 py-3">
                       Transaction Hash
                     </th>
                     <th scope="col" className="px-6 py-3">
@@ -1099,15 +1103,13 @@ const Profile = () => {
                     <th scope="col" className="px-6 py-3">
                       Category
                     </th>
-                    <th scope="col" className="px-6 py-3">
-                      Function
-                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {transactionHistory.transfers &&
                     Array.isArray(transactionHistory.transfers) &&
-                    transactionHistory.transfers
+                    [...transactionHistory.transfers]
+                      .reverse()
                       .filter(
                         (tx) =>
                           tx.from === walletAddress || tx.to === walletAddress
@@ -1117,6 +1119,17 @@ const Profile = () => {
                           key={index}
                           className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                         >
+                          <td className="px-6 py-4">
+                            {tx.from.toLowerCase() ===
+                            walletAddress.toLowerCase()
+                              ? "Accepted Offer"
+                              : tx.from.toLowerCase() ===
+                                "0x01ff83b084498cfda27497f14d5c2adbb5a7f73d"
+                              ? "Claimed Token"
+                              : tx.category === "erc721"
+                              ? "Minted NFT"
+                              : ""}
+                          </td>
                           <td className="px-6 py-4">
                             <a
                               href={`https://polygonscan.com/tx/${tx.hash}`}
@@ -1129,17 +1142,6 @@ const Profile = () => {
                           <td className="px-6 py-4">{tx.from}</td>
                           <td className="px-6 py-4">{tx.to}</td>
                           <td className="px-6 py-4">{tx.category}</td>
-                          <td className="px-6 py-4">
-                            {tx.from.toLowerCase() ===
-                            walletAddress.toLowerCase()
-                              ? "Accepted Offer"
-                              : tx.from.toLowerCase() ===
-                                "0x01ff83b084498cfda27497f14d5c2adbb5a7f73d"
-                              ? "Claimed Token"
-                              : tx.category === "erc721"
-                              ? "Minted NFT"
-                              : ""}
-                          </td>
                         </tr>
                       ))}
                 </tbody>
