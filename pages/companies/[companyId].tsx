@@ -78,7 +78,6 @@ const CompanyDetail = () => {
     }
   };
 
-  console.log(cvUrl);
   useEffect(() => {
     fetchStudentInfo();
   }, [walletAddress]);
@@ -184,6 +183,7 @@ const CompanyDetail = () => {
           cvUrl,
           CVFreeJobTokenStatus: 1,
         });
+        fetchStudentInfo();
       } else if (cvUrl !== "") {
         // If CV already exists, use the existing cvUrl
         applicationData.cvUrl = cvUrl;
@@ -194,8 +194,6 @@ const CompanyDetail = () => {
       // Send application data to your application processing route
       await axios.post("/api/applyForJob", applicationData);
 
-      console.log(selectedJob.id);
-      console.log(studentId);
 
       alert("Application submitted successfully!");
       setIsApplyModalOpen(false);
