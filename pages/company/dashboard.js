@@ -5,6 +5,7 @@ import EmployeesSection from './EmployeesSection';
 import StudentsSearchSection from './StudentsSearchSection';
 import RequestSection from './RequestSection';
 import JobsSection from './JobsSection';
+import MeetingsSection from './MeetingsSection';
 import { useRouter } from 'next/router';
 
 export default function Dashboard() {
@@ -31,6 +32,8 @@ export default function Dashboard() {
                 return <RequestSection />;
             case 'jobs':
                 return <JobsSection />;
+            case 'meetings':
+                return <MeetingsSection />;
             default:
                 return <ProfileSection />;
         }
@@ -72,6 +75,11 @@ export default function Dashboard() {
                     <li>
                         <a onClick={() => setActiveTab('jobs')} className="flex items-center p-4 cursor-pointer hover:bg-indigo-100">
                             <span>Jobs</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a onClick={() => setActiveTab('meetings')} className="flex items-center p-4 cursor-pointer hover:bg-indigo-100">
+                            <span>Meetings</span>
                         </a>
                     </li>
                 </ul>

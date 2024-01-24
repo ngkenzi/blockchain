@@ -18,6 +18,9 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
     const isFirstRender = useRef(true);
     const [showNotAvailable, setShowNotAvailable] = useState(true);
 
+    const [isMeetingFormOpen, setIsMeetingFormOpen] = useState(false);
+    const [meetingData, setMeetingData] = useState({ link: '', scheduledTime: '' });
+
     useEffect(() => {
         const fetchCompanyWalletAddress = async () => {
             const companyId = localStorage.getItem('companyId');
@@ -79,6 +82,41 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
             console.error('Error sending invite', error);
         }
     };
+
+    const openMeetingForm = (studentId) => {
+        setSelectedStudent(studentId); // Assuming you have a way to track the selected student
+        setMeetingData({ link: '', scheduledTime: '' }); // Reset the form data
+        setIsMeetingFormOpen(true); // Open the form
+    };
+
+    const handleMeetingFormChange = (e) => {
+        setMeetingData({ ...meetingData, [e.target.name]: e.target.value });
+    };
+
+    const submitMeetingForm = async (e) => {
+        e.preventDefault();
+        // Format the scheduled time to ISO string for MySQL
+        const formattedTime = new Date(meetingData.scheduledTime).toISOString().slice(0, 19).replace('T', ' ');
+        try {
+            const response = await axios.post('/api/scheduleMeeting', {
+                studentId: selectedStudent,
+                companyId: parseInt(localStorage.getItem('companyId')),
+                meetingLink: meetingData.link,
+                scheduledTime: formattedTime
+            });
+
+            if (response.data.success) {
+                console.log('Meeting scheduled successfully');
+                setIsMeetingFormOpen(false); // Close the form on success
+            } else {
+                console.warn('Meeting could not be scheduled:', response.data.message);
+            }
+        } catch (error) {
+            console.error('Error scheduling meeting', error);
+        }
+    };
+
+
     // Function to handle sorting
     const sortStudents = (a, b) => {
         // Convert scores to numbers, treating "Not Available" as a null value
@@ -213,7 +251,33 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
                     <span className="ml-2 text-sm text-gray-600">Show Unassessed Users</span>
                 </label>
             </div>
-
+            {isMeetingFormOpen && (
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" id="meeting-form-modal">
+                    <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+                        <form onSubmit={submitMeetingForm}>
+                            <h3 className="text-lg font-semibold mb-4">Schedule Meeting</h3>
+                            <input
+                                type="text"
+                                name="link"
+                                placeholder="Meeting Link"
+                                value={meetingData.link}
+                                onChange={handleMeetingFormChange}
+                                className="w-full mb-3 p-2 border border-gray-300 rounded-md"
+                            />
+                            <input
+                                type="datetime-local"
+                                name="scheduledTime"
+                                value={meetingData.scheduledTime}
+                                onChange={handleMeetingFormChange}
+                                className="w-full mb-3 p-2 border border-gray-300 rounded-md"
+                            />
+                            <button type="submit" className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                Schedule Meeting
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
 
             {loading ? (
                 <div className="flex justify-center items-center h-20">
@@ -250,6 +314,12 @@ const StudentsSearchSection = ({ onSelectStudent }) => {
                                                 </div>
                                             </div>
                                         </div>
+                                        <button
+                                            onClick={() => openMeetingForm(student.id)}
+                                            className="ml-4 p-2 border rounded-md transition hover:bg-gray-100"
+                                        >
+                                            Invite for Interview
+                                        </button>
                                         <button
                                             onClick={() => handleCheckClick(student)}
                                             className={`ml-4 p-2 border rounded-md transition ${checkedStudents[student.id] ? "border-green-500 text-green-500" : "border-gray-300 text-gray-500"} ${disabledStudents[student.id] || checkedStudents[student.id] ? "opacity-50 cursor-not-allowed" : "hover:bg-gray-100"}`}
