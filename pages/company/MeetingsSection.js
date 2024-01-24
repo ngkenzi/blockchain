@@ -47,6 +47,13 @@ const MeetingsSection = () => {
                             </button>
                         </>
                     )}
+                    {meeting.status === 'Invited' && (
+                        <>
+                            <button onClick={() => updateMeetingStatus(meeting.id, 'cancelled')} className="bg-red-500 text-white p-2 rounded">
+                                Set to Cancelled
+                            </button>
+                        </>
+                    )}
                 </div>
             ))}
         </div>

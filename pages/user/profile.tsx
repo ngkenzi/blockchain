@@ -148,7 +148,6 @@ const Profile = () => {
 
   // Function to fetch meetings for the user
   const fetchMeetings = async () => {
-    
     try {
       const response = await axios.get("/api/getMeetingsByUserId", {
         params: { studentId: studentId },
@@ -200,6 +199,7 @@ const Profile = () => {
     const interval = setInterval(() => {
       fetchInvites();
       fetchStudentInfo();
+      fetchMeetings();
       setLastFetched(Date.now());
     }, 5000); // Poll every 5 seconds
 
@@ -638,6 +638,28 @@ const Profile = () => {
       localStorage.removeItem("token");
       router.push("/user/login");
     }
+  };
+
+  const updateMeetingStatus = async (meetingId, newStatus) => {
+    try {
+      await axios.post(`/api/updateMeetingStatus`, {
+        meetingId,
+        status: newStatus,
+      });
+      fetchMeetings(); // Refetch meetings to update the list
+    } catch (error) {
+      console.error("Error updating meeting status:", error);
+    }
+  };
+
+  // Function to handle accepting a meeting
+  const handleAcceptMeeting = async (meetingId) => {
+    await updateMeetingStatus(meetingId, "scheduled");
+  };
+
+  // Function to handle cancelling a meeting
+  const handleCancelMeeting = async (meetingId) => {
+    await updateMeetingStatus(meetingId, "cancelled");
   };
 
   const fetchTransactionHistory = async () => {
@@ -1202,6 +1224,35 @@ const Profile = () => {
                     <p>
                       <strong>Status:</strong> {meeting.status}
                     </p>
+
+                    {/* Action Buttons */}
+                    {meeting.status === "Invited" && (
+                      <div className="flex justify-end mt-2">
+                        <button
+                          className="bg-green-500 text-white p-2 rounded mr-2"
+                          onClick={() => handleAcceptMeeting(meeting.id)}
+                        >
+                          Accept
+                        </button>
+                        <button
+                          className="bg-red-500 text-white p-2 rounded"
+                          onClick={() => handleCancelMeeting(meeting.id)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
+
+                    {meeting.status === "scheduled" && (
+                      <div className="flex justify-end mt-2">
+                        <button
+                          className="bg-red-500 text-white p-2 rounded"
+                          onClick={() => handleCancelMeeting(meeting.id)}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))
               ) : (
