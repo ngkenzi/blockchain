@@ -69,7 +69,7 @@ const RequestSection = () => {
         console.log(companyId)
 
         if (disabledStudents[studentId]) {
-            return; // Do not send invite if the student is disabled
+            return; // Do not send offer if the student is disabled
         }
 
         // Fetch company details
@@ -155,7 +155,7 @@ const RequestSection = () => {
                                 <button
                                     onClick={() => handleSendInviteClick({ walletAddress: students[request.studentId]?.walletAddress, id: request.studentId })}
                                     className="mt-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                                    Send Invite
+                                    Send Offer
                                 </button>
                             </div>
                         </div>

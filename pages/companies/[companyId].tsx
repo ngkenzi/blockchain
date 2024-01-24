@@ -141,11 +141,11 @@ const CompanyDetail = () => {
         ? parseInt(router.query.companyId)
         : null;
 
-    console.log(companyId);
+    const numericExperience = experience ? parseInt(experience, 10) : 0;
 
     try {
-      let cvUrl = "";
-
+      let cvUrl = "N/A";
+      
       // Check if a file is selected
       if (cvFile) {
         const formData = new FormData();
@@ -165,7 +165,7 @@ const CompanyDetail = () => {
         jobId: selectedJob.id,
         studentId,
         companyId,
-        experience,
+        experience: numericExperience,
         cvUrl,
       };
 
@@ -324,7 +324,6 @@ const CompanyDetail = () => {
             type="number"
             className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
             placeholder={`Years of experience as ${selectedJob?.position}`}
-            min="0"
             value={experience}
             onChange={(e) => setExperience(e.target.value)}
           />
