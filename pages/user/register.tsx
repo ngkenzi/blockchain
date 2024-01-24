@@ -33,6 +33,7 @@ const URegister = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [cvFile, setCvFile] = useState(null);
 
   // Function to toggle show/hide password
   const toggleShowPassword = () => {
@@ -74,7 +75,31 @@ const URegister = () => {
 
   const registerUser = async () => {
     setLoading(true);
+
     try {
+      let cvUrl = "N/A";
+      let CVFreeJobTokenStatus = 0;
+
+      if (cvFile) {
+        const formData = new FormData();
+        formData.append("cv", cvFile);
+
+        // Upload the CV file and get the URL
+        const uploadResponse = await axios.post("/api/upload-cv", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        cvUrl = uploadResponse.data.fileUrl;
+        CVFreeJobTokenStatus = 1;
+      }
+
+      const fullData = {
+        ...formData,
+        cvUrl,
+        CVFreeJobTokenStatus,
+      };
+
       const response = await axios.post("/api/Uregister", formData);
       setInviteType("success");
       setMessage("User registered successfully");
@@ -182,6 +207,13 @@ const URegister = () => {
                 rightSection={PasswordInputRightIcon()} // Set the icon as the right section of the input
                 rightSectionWidth={40} // Adjust width as needed
                 style={{ marginBottom: 30 }}
+              />
+
+              <TextInput
+                type="file"
+                accept="application/pdf"
+                onChange={(e) => setCvFile(e.target.files[0])}
+                label="Upload CV (PDF only)"
               />
 
               <select

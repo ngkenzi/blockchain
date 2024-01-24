@@ -145,7 +145,8 @@ const CompanyDetail = () => {
 
     try {
       let cvUrl = "N/A";
-      
+      let CVFreeJobTokenStatus = 0;
+
       // Check if a file is selected
       if (cvFile) {
         const formData = new FormData();
@@ -158,6 +159,14 @@ const CompanyDetail = () => {
           },
         });
         cvUrl = uploadResponse.data.fileUrl;
+        CVFreeJobTokenStatus = 1;
+
+        // Update student's profile
+        await axios.post("/api/updateStudentProfile", {
+          studentId,
+          cvUrl,
+          CVFreeJobTokenStatus,
+        });
       }
 
       // Then, submit the application with the CV URL

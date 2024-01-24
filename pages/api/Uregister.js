@@ -4,7 +4,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         try {
             // Extract the necessary fields from the request body
-            const { email, password, universityName, FirstName, LastName } = req.body;
+            const { email, password, universityName, FirstName, LastName, cvUrl, CVFreeJobTokenStatus } = req.body;
 
             // Make a POST request to the register endpoint
             const response = await axios.post('http://localhost:4000/Uregister', {
@@ -12,7 +12,9 @@ export default async function handler(req, res) {
                 password,
                 universityName,
                 FirstName,
-                LastName
+                LastName,
+                cvUrl,
+                CVFreeJobTokenStatus
             });
 
             // Forward the response back to the client
