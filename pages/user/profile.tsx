@@ -86,6 +86,9 @@ const Profile = () => {
   const [step, setStep] = useState(1);
   const uniAddress = "0xbaeb7bcfa679bf0132df2a1b8d273f327cfb0542";
 
+  const [isCvUploadModalOpen, setIsCvUploadModalOpen] = useState(false);
+  const [cvFile, setCvFile] = useState(null);
+
   const [transactionHistory, setTransactionHistory] = useState([]);
 
   const navigateToAssessment = () => {
@@ -657,6 +660,36 @@ const Profile = () => {
     await updateMeetingStatus(meetingId, "scheduled");
   };
 
+  const handleCvUpload = async () => {
+    if (cvFile) {
+      const formData = new FormData();
+      formData.append("cv", cvFile);
+
+      try {
+        // Upload the file first
+        const uploadResponse = await axios.post("/api/upload-cv", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        const cvUrl = uploadResponse.data.fileUrl;
+
+        // Update student's profile
+        await axios.post("/api/updateStudentProfile", {
+          studentId,
+          cvUrl,
+          CVFreeJobTokenStatus: 1,
+        });
+
+        fetchStudentInfo(); // Refetch user info to update state
+        setIsCvUploadModalOpen(false); // Close the modal
+      } catch (error) {
+        console.error("Error uploading CV:", error);
+      }
+    }
+  };
+
   // Function to handle cancelling a meeting
   const handleCancelMeeting = async (meetingId) => {
     await updateMeetingStatus(meetingId, "cancelled");
@@ -716,12 +749,24 @@ const Profile = () => {
             onClick={navigateHome}
           />
 
-          {/* Logout Icon */}
-          <FaSignOutAlt
-            className="text-gray-500 cursor-pointer hover:text-red-500"
-            size={24}
-            onClick={() => setIsLogoutModalOpen(true)}
-          />
+          <div className="flex items-center">
+            {/* Conditional Upload CV Button */}
+            {!cvUrl && (
+              <Button
+                onClick={() => setIsCvUploadModalOpen(true)}
+                className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                Upload CV
+              </Button>
+            )}
+
+            {/* Logout Icon */}
+            <FaSignOutAlt
+              className="text-gray-500 cursor-pointer hover:text-red-500"
+              size={24}
+              onClick={() => setIsLogoutModalOpen(true)}
+            />
+          </div>
         </div>
 
         {/* Logout Confirmation Modal */}
@@ -893,6 +938,25 @@ const Profile = () => {
               Confirm
             </Button>
           </div>
+        </Modal>
+
+        <Modal
+          opened={isCvUploadModalOpen}
+          onClose={() => setIsCvUploadModalOpen(false)}
+          title="Upload CV"
+        >
+          <input
+            type="file"
+            onChange={(e) => setCvFile(e.target.files[0])}
+            accept=".pdf"
+          />
+          <Button
+            onClick={handleCvUpload}
+            disabled={!cvFile} // Button is disabled if cvFile is null
+            className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          >
+            Upload
+          </Button>
         </Modal>
 
         <header className="flex flex-col md:flex-row justify-center items-center text-center mb-8">
