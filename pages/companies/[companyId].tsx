@@ -170,6 +170,7 @@ const CompanyDetail = () => {
             "Content-Type": "multipart/form-data",
           },
         });
+        
         let cvUrl = "N/A"; // Default value for cvUrl
 
         cvUrl = uploadResponse.data.fileUrl;
@@ -178,11 +179,14 @@ const CompanyDetail = () => {
         applicationData = { ...applicationData, cvUrl };
 
         // Update student's profile
-        await axios.post("/api/updateStudentProfile", {
-          studentId,
-          cvUrl,
-          CVFreeJobTokenStatus: 1,
-        });
+        if (!cvUrl || cvUrl === "N/A") {
+          // Update student's profile
+          await axios.post("/api/updateStudentProfile", {
+            studentId,
+            cvUrl,
+            CVFreeJobTokenStatus: 1,
+          });
+        }
         fetchStudentInfo();
       } else if (cvUrl !== "") {
         // If CV already exists, use the existing cvUrl
@@ -191,9 +195,7 @@ const CompanyDetail = () => {
 
       // Then, submit the application with the CV URL
 
-      // Send application data to your application processing route
       await axios.post("/api/applyForJob", applicationData);
-
 
       alert("Application submitted successfully!");
       setIsApplyModalOpen(false);
