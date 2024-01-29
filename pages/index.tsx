@@ -258,198 +258,20 @@ const Home = () => {
               <span style={{ color: "#9A30DB" }}>WHAT</span>
               <span> WE DO</span>
             </div>
-            {/* start here */}
-            <div
-              className="motive-container"
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <div
-                className="motive"
+
+            <div>
+              <img
+                src="/assets/medal.png"
+                alt="Description of Image"
                 style={{
-                  width: "33%",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center"
+                  maxWidth: "100%" /* Scale image based on width */,
+                  maxHeight: "100%" /* Control the height */,
+                  transform: "scale(0.2)",
                 }}
-              >
-                <img
-                  src="/assets/medal.png"
-                  alt="Description of Image"
-                  style={{
-                    maxWidth: "100%" /* Scale image based on width */,
-                    maxHeight: "100%" /* Control the height */,
-                    transform: "scale(0.2)",
-                  }}
-                />
-                <p
-                  style={{
-                    fontSize: "20px",
-                    padding: "3px",
-                    textAlign: "center"
-                  }}
-                >
-                  Simplify your certification process
-                </p>
-                <p
-                  style={{
-                    fontSize: "15px",
-                    fontWeight: "normal",
-                    padding: "10px",
-                    textAlign: "center"
-                  }}
-                >
-                  Leverage blockchain technology for secure and efficient certification management
-                </p>
-              </div>
-              <div
-                className="motive"
-                style={{
-                  width: "33%",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center"
-                }}
-              >
-                <img
-                  src="/assets/medal.png"
-                  alt="Description of Image"
-                  style={{
-                    maxWidth: "100%" /* Scale image based on width */,
-                    maxHeight: "100%" /* Control the height */,
-                    transform: "scale(0.2)",
-                  }}
-                />
-                <p
-                  style={{
-                    fontSize: "20px",
-                    padding: "3px",
-                    textAlign: "center"
-                  }}
-                >
-                  Simplify your certification process
-                </p>
-                <p
-                  style={{
-                    fontSize: "15px",
-                    fontWeight: "normal",
-                    padding: "10px",
-                    textAlign: "center"
-                  }}
-                >
-                  Leverage blockchain technology for secure and efficient certification management
-                </p>
-              </div>
-              <div
-                className="motive"
-                style={{
-                  width: "33%",
-                  height: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center"
-                }}
-              >
-                <img
-                  src="/assets/medal.png"
-                  alt="Description of Image"
-                  style={{
-                    maxWidth: "100%" /* Scale image based on width */,
-                    maxHeight: "100%" /* Control the height */,
-                    transform: "scale(0.2)",
-                  }}
-                />
-                <p
-                  style={{
-                    fontSize: "20px",
-                    padding: "3px",
-                    textAlign: "center"
-                  }}
-                >
-                  Simplify your certification process
-                </p>
-                <p
-                  style={{
-                    fontSize: "15px",
-                    fontWeight: "normal",
-                    padding: "10px",
-                    textAlign: "center"
-                  }}
-                >
-                  Leverage blockchain technology for secure and efficient certification management
-                </p>
-              </div>
+              />
             </div>
           </div>
-
-
         </div>
-      </div>
-      <div
-        className="poweredby"
-        style={{
-          backgroundColor: "black",
-          height: "60vh",
-          minHeight: "60vh",
-          position: "relative",
-        }}>
-        <div className="title">
-          <p
-            style={{
-              color: "darkgrey",
-              textAlign: "center",
-              fontFamily: "sans-serif",
-              paddingTop: "40px",
-              fontSize: "30px",
-            }}
-          >
-            POWERED BY
-          </p>
-        </div>
-        <div
-          className="logo-container"
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center"
-          }}
-        >
-          <img
-            src="/assets/MSPSystems.png"
-            style={{
-              maxWidth: "30%" /* Scale image based on width */,
-              maxHeight: "30%" /* Control the height */,
-              transform: "scale(0.5)",
-            }}
-          />
-          <img
-            src="assets/polygon-logo-colored.svg"
-            style={{
-              maxWidth: "30%" /* Scale image based on width */,
-              maxHeight: "30%" /* Control the height */,
-              transform: "scale(0.5)",
-              background: "white",
-              padding: "40px",
-              borderRadius: "30px"
-            }}
-          />
-        </div>
-        <hr
-          style={{
-            width: "70%",
-            margin: "auto",
-            height: "1px",
-            border: "none",
-            backgroundColor: "dimgrey"
-          }}
-        />
       </div>
     </>
   );
