@@ -411,7 +411,7 @@ const Home = () => {
               fontSize: "30px",
             }}
           >
-            POWERED BYy
+            POWERED BY
           </p>
         </div>
         <div
