@@ -222,12 +222,12 @@ const Home = () => {
       </div>
       <div
         style={{
-          height: "100vh",
+          height: "70vh",
+          minHeight: "70vh",
           backgroundImage: 'url("/assets/what_we_do_bg.png")',
           backgroundSize: "100% 100%",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
-          minHeight: "100vh",
           position: "relative",
         }}
       >
@@ -252,9 +252,13 @@ const Home = () => {
               display: "flex",
               justifyContent: "center",
               flexDirection: "column",
+              padding: "0 150px",
             }}
           >
-            <div className="title" style={{ alignSelf: "center" }}>
+            <div
+              className="title"
+              style={{ alignSelf: "center", padding: "80px 0 40px 0" }}
+            >
               <span style={{ color: "#9A30DB" }}>WHAT</span>
               <span> WE DO</span>
             </div>
@@ -282,9 +286,9 @@ const Home = () => {
                   src="/assets/medal.png"
                   alt="Description of Image"
                   style={{
-                    maxWidth: "100%" /* Scale image based on width */,
-                    maxHeight: "100%" /* Control the height */,
-                    transform: "scale(0.2)",
+                    maxWidth: "50%" /* Scale image based on width */,
+                    maxHeight: "50%" /* Control the height */,
+                    transform: "scale(0.5)",
                   }}
                 />
                 <p
@@ -322,9 +326,9 @@ const Home = () => {
                   src="/assets/medal.png"
                   alt="Description of Image"
                   style={{
-                    maxWidth: "100%" /* Scale image based on width */,
-                    maxHeight: "100%" /* Control the height */,
-                    transform: "scale(0.2)",
+                    maxWidth: "50%" /* Scale image based on width */,
+                    maxHeight: "50%" /* Control the height */,
+                    transform: "scale(0.5)",
                   }}
                 />
                 <p
@@ -362,9 +366,9 @@ const Home = () => {
                   src="/assets/medal.png"
                   alt="Description of Image"
                   style={{
-                    maxWidth: "100%" /* Scale image based on width */,
-                    maxHeight: "100%" /* Control the height */,
-                    transform: "scale(0.2)",
+                    maxWidth: "50%" /* Scale image based on width */,
+                    maxHeight: "50%" /* Control the height */,
+                    transform: "scale(0.5)",
                   }}
                 />
                 <p
@@ -399,6 +403,7 @@ const Home = () => {
           height: "60vh",
           minHeight: "60vh",
           position: "relative",
+          padding: "0 150px",
         }}
       >
         <div className="title">
@@ -407,7 +412,8 @@ const Home = () => {
               color: "darkgrey",
               textAlign: "center",
               fontFamily: "sans-serif",
-              paddingTop: "40px",
+              fontWeight: "100",
+              paddingTop: "60px",
               fontSize: "30px",
             }}
           >
@@ -426,16 +432,16 @@ const Home = () => {
           <img
             src="/assets/MSPSystems.png"
             style={{
-              maxWidth: "30%" /* Scale image based on width */,
-              maxHeight: "30%" /* Control the height */,
+              maxWidth: "40%" /* Scale image based on width */,
+              maxHeight: "40%" /* Control the height */,
               transform: "scale(0.5)",
             }}
           />
           <img
             src="assets/polygon-logo-colored.svg"
             style={{
-              maxWidth: "30%" /* Scale image based on width */,
-              maxHeight: "30%" /* Control the height */,
+              maxWidth: "40%" /* Scale image based on width */,
+              maxHeight: "40%" /* Control the height */,
               transform: "scale(0.5)",
               background: "white",
               padding: "40px",
@@ -445,11 +451,8 @@ const Home = () => {
         </div>
         <hr
           style={{
-            width: "70%",
-            margin: "auto",
-            height: "1px",
-            border: "none",
-            backgroundColor: "dimgrey",
+            backgroundColor: "white",
+            opacity: "0.3",
           }}
         />
       </div>
