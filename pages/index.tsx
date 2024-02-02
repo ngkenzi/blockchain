@@ -78,7 +78,7 @@ const Home = () => {
               color: "white",
               opacity: "70%",
               textTransform: "uppercase",
-              padding: "10px 0px",
+              padding: "20px 0px",
               fontFamily: "Kanit, sans-serif",
               fontSize: "10px",
               fontStyle: "normal",
@@ -293,7 +293,7 @@ const Home = () => {
                 />
                 <p
                   style={{
-                    fontSize: "20px",
+                    fontSize: "18px",
                     padding: "3px",
                     textAlign: "center",
                   }}
@@ -303,9 +303,12 @@ const Home = () => {
                 <p
                   style={{
                     fontSize: "15px",
-                    fontWeight: "normal",
+                    fontWeight: "400",
                     padding: "10px",
                     textAlign: "center",
+                    letterSpacing: "1px",
+                    opacity: "73%",
+                    fontFamily: "Kanit, sans-serif",
                   }}
                 >
                   Leverage blockchain technology for secure and efficient
@@ -333,7 +336,7 @@ const Home = () => {
                 />
                 <p
                   style={{
-                    fontSize: "20px",
+                    fontSize: "18px",
                     padding: "3px",
                     textAlign: "center",
                   }}
@@ -343,9 +346,12 @@ const Home = () => {
                 <p
                   style={{
                     fontSize: "15px",
-                    fontWeight: "normal",
+                    fontWeight: "400",
                     padding: "10px",
                     textAlign: "center",
+                    letterSpacing: "1px",
+                    opacity: "73%",
+                    fontFamily: "Kanit, sans-serif",
                   }}
                 >
                   Leverage blockchain technology for secure and efficient
@@ -373,7 +379,7 @@ const Home = () => {
                 />
                 <p
                   style={{
-                    fontSize: "20px",
+                    fontSize: "18px",
                     padding: "3px",
                     textAlign: "center",
                   }}
@@ -383,9 +389,12 @@ const Home = () => {
                 <p
                   style={{
                     fontSize: "15px",
-                    fontWeight: "normal",
+                    fontWeight: "400",
                     padding: "10px",
                     textAlign: "center",
+                    letterSpacing: "1px",
+                    opacity: "73%",
+                    fontFamily: "Kanit, sans-serif",
                   }}
                 >
                   Leverage blockchain technology for secure and efficient
@@ -446,6 +455,7 @@ const Home = () => {
               background: "white",
               padding: "40px",
               borderRadius: "30px",
+              opacity: "80%",
             }}
           />
         </div>
