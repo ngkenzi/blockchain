@@ -7,6 +7,7 @@ import RequestSection from './RequestSection';
 import JobsSection from './JobsSection';
 import MeetingsSection from './MeetingsSection';
 import CreateAssessmentSection from './CreateAssessmentSection';
+import AssessmentsSection from './AssessmentsSection';
 
 import { useRouter } from 'next/router';
 
@@ -38,6 +39,8 @@ export default function Dashboard() {
                 return <MeetingsSection />;
             case 'create-assessment':
                 return <CreateAssessmentSection />;
+            case 'assessments':
+                return <AssessmentsSection />;
             default:
                 return <ProfileSection />;
         }
@@ -89,6 +92,11 @@ export default function Dashboard() {
                     <li>
                         <a onClick={() => setActiveTab('create-assessment')} className="flex items-center p-4 cursor-pointer hover:bg-indigo-100">
                             <span>Create Assessment</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a onClick={() => setActiveTab('assessments')} className="flex items-center p-4 cursor-pointer hover:bg-indigo-100">
+                            <span>Assessments</span>
                         </a>
                     </li>
                 </ul>
