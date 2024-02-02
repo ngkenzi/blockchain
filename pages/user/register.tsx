@@ -100,7 +100,7 @@ const URegister = () => {
         CVFreeJobTokenStatus,
       };
 
-      const response = await axios.post("/api/Uregister", formData);
+      const response = await axios.post("/api/Uregister", fullData);
       setInviteType("success");
       setMessage("User registered successfully");
       setInviteVisible(true);
