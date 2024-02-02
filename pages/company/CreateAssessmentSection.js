@@ -4,6 +4,7 @@ import { FaTrash } from 'react-icons/fa';
 export default function CreateAssessmentSection() {
     const [questions, setQuestions] = useState([]);
     const [assessmentSubmitted, setAssessmentSubmitted] = useState(false);
+    const [submittedQuestions, setSubmittedQuestions] = useState([]);
 
     // Function to check if the assessment has been submitted
     const checkAssessmentSubmission = () => {
@@ -25,6 +26,28 @@ export default function CreateAssessmentSection() {
     useEffect(() => {
         checkAssessmentSubmission();
     }, []);
+    
+    const fetchSubmittedAssessment = () => {
+        const companyID = localStorage.getItem('companyId');
+        fetch(`http://localhost:4000/get-assessment/${companyID}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.questions) {
+                    let questions;
+                    try {
+                        // Attempt to parse if it's a string, otherwise, use it directly
+                        questions = typeof data.questions === 'string' ? JSON.parse(data.questions) : data.questions;
+                    } catch (error) {
+                        console.error('Error parsing questions:', error);
+                        questions = []; // Fallback to empty array on error
+                    }
+                    setSubmittedQuestions(questions);
+                }
+            })
+            .catch(error => console.error('Error fetching assessment:', error));
+    };
+
+
     const addQuestion = (type) => {
         setQuestions([...questions, { type, content: '', options: type === 'radio' ? ['', ''] : undefined }]);
     };
@@ -108,20 +131,32 @@ export default function CreateAssessmentSection() {
     return (
         <div className="p-6 bg-white rounded-md shadow-md">
             {assessmentSubmitted ? (
-                // If an assessment has been submitted, show the "View Assessment" button
-                <div className="text-center">
-                    <h2 className="text-2xl font-semibold mb-4">Assessment Submitted</h2>
-                    <button
-                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
-                        onClick={() => {
-                            // Navigate to the view assessment page or perform an action to view the assessment
-                            // For example, you might use React Router for navigation:
-                            // history.push('/path-to-view-assessment');
-                        }}
-                    >
-                        View Assessment
-                    </button>
-                </div>
+                // If an assessment has been submitted, show the "View Assessment" button and submitted questions
+                <>
+                    <div className="text-center">
+                        <h2 className="text-2xl font-semibold mb-4">Assessment Submitted</h2>
+                        <button
+                            className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700"
+                            onClick={fetchSubmittedAssessment}
+                        >
+                            View Assessment
+                        </button>
+                    </div>
+                    {submittedQuestions.length > 0 && (
+                        <div className="mt-6">
+                            <h3 className="text-xl font-semibold mb-2">Submitted Questions</h3>
+                            <div className="border p-4 rounded-md">
+                                {submittedQuestions.map((question, index) => (
+                                    <div key={index} className="mb-4">
+                                        <p className="font-semibold">{question.content}</p>
+                                        {/* Render each question based on its type */}
+                                        {renderQuestionPreview(question, index)}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </>
             ) : (
                 <>
                     <h2 className="text-2xl font-semibold mb-4">Create Assessment</h2>
