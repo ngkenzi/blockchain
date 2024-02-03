@@ -117,7 +117,15 @@ const Home = () => {
                 students
               </span>
             </div>
-            <span>Login {">"}</span>
+            <span
+              style={{ cursor: "pointer" }}
+              onClick={(event) => {
+                event.preventDefault();
+                router.push("/user/login");
+              }}
+            >
+              Login {">"}
+            </span>
           </div>
           <div
             className="intro"
@@ -187,6 +195,7 @@ const Home = () => {
                     minWidth: "170px",
                     fontFamily: "Kanit, sans-serif",
                   }}
+                  onClick={() => router.push("/user/register")}
                 >
                   Get Started
                 </button>
@@ -204,6 +213,7 @@ const Home = () => {
                     minWidth: "170px",
                     fontFamily: "Kanit, sans-serif",
                   }}
+                  onClick={() => router.push("/assessment")}
                 >
                   Claim Job Token
                 </button>
