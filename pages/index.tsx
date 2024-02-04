@@ -1,24 +1,7 @@
 import React, { useState, useEffect } from "react";
-import Head from "next/head";
-import { Title, Text, Button, Flex } from "@mantine/core";
-import { HeaderResponsive } from "../components/Header";
-import { FooterLinks } from "../components/Footer";
-import SelfAssessmentCTA from "../components/SelfAssessmentCTA";
-import Layout from "./Layout";
 import { useRouter } from "next/router";
-import { Carousel } from "react-responsive-carousel";
-import { FaAward, FaCogs, FaUserSecret } from "react-icons/fa";
-
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { color } from "html2canvas/dist/types/css/types/color";
-
-const ServiceCard = ({ Icon, title, description }) => (
-  <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 ease-in-out h-60 md:h-auto">
-    <Icon className="w-16 h-16 text-blue-600 mb-4" />
-    <h3 className="text-lg font-semibold mb-2 text-center">{title}</h3>
-    <p className="text-sm text-gray-600 text-center flex-grow">{description}</p>
-  </div>
-);
+import Navbar from "../components/Navbar";
 
 const Home = () => {
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -31,8 +14,9 @@ const Home = () => {
     try {
       const userWAddress = localStorage.getItem("walletAddress");
       const response = await fetch(
-        `/api/checkSubmissionStatus?walletAddress=${userWAddress}`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/checkSubmissionStatus?walletAddress=${userWAddress}`
       );
+
       const data = await response.json();
 
       if (data.exists) {
@@ -70,63 +54,7 @@ const Home = () => {
             height: "90vh",
           }}
         >
-          <div
-            className="homepage_navbar"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              color: "white",
-              opacity: "70%",
-              textTransform: "uppercase",
-              padding: "20px 0px",
-              fontFamily: "Kanit, sans-serif",
-              fontSize: "10px",
-              fontStyle: "normal",
-              letterSpacing: "2px",
-              borderBottom: "2px solid rgba(255, 255, 255, 0.41)",
-            }}
-          >
-            <span>BEINGU</span>
-            <div>
-              <span
-                style={{
-                  paddingRight: "39px",
-                }}
-              >
-                home
-              </span>
-              <span
-                style={{
-                  paddingRight: "39px",
-                }}
-              >
-                search
-              </span>
-              <span
-                style={{
-                  paddingRight: "39px",
-                }}
-              >
-                companies
-              </span>
-              <span
-                style={{
-                  paddingRight: "39px",
-                }}
-              >
-                students
-              </span>
-            </div>
-            <span
-              style={{ cursor: "pointer" }}
-              onClick={(event) => {
-                event.preventDefault();
-                router.push("/user/login");
-              }}
-            >
-              Login {">"}
-            </span>
-          </div>
+          <Navbar />
           <div
             className="intro"
             style={{
