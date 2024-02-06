@@ -175,6 +175,7 @@ const URegister = () => {
                 value={formData.FirstName}
                 onChange={handleChange}
                 name="FirstName"
+                placeholder="John"
               />
             </Grid.Col>
             <Grid.Col span={6}>
@@ -183,6 +184,7 @@ const URegister = () => {
                 value={formData.LastName}
                 onChange={handleChange}
                 name="LastName"
+                placeholder="Harry"
               />
             </Grid.Col>
             <Grid.Col span={12}>
@@ -191,11 +193,11 @@ const URegister = () => {
                 value={formData.LastName}
                 onChange={handleChange}
                 name="email"
+                placeholder="example@email.com"
               />
             </Grid.Col>
             <Grid.Col span={6}>
               <TextInput
-                placeholder="Password"
                 name="password"
                 type={showPassword ? "text" : "password"}
                 value={formData.password}
@@ -207,7 +209,6 @@ const URegister = () => {
             </Grid.Col>
             <Grid.Col span={6}>
               <TextInput
-                placeholder="Confirm Password"
                 name="confirmPassword"
                 type={showPassword ? "text" : "password"}
                 value={confirmPassword}
@@ -218,18 +219,10 @@ const URegister = () => {
               />
             </Grid.Col>
             <Grid.Col span={12}>
-              <TextInput
-                type="file"
-                accept="application/pdf"
-                onChange={(e) => setCvFile(e.target.files[0])}
-                label="Upload CV (PDF only)"
-              />
               <FileInput
                 rightSection={icon}
-                label="Attach your CV"
-                placeholder="Your CV"
-                rightSectionPointerEvents="none"
-                mt="md"
+                label="Upload CV (PDF only)"
+                placeholder="Insert file"
               />
             </Grid.Col>
             <Grid.Col span={12}>
