@@ -1,6 +1,7 @@
 .navbar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   color: white;
   opacity: 70%;
   text-transform: uppercase;
@@ -19,4 +20,32 @@
 
 .loginLink {
   cursor: pointer;
+}
+
+@media (max-width: 992px) {
+  .navbar > div {
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 30%;
+    box-sizing: border-box;
+    scrollbar-width: none;
+  }
+}
+
+@media (max-width: 600px) {
+}
+
+@media (max-width: 375px) {
+  .navbar > div {
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 30%;
+    box-sizing: border-box;
+    scrollbar-width: none;
+  }
+
+  .navLink,
+  .loginLink {
+    padding-right: 15px; /* Adjust spacing between nav links */
+  }
 }

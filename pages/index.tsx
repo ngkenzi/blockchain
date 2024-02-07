@@ -45,7 +45,7 @@ const Home = () => {
               <p>Future of Web3 and Blockchains.</p>
             </div>
             <div className={styles.lower_content}>
-              <div>
+              <div className={styles.button_container}>
                 <button onClick={() => router.push("/user/register")}>
                   Get Started
                 </button>
@@ -73,27 +73,33 @@ const Home = () => {
             <div className={styles.motive_container}>
               <div className={styles.motive}>
                 <img src="/assets/medal.png" alt="Description of Image" />
-                <p>Simplify your certification process</p>
-                <p className={styles.motive_desc} style={{}}>
-                  Leverage blockchain technology for secure and efficient
-                  certification management
-                </p>
+                <div className={styles.motive_desc}>
+                  <p>Simplify your certification process</p>
+                  <p>
+                    Leverage blockchain technology for secure and efficient
+                    certification management
+                  </p>
+                </div>
               </div>
               <div className={styles.motive}>
                 <img src="/assets/medal.png" alt="Description of Image" />
-                <p>Simplify your certification process</p>
-                <p className={styles.motive_desc}>
-                  Leverage blockchain technology for secure and efficient
-                  certification management
-                </p>
+                <div className={styles.motive_desc}>
+                  <p>Simplify your certification process</p>
+                  <p>
+                    Leverage blockchain technology for secure and efficient
+                    certification management
+                  </p>
+                </div>
               </div>
               <div className={styles.motive}>
                 <img src="/assets/medal.png" alt="Description of Image" />
-                <p>Simplify your certification process</p>
-                <p className={styles.motive_desc}>
-                  Leverage blockchain technology for secure and efficient
-                  certification management
-                </p>
+                <div className={styles.motive_desc}>
+                  <p>Simplify your certification process</p>
+                  <p>
+                    Leverage blockchain technology for secure and efficient
+                    certification management
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -115,7 +121,7 @@ const Home = () => {
             }}
           />
         </div>
-        <hr />
+        <hr className="bottom_line" />
       </div>
     </>
   );
