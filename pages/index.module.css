@@ -207,7 +207,8 @@
     padding: 0 20px;
   }
   .intro {
-    height: 50vh;
+    min-height: 70vh;
+    padding: 20px;
   }
 
   .homepage_container > section {
@@ -220,16 +221,16 @@
   }
 
   .upper_content {
-    margin-top: 30px;
+    margin-top: 0px;
   }
 
   .upper_content p:first-child {
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .upper_content p:last-child {
     padding-top: 10px;
-    font-size: 20px;
+    font-size: 29px;
   }
 
   .upper_content,
@@ -251,7 +252,7 @@
   }
 
   .lower_content button {
-    font-size: 11px;
+    font-size: 13px;
     min-width: 43%;
   }
 
