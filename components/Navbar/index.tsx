@@ -7,7 +7,9 @@ const Navbar = () => {
 
   return (
     <div className={styles.navbar}>
-      <span>BEINGU</span>
+      <span>
+        <img className={styles.beingu_logo} src="/images/logo.png" />
+      </span>
       <div>
         <span className={styles.navLink} onClick={() => router.push("/")}>
           home
