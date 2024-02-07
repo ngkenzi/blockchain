@@ -110,16 +110,12 @@ const Home = () => {
           <p>POWERED BY</p>
         </div>
         <div className={styles.logo_container}>
-          <img src="/assets/MSPSystems.png" />
-          <img
-            src="assets/polygon-logo-colored.svg"
-            style={{
-              background: "white",
-              padding: "40px",
-              borderRadius: "30px",
-              opacity: "80%",
-            }}
-          />
+          <a href="https://polygon.technology/" target="_blank">
+            <img src="/assets/MSPSystems.png" />
+          </a>
+          <a href="https://polygon.technology/" target="_blank">
+            <img src="assets/polygon-logo-colored.svg" />
+          </a>
         </div>
         <hr className="bottom_line" />
       </div>
