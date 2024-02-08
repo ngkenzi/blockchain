@@ -51,7 +51,10 @@ const login = () => {
   };
 
   return (
-    <div className="flex min-h-screen flex-1">
+    <div
+      className="flex min-h-screen flex-1"
+      style={{ fontFamily: "Kanit, sans-serif" }}
+    >
       <div className="relative hidden w-0 flex-1 lg:block">
         <img
           className="absolute inset-0 h-full w-full object-cover"

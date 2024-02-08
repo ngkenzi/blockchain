@@ -131,7 +131,8 @@ const URegister = () => {
       {loading ? ( // Conditional rendering based on loading state
         <BeatLoader color="#333" /> // Show loader when loading
       ) : (
-        <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24">
+        <div className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
+        style={{ fontFamily: "Kanit, sans-serif" }}>
           <div className="mx-auto w-full max-w-sm lg:w-96">
             <div>
               <a href="/">
