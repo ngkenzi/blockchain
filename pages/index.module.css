@@ -37,7 +37,7 @@
   opacity: 70%;
   text-transform: uppercase;
   padding: 10px 0px;
-  font-family: Kanit;
+  font-family: "Kanit", sans-serif;
   font-size: 16px;
   font-style: normal;
   letter-spacing: 2px;
@@ -78,14 +78,14 @@
   border-radius: 10px;
   cursor: pointer;
   min-width: 170px;
-  font-family: Kanit;
+  font-family: "Kanit", sans-serif;
 }
 
 .lower_content > p {
   color: white;
   opacity: 73%;
   text-align: center;
-  font-family: Kanit;
+  font-family: "Kanit", sans-serif;
 }
 
 .whatwedo {
@@ -161,7 +161,7 @@
   text-align: center;
   letter-spacing: 1px;
   opacity: 73%;
-  font-family: Kanit;
+  font-family: "Kanit", sans-serif;
 }
 
 .poweredby {
@@ -175,7 +175,7 @@
 .poweredby > .title > p {
   color: darkgrey;
   text-align: center;
-  font-family: Kanit;
+  font-family: "Kanit", sans-serif;
   font-weight: 100;
   padding-top: 60px;
   font-size: 30px;
