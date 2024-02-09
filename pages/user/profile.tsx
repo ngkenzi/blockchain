@@ -91,12 +91,36 @@ const Profile = () => {
 
   const [transactionHistory, setTransactionHistory] = useState([]);
 
+  const [assessments, setAssessments] = useState([]);
+  const [loadingAssessments, setLoadingAssessments] = useState(true);
+
+  useEffect(() => {
+    const fetchAssessments = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/assessments");
+        console.log("YOO", response.data); // Log to see the actual response
+
+        if (response.data.success) {
+          setAssessments(response.data.assessments);
+        } else {
+          console.error(response.data.message);
+          setAssessments([]);
+        }
+      } catch (error) {
+        console.error("Error fetching assessments:", error);
+      } finally {
+        setLoadingAssessments(false);
+      }
+    };
+
+    fetchAssessments();
+  }, []);
+
   const navigateToAssessment = () => {
     router.push("/assessment");
   };
 
   const handleImageGenerate = (imgData) => {
-    console.log("handleImageGenerate called", imgData);
     setGeneratedImageData(imgData);
     setStep(2);
   };
@@ -156,7 +180,6 @@ const Profile = () => {
         params: { studentId: studentId },
       });
 
-      console.log("MEETINGS", response.data.meetings);
       setMeetings(response.data.meetings);
     } catch (error) {
       console.error("Error fetching meetings:", error);
@@ -182,7 +205,6 @@ const Profile = () => {
   };
 
   function handleInviteAction(invite) {
-    console.log("invite action clicked", invite);
     // Implement your invite action handling logic here
   }
 
@@ -254,7 +276,6 @@ const Profile = () => {
       const response = await axios.get(
         `/api/checkSubmissionStatus?walletAddress=${userWAddress}`
       );
-      console.log("Submission Status Response:", response.data); // For debugging
 
       if (response.data.exists) {
         setHasSubmitted(true);
@@ -339,7 +360,6 @@ const Profile = () => {
 
       // Update the database status
       await axios.post(`/api/claimTokens?walletAddress=${walletAddress}`);
-      console.log("5 Job Tokens successfully transferred and recorded.");
       setTokensClaimed(true);
       fetchJobTokenBalance();
     } catch (error) {
@@ -405,7 +425,6 @@ const Profile = () => {
 
       fetchStudentInfo();
       fetchTransactionHistory();
-      console.log("5 Job Tokens successfully transferred and recorded.");
       alert(
         "5 Job Tokens have been successfully claimed! You can check the transaction details in the History tab."
       );
@@ -427,7 +446,6 @@ const Profile = () => {
 
     while (moreDataExists) {
       let url = `/api/rarible?address=${walletAddress}`;
-      console.log(url);
       try {
         const response = await axios.get(url, {
           headers: {
@@ -436,7 +454,6 @@ const Profile = () => {
           },
         });
 
-        console.log(response.data);
 
         if (response.status !== 200) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -536,12 +553,10 @@ const Profile = () => {
 
   const fetchInviteById = async (inviteId) => {
     try {
-      console.log("Fetching invite by ID:", inviteId);
 
       const response = await axios.get("/api/getInviteById", {
         params: { inviteId },
       });
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching invite by ID", error);
@@ -570,7 +585,6 @@ const Profile = () => {
     setTriggerMinting(true);
 
     try {
-      console.log("INVOTE", inviteId);
       // Fetch the full invite details
       const id = inviteId.id;
 
@@ -721,7 +735,6 @@ const Profile = () => {
 
       if (response.data && response.data.result) {
         setTransactionHistory(response.data.result);
-        console.log(transactionHistory);
       }
     } catch (error) {
       console.error("Error fetching transaction history:", error);
@@ -1045,6 +1058,9 @@ const Profile = () => {
             <Tabs.Tab value="meetings" color="blue">
               Meetings
             </Tabs.Tab>
+            <Tabs.Tab value="assessments" color="blue">
+              Assessments
+            </Tabs.Tab>
           </Tabs.List>
 
           <Tabs.Panel value="profile" pt="xs">
@@ -1325,6 +1341,34 @@ const Profile = () => {
                 </Text>
               )}
             </div>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="assessments" pt="xs">
+            {assessments.length > 0 ? (
+              <div className="space-y-4">
+                {assessments.map((assessment, index) => (
+                  <div key={index} className="p-4 bg-white shadow rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <Text size="md" weight={500}>
+                        {assessment.title || `Assessment ${index + 1}`}
+                      </Text>
+                      <Button
+                        color="blue"
+                        onClick={() =>
+                          router.push(`/assessment/${assessment.companyID}`)
+                        } // Assuming companyID can be used to navigate to the specific assessment
+                      >
+                        Take Assessment
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <Text align="center" size="md" color="gray">
+                No assessments available.
+              </Text>
+            )}
           </Tabs.Panel>
         </Tabs>
       </Container>
