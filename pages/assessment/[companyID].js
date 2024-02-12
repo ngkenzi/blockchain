@@ -30,6 +30,8 @@ const AssessmentPage = () => {
                 );
                 const studentData = response.data;
                 setStudentId(studentData.id);
+                console.log(studentId)
+
             } catch (error) {
                 console.error("Error fetching student info:", error);
             }
@@ -38,7 +40,7 @@ const AssessmentPage = () => {
 
     useEffect(() => {
         fetchStudentInfo();
-    }, []);
+    }, [walletAddress]); // Add walletAddress as a dependency
 
 
     useEffect(() => {
@@ -71,7 +73,7 @@ const AssessmentPage = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+        console.log(studentId)
         // Assuming you have studentId and companyID available, and responses collected in state
         try {
             const response = await axios.post('http://localhost:4000/submit-assessment', {

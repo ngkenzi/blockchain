@@ -63,6 +63,8 @@ const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState("/sample-profile.jpg"); // Initial value
   const [universityName, setUniversityName] = useState("");
   const [jobTokenBalance, setJobTokenBalance] = useState(0);
+  const [maticBalance, setMaticBalance] = useState(0);
+
   const [invites, setInvites] = useState([]);
   const [activeTab, setActiveTab] = useState("profile");
   const [lastFetched, setLastFetched] = useState(Date.now());
@@ -97,10 +99,10 @@ const Profile = () => {
   useEffect(() => {
     const fetchAssessments = async () => {
       try {
-        const response = await axios.get("http://localhost:4000/assessments");
-        console.log("YOO", response.data); // Log to see the actual response
+        const response = await axios.get("/api/assessments");
 
         if (response.data.success) {
+          console.log(response.data.assessments);
           setAssessments(response.data.assessments);
         } else {
           console.error(response.data.message);
@@ -310,6 +312,25 @@ const Profile = () => {
     }
   };
 
+  const fetchMaticBalance = async () => {
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
+      );
+
+      // Fetch the balance of the walletAddress
+      const balance = await provider.getBalance(walletAddress);
+
+      // Convert the balance from Wei to Ether (or Matic, in the case of Polygon)
+      const formattedBalance = ethers.utils.formatEther(balance);
+
+      // Update your state or UI with the Matic balance
+      setMaticBalance(parseFloat(formattedBalance));
+    } catch (error) {
+      console.error("Error fetching Matic balance:", error);
+    }
+  };
+
   // Function to handle the claim token action
   const handleClaimTokens = async () => {
     setLoadingClaim(true);
@@ -358,10 +379,25 @@ const Profile = () => {
       // Wait for the transaction to be mined
       await tx.wait();
 
+      // Define the amount of Matic to send
+      const maticAmount = ethers.utils.parseEther("2");
+
+      // Create a transaction object for sending Matic
+      const maticTransferTx = {
+        to: recipientWalletAddress,
+        value: maticAmount,
+        gasPrice: gasPrice,
+      };
+
+      // Execute the Matic transfer
+      const maticTx = await signer.sendTransaction(maticTransferTx);
+      await maticTx.wait();
+
       // Update the database status
       await axios.post(`/api/claimTokens?walletAddress=${walletAddress}`);
       setTokensClaimed(true);
       fetchJobTokenBalance();
+      fetchMaticBalance();
     } catch (error) {
       console.error("Error claiming Job Tokens:", error);
     } finally {
@@ -453,7 +489,6 @@ const Profile = () => {
             "x-api-key": "d94d0879-f919-4803-b293-11ea277a2982",
           },
         });
-
 
         if (response.status !== 200) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -549,11 +584,11 @@ const Profile = () => {
 
   useEffect(() => {
     fetchJobTokenBalance();
+    fetchMaticBalance()
   }, [walletAddress]);
 
   const fetchInviteById = async (inviteId) => {
     try {
-
       const response = await axios.get("/api/getInviteById", {
         params: { inviteId },
       });
@@ -990,6 +1025,7 @@ const Profile = () => {
                   : "University not set"}
               </Text>
               <Text size="sm">Job Token Balance: {jobTokenBalance}</Text>
+              <Text size="sm">Matic Balance: {maticBalance}</Text>
 
               {/* Claim Tokens Button */}
               {hasSubmitted && !tokensClaimed && (
@@ -997,14 +1033,16 @@ const Profile = () => {
                   color={loadingClaim ? "gray" : "green"}
                   onClick={handleClaimTokens}
                   className={`mt-4 ${
-                    loadingClaim ? "bg-gray-500" : "bg-green-500"
-                  }`}
+                    loadingClaim
+                      ? "bg-gray-500"
+                      : "bg-gradient-to-r from-green-500 to-blue-500"
+                  } text-white`}
                   disabled={loadingClaim}
                 >
                   {loadingClaim ? (
                     <ClipLoader color="#ffffff" size={20} />
                   ) : (
-                    "Claim your 5 Job Tokens 🎁"
+                    "Claim your 5 Job Tokens & 2 Matic 🎁"
                   )}
                 </Button>
               )}
@@ -1349,9 +1387,17 @@ const Profile = () => {
                 {assessments.map((assessment, index) => (
                   <div key={index} className="p-4 bg-white shadow rounded-lg">
                     <div className="flex justify-between items-center">
-                      <Text size="md" weight={500}>
-                        {assessment.title || `Assessment ${index + 1}`}
-                      </Text>
+                      <div>
+                        <Text size="md" weight={500}>
+                          {assessment.title || `Assessment ${index + 1}`}
+                        </Text>
+                        <Text size="sm">
+                          Expiry Date:{" "}
+                          {new Date(
+                            assessment.expiry_date
+                          ).toLocaleDateString()}
+                        </Text>
+                      </div>
                       <Button
                         color="blue"
                         onClick={() =>

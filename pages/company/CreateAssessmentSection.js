@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { FaTrash } from 'react-icons/fa';
 
 export default function CreateAssessmentSection() {
+    const [title, setTitle] = useState('');
     const [questions, setQuestions] = useState([]);
     const [assessmentSubmitted, setAssessmentSubmitted] = useState(false);
     const [submittedQuestions, setSubmittedQuestions] = useState([]);
+    const [expiryDate, setExpiryDate] = useState('');
 
     // Function to check if the assessment has been submitted
     const checkAssessmentSubmission = () => {
-        const companyID = localStorage.getItem('companyId'); // Assuming companyID is stored in localStorage
+        const companyID = localStorage.getItem('companyId');
 
         fetch(`http://localhost:4000/check-assessment/${companyID}`)
             .then(response => response.json())
@@ -26,7 +28,7 @@ export default function CreateAssessmentSection() {
     useEffect(() => {
         checkAssessmentSubmission();
     }, []);
-    
+
     const fetchSubmittedAssessment = () => {
         const companyID = localStorage.getItem('companyId');
         fetch(`http://localhost:4000/get-assessment/${companyID}`)
@@ -78,12 +80,22 @@ export default function CreateAssessmentSection() {
         e.preventDefault();
         const companyID = localStorage.getItem('companyId');
 
+        if (!expiryDate) {
+            alert('Please set an expiry date.');
+            return;
+        }
+
+        if (!title) {
+            alert('Please set a title.');
+            return;
+        }
+
         fetch('http://localhost:4000/create-assessment', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ companyID, questions })
+            body: JSON.stringify({ companyID, questions, title, expiryDate })
         })
             .then(response => response.json())
             .then(data => {
@@ -161,6 +173,22 @@ export default function CreateAssessmentSection() {
                 <>
                     <h2 className="text-2xl font-semibold mb-4">Create Assessment</h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            placeholder="Enter Assessment Title"
+                            className="border p-2 rounded w-full mb-4"
+                        />
+                        <input
+                            type="date"
+                            value={expiryDate}
+                            onChange={(e) => setExpiryDate(e.target.value)}
+                            min={new Date().toISOString().split('T')[0]} // Set the min attribute to today's date
+                            className="border p-2 rounded w-full mb-4"
+                            placeholder="Enter Expiry Date"
+                        />
+
                         {questions.map((question, index) => (
                             <div key={index} className="border p-4 rounded-md flex flex-col">
                                 <div className="flex justify-between items-center">
