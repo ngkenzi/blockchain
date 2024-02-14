@@ -63,6 +63,8 @@ const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState("/sample-profile.jpg"); // Initial value
   const [universityName, setUniversityName] = useState("");
   const [jobTokenBalance, setJobTokenBalance] = useState(0);
+  const [maticBalance, setMaticBalance] = useState(0);
+
   const [invites, setInvites] = useState([]);
   const [activeTab, setActiveTab] = useState("profile");
   const [lastFetched, setLastFetched] = useState(Date.now());
@@ -91,12 +93,36 @@ const Profile = () => {
 
   const [transactionHistory, setTransactionHistory] = useState([]);
 
+  const [assessments, setAssessments] = useState([]);
+  const [loadingAssessments, setLoadingAssessments] = useState(true);
+
+  useEffect(() => {
+    const fetchAssessments = async () => {
+      try {
+        const response = await axios.get("/api/assessments");
+
+        if (response.data.success) {
+          console.log(response.data.assessments);
+          setAssessments(response.data.assessments);
+        } else {
+          console.error(response.data.message);
+          setAssessments([]);
+        }
+      } catch (error) {
+        console.error("Error fetching assessments:", error);
+      } finally {
+        setLoadingAssessments(false);
+      }
+    };
+
+    fetchAssessments();
+  }, []);
+
   const navigateToAssessment = () => {
     router.push("/assessment");
   };
 
   const handleImageGenerate = (imgData) => {
-    console.log("handleImageGenerate called", imgData);
     setGeneratedImageData(imgData);
     setStep(2);
   };
@@ -156,7 +182,6 @@ const Profile = () => {
         params: { studentId: studentId },
       });
 
-      console.log("MEETINGS", response.data.meetings);
       setMeetings(response.data.meetings);
     } catch (error) {
       console.error("Error fetching meetings:", error);
@@ -182,7 +207,6 @@ const Profile = () => {
   };
 
   function handleInviteAction(invite) {
-    console.log("invite action clicked", invite);
     // Implement your invite action handling logic here
   }
 
@@ -254,7 +278,6 @@ const Profile = () => {
       const response = await axios.get(
         `/api/checkSubmissionStatus?walletAddress=${userWAddress}`
       );
-      console.log("Submission Status Response:", response.data); // For debugging
 
       if (response.data.exists) {
         setHasSubmitted(true);
@@ -286,6 +309,25 @@ const Profile = () => {
       setJobTokenBalance(parseFloat(ethers.utils.formatUnits(balance, 18)));
     } catch (error) {
       console.error("Error fetching JobToken balance:", error);
+    }
+  };
+
+  const fetchMaticBalance = async () => {
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
+      );
+
+      // Fetch the balance of the walletAddress
+      const balance = await provider.getBalance(walletAddress);
+
+      // Convert the balance from Wei to Ether (or Matic, in the case of Polygon)
+      const formattedBalance = ethers.utils.formatEther(balance);
+
+      // Update your state or UI with the Matic balance
+      setMaticBalance(parseFloat(formattedBalance));
+    } catch (error) {
+      console.error("Error fetching Matic balance:", error);
     }
   };
 
@@ -337,11 +379,25 @@ const Profile = () => {
       // Wait for the transaction to be mined
       await tx.wait();
 
+      // Define the amount of Matic to send
+      const maticAmount = ethers.utils.parseEther("2");
+
+      // Create a transaction object for sending Matic
+      const maticTransferTx = {
+        to: recipientWalletAddress,
+        value: maticAmount,
+        gasPrice: gasPrice,
+      };
+
+      // Execute the Matic transfer
+      const maticTx = await signer.sendTransaction(maticTransferTx);
+      await maticTx.wait();
+
       // Update the database status
       await axios.post(`/api/claimTokens?walletAddress=${walletAddress}`);
-      console.log("5 Job Tokens successfully transferred and recorded.");
       setTokensClaimed(true);
       fetchJobTokenBalance();
+      fetchMaticBalance();
     } catch (error) {
       console.error("Error claiming Job Tokens:", error);
     } finally {
@@ -405,7 +461,6 @@ const Profile = () => {
 
       fetchStudentInfo();
       fetchTransactionHistory();
-      console.log("5 Job Tokens successfully transferred and recorded.");
       alert(
         "5 Job Tokens have been successfully claimed! You can check the transaction details in the History tab."
       );
@@ -427,7 +482,6 @@ const Profile = () => {
 
     while (moreDataExists) {
       let url = `/api/rarible?address=${walletAddress}`;
-      console.log(url);
       try {
         const response = await axios.get(url, {
           headers: {
@@ -435,8 +489,6 @@ const Profile = () => {
             "x-api-key": "d94d0879-f919-4803-b293-11ea277a2982",
           },
         });
-
-        console.log(response.data);
 
         if (response.status !== 200) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -532,16 +584,14 @@ const Profile = () => {
 
   useEffect(() => {
     fetchJobTokenBalance();
+    fetchMaticBalance()
   }, [walletAddress]);
 
   const fetchInviteById = async (inviteId) => {
     try {
-      console.log("Fetching invite by ID:", inviteId);
-
       const response = await axios.get("/api/getInviteById", {
         params: { inviteId },
       });
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching invite by ID", error);
@@ -570,7 +620,6 @@ const Profile = () => {
     setTriggerMinting(true);
 
     try {
-      console.log("INVOTE", inviteId);
       // Fetch the full invite details
       const id = inviteId.id;
 
@@ -721,7 +770,6 @@ const Profile = () => {
 
       if (response.data && response.data.result) {
         setTransactionHistory(response.data.result);
-        console.log(transactionHistory);
       }
     } catch (error) {
       console.error("Error fetching transaction history:", error);
@@ -977,6 +1025,7 @@ const Profile = () => {
                   : "University not set"}
               </Text>
               <Text size="sm">Job Token Balance: {jobTokenBalance}</Text>
+              <Text size="sm">Matic Balance: {maticBalance}</Text>
 
               {/* Claim Tokens Button */}
               {hasSubmitted && !tokensClaimed && (
@@ -984,14 +1033,16 @@ const Profile = () => {
                   color={loadingClaim ? "gray" : "green"}
                   onClick={handleClaimTokens}
                   className={`mt-4 ${
-                    loadingClaim ? "bg-gray-500" : "bg-green-500"
-                  }`}
+                    loadingClaim
+                      ? "bg-gray-500"
+                      : "bg-gradient-to-r from-green-500 to-blue-500"
+                  } text-white`}
                   disabled={loadingClaim}
                 >
                   {loadingClaim ? (
                     <ClipLoader color="#ffffff" size={20} />
                   ) : (
-                    "Claim your 5 Job Tokens 🎁"
+                    "Claim your 5 Job Tokens & 2 Matic 🎁"
                   )}
                 </Button>
               )}
@@ -1044,6 +1095,9 @@ const Profile = () => {
             </Tabs.Tab>
             <Tabs.Tab value="meetings" color="blue">
               Meetings
+            </Tabs.Tab>
+            <Tabs.Tab value="assessments" color="blue">
+              Assessments
             </Tabs.Tab>
           </Tabs.List>
 
@@ -1325,6 +1379,42 @@ const Profile = () => {
                 </Text>
               )}
             </div>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="assessments" pt="xs">
+            {assessments.length > 0 ? (
+              <div className="space-y-4">
+                {assessments.map((assessment, index) => (
+                  <div key={index} className="p-4 bg-white shadow rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <Text size="md" weight={500}>
+                          {assessment.title || `Assessment ${index + 1}`}
+                        </Text>
+                        <Text size="sm">
+                          Expiry Date:{" "}
+                          {new Date(
+                            assessment.expiry_date
+                          ).toLocaleDateString()}
+                        </Text>
+                      </div>
+                      <Button
+                        color="blue"
+                        onClick={() =>
+                          router.push(`/assessment/${assessment.companyID}`)
+                        } // Assuming companyID can be used to navigate to the specific assessment
+                      >
+                        Take Assessment
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <Text align="center" size="md" color="gray">
+                No assessments available.
+              </Text>
+            )}
           </Tabs.Panel>
         </Tabs>
       </Container>
