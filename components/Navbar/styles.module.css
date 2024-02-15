@@ -36,9 +36,6 @@
   }
 }
 
-@media (max-width: 600px) {
-}
-
 @media (min-width: 375px) and (max-width: 600px) {
   .navbar > div {
     overflow-x: auto;
