@@ -72,18 +72,16 @@ const Home = () => {
           </section>
         </div>
         <div className={styles.about_us_bg}>
-          <div className={styles.overlay}>
-            <div className={styles.content}>
-              <p>ABOUT US</p>
-              <p className={styles.aboutus_desc}>
-                At BeingU, we're passionate about leveraging blockchain
-                technology to enhance trust, transparency, and security.
-              </p>
-              <Button>
-                Learn more about our mission, vision, and the team behind the
-                platform
-              </Button>
-            </div>
+          <div className={styles.content}>
+            <p>ABOUT US</p>
+            <p className={styles.aboutus_desc}>
+              At BeingU, we're passionate about leveraging blockchain technology
+              to enhance trust, transparency, and security.
+            </p>
+            <Button>
+              Learn more about our mission, vision, and the team behind the
+              platform
+            </Button>
           </div>
         </div>
         <div className={styles.planet}>
