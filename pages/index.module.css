@@ -4,6 +4,11 @@
   background-repeat: no-repeat;
   background-position: center;
   min-height: 100vh;
+  position: relative;
+}
+
+.body {
+  font-family: Kanit;
 }
 
 .homepage_container > section {
@@ -88,88 +93,139 @@
   font-family: Kanit;
 }
 
-.whatwedo {
+.about_us_bg {
+  background-image: url(/images/about_us.png);
   height: 70vh;
-  min-height: 70vh;
-  background-image: url("/assets/what_we_do_bg.png");
-  background-size: 100% 100%;
   background-repeat: no-repeat;
-  background-position: center;
+  background-size: 100% 100%;
+  background-position: center top;
+  width: 100%;
   position: relative;
+  transform: translateY(-180px);
+  z-index: -2;
 }
 
-.whatwedo > div {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
+.overlay {
+  height: 70vh;
+  background: linear-gradient(
+    to bottom,
+    rgba(1, 7, 23, 0.9) 30%,
+    rgba(9, 15, 49, 0.85) 40%,
+    rgba(17, 13, 52, 0.81) 50%,
+    rgba(20, 15, 63, 0.88) 80%,
+    rgba(10, 1, 15, 0.98) 100%
+  );
+  padding: 90px 150px;
 }
 
-.whatwedo_content {
+.aboutus_desc {
+  font-size: 16px !important;
+  opacity: 73%;
+  font-weight: 100 !important;
+  margin: 30px 0;
+}
+
+.content {
+  margin-top: 200px;
+}
+
+.content > p {
+  opacity: 73%;
   color: white;
-  font-weight: 900;
-  font-size: 43px;
-  letter-spacing: 2px;
-  opacity: 80%;
+  font-size: 44px;
+  font-weight: 700;
+}
+
+.planet {
+  padding: 0 150px;
+  height: 100vh;
+  position: relative;
+  z-index: 3;
+  transform: translateY(-180px);
+  background: linear-gradient(rgba(0, 0, 0, 0.73), rgba(0, 0, 0, 0.73)),
+    url(/images/planet.jpg);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center;
+}
+
+.planet p {
+  color: white;
+}
+
+.planet .container {
+  display: flex;
+  gap: 100px;
+  justify-content: space-between;
+}
+
+.features {
   display: flex;
   justify-content: center;
+  margin-top: 180px;
   flex-direction: column;
-  padding: 0 150px;
+  align-items: center;
 }
 
-.whatwedo_content > .title {
-  align-self: center;
-  padding: 80px 0 40px 0;
+.features .title {
+  color: white;
+  font-size: 44px;
+  font-weight: 700;
+  margin-bottom: 50px;
 }
 
-.motive_container {
+.grid {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  gap: 100px;
 }
 
-.motive {
-  width: 33%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.user_org {
+  margin-top: 100px;
 }
 
-.motive > img {
-  max-width: 50%;
-  max-height: 50%;
-  transform: scale(0.5);
+.grid .item {
+  background-color: #171717;
+  border-radius: 10px;
+  padding: 50px;
+  position: relative;
+  z-index: 2;
 }
 
-.motive > p {
-  font-size: 18px;
-  padding: 3px;
-  text-align: center;
+.grid .item :first-child {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
 }
 
-.motive_desc {
-  font-size: 15px;
-  font-weight: 400;
-  padding: 10px;
-  text-align: center;
-  letter-spacing: 1px;
-  opacity: 73%;
-  font-family: Kanit;
+.user_org .title {
+  font-size: 30px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.howitworks .title {
+  font-size: 44px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.howitworks {
+  margin-top: 100px;
+}
+
+.enterprise {
+  margin-top: 100px;
 }
 
 .poweredby {
   background-color: black;
-  height: 60vh;
+  height: 70vh;
   min-height: 60vh;
   position: relative;
   padding: 0 150px;
+  transform: translateY(-180px);
+  padding-top: 140px;
 }
 
 .poweredby > .title > p {
@@ -340,9 +396,5 @@
   .button_container {
     display: flex;
     justify-content: space-between;
-  }
-
-  .whatwedo {
-    min-height: 40vh;
   }
 }
