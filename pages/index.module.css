@@ -4,6 +4,11 @@
   background-repeat: no-repeat;
   background-position: center;
   min-height: 100vh;
+  position: relative;
+}
+
+.body {
+  font-family: Kanit;
 }
 
 .homepage_container > section {
@@ -88,88 +93,138 @@
   font-family: Kanit;
 }
 
-.whatwedo {
-  height: 70vh;
-  min-height: 70vh;
-  background-image: url("/assets/what_we_do_bg.png");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  background-position: center;
-  position: relative;
-}
-
-.whatwedo > div {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-}
-
-.whatwedo_content {
-  color: white;
-  font-weight: 900;
-  font-size: 43px;
-  letter-spacing: 2px;
-  opacity: 80%;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
+.about_us_bg {
   padding: 0 150px;
+  height: 70vh;
+  position: relative;
+  z-index: 3;
+  background: linear-gradient(
+      to bottom,
+      rgba(1, 7, 23, 1) 0%,
+      rgba(0, 9, 24, 0.9) 10%,
+      rgba(0, 10, 29, 0.8) 20%,
+      rgba(4, 11, 38, 0.75) 30%,
+      rgba(9, 15, 49, 0.7) 40%,
+      rgba(17, 13, 52, 0.7) 50%,
+      rgba(22, 5, 40, 0.7) 60%,
+      rgba(30, 2, 42, 0.75) 70%,
+      rgba(30, 3, 41, 0.79) 80%,
+      rgba(17, 2, 24, 0.85) 90%,
+      rgb(0, 0, 0) 100%
+    ),
+    url(/images/about_us.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
 }
 
-.whatwedo_content > .title {
-  align-self: center;
-  padding: 80px 0 40px 0;
+.aboutus_desc {
+  font-size: 16px !important;
+  opacity: 73%;
+  font-weight: 100 !important;
+  margin: 30px 0;
 }
 
-.motive_container {
+.content > p {
+  opacity: 73%;
+  color: white;
+  font-size: 44px;
+  font-weight: 700;
+}
+
+.planet {
+  padding: 0 150px;
+  height: 100vh;
+  position: relative;
+  z-index: 3;
+  background: linear-gradient(rgba(0, 0, 0, 0.73), rgba(0, 0, 0, 0.73)),
+    url(/images/planet.jpg);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center;
+}
+
+.planet p {
+  color: white;
+  opacity: 73%;
+}
+
+.planet .container {
+  display: flex;
+  gap: 100px;
+  justify-content: space-between;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  margin-top: 180px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.features .title {
+  color: white;
+  font-size: 44px;
+  font-weight: 700;
+  opacity: 73%;
+  margin-bottom: 50px;
+}
+
+.user_org {
+  margin-top: 100px;
+}
+
+.grid {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  gap: 100px;
 }
 
-.motive {
-  width: 33%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.grid .item {
+  background-color: #171717;
+  border-radius: 10px;
+  padding: 50px;
 }
 
-.motive > img {
-  max-width: 50%;
-  max-height: 50%;
-  transform: scale(0.5);
-}
-
-.motive > p {
-  font-size: 18px;
-  padding: 3px;
-  text-align: center;
-}
-
-.motive_desc {
-  font-size: 15px;
-  font-weight: 400;
-  padding: 10px;
-  text-align: center;
-  letter-spacing: 1px;
+.grid .item :first-child {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
   opacity: 73%;
-  font-family: Kanit;
+}
+
+.user_org .title {
+  font-size: 30px;
+  font-weight: 600;
+  opacity: 73%;
+  margin-bottom: 20px;
+}
+
+.howitworks .title {
+  font-size: 44px;
+  opacity: 73%;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.howitworks {
+  margin-top: 100px;
+}
+
+.enterprise {
+  margin-top: 100px;
 }
 
 .poweredby {
   background-color: black;
-  height: 60vh;
+  height: 70vh;
   min-height: 60vh;
   position: relative;
   padding: 0 150px;
+  padding-top: 140px;
 }
 
 .poweredby > .title > p {
@@ -264,27 +319,6 @@
     min-width: 43%;
   }
 
-  .whatwedo_content {
-    font-size: 24px;
-  }
-
-  .whatwedo_content > .title {
-    align-self: center;
-    padding: 20px 0;
-  }
-
-  .motive > img {
-    max-width: 80%;
-    max-height: none;
-    transform: scale(1);
-  }
-
-  .motive > p,
-  .motive_desc {
-    padding: 5px;
-    font-size: 14px;
-  }
-
   .logo_container > img {
     max-width: 80%;
     transform: scale(0.6);
@@ -303,32 +337,6 @@
     text-align: center;
   }
 
-  .motive_container {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .motive {
-    flex-direction: row;
-    width: 100%;
-  }
-
-  .motive > img {
-    max-width: 20%;
-  }
-
-  .motive_desc {
-    text-align: left;
-    font-size: 12px;
-  }
-
-  .motive_desc p:first-child {
-    font-size: 19px;
-    font-weight: 900;
-    color: white;
-    opacity: 1;
-  }
-
   .poweredby > .title > p {
     padding-top: 0px;
   }
@@ -342,7 +350,104 @@
     justify-content: space-between;
   }
 
-  .whatwedo {
-    min-height: 40vh;
+  .about_us_bg {
+    flex-direction: column;
+    padding: 0 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .content Button {
+    background-color: white;
+    opacity: 80%;
+    color: black;
+    border-radius: 20px;
+    font-size: 12px;
+  }
+
+  .content p:first-child {
+    font-size: 29px;
+  }
+
+  .aboutus_desc,
+  .howitworks .desc {
+    font-size: 12px !important;
+  }
+
+  .planet,
+  .grid,
+  .container {
+    flex-direction: column;
+    gap: 0px !important;
+  }
+
+  .planet {
+    padding: 0 20px;
+  }
+
+  .user_org,
+  .howitworks,
+  .enterprise,
+  .features {
+    padding: 0;
+    margin: 0;
+  }
+
+  .howitworks {
+    text-align: justify;
+    position: relative;
+    right: 0;
+  }
+
+  .user_org {
+    font-size: 12px;
+    text-align: justify;
+  }
+
+  .user,
+  .enterprise {
+    margin: 18px 0;
+  }
+
+  .user .title,
+  .enterprise .title,
+  .howitworks .title,
+  .features .title {
+    font-size: 23px;
+    margin: 5px 0;
+  }
+
+  .grid {
+    flex-direction: row;
+    white-space: nowrap;
+    overflow-x: auto;
+    gap: 10px !important;
+    max-width: 100%;
+    scrollbar-width: none;
+  }
+
+  .grid .item {
+    padding: 20px;
+    max-width: 70%;
+    white-space: normal;
+    flex: 0 0 auto;
+    font-size: 12px;
+  }
+
+  .grid .item :first-child {
+    font-size: 16px;
+  }
+
+  .about_us_bg {
+    height: 50vh;
+  }
+
+  .features {
+    margin: 30px 0;
+  }
+
+  .poweredby {
+    padding: 20px 0;
   }
 }
