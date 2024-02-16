@@ -78,16 +78,13 @@ const Home = () => {
               At BeingU, we're passionate about leveraging blockchain technology
               to enhance trust, transparency, and security.
             </p>
-            <Button>
-              Learn more about our mission, vision, and the team behind the
-              platform
-            </Button>
+            <Button>Learn more</Button>
           </div>
         </div>
         <div className={styles.planet}>
           <div className={styles.container}>
             <div className={styles.user_org}>
-              <div className="user">
+              <div className={styles.user}>
                 <p className={styles.title}>+ For Users</p>
                 <p className={styles.desc}>
                   Empower yourself with verifiable digital twins of your

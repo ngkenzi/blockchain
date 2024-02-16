@@ -173,22 +173,20 @@
   margin-bottom: 50px;
 }
 
+.user_org {
+  margin-top: 100px;
+}
+
 .grid {
   display: flex;
   flex-direction: row;
   gap: 100px;
 }
 
-.user_org {
-  margin-top: 100px;
-}
-
 .grid .item {
   background-color: #171717;
   border-radius: 10px;
   padding: 50px;
-  position: relative;
-  z-index: 2;
 }
 
 .grid .item :first-child {
@@ -321,27 +319,6 @@
     min-width: 43%;
   }
 
-  .whatwedo_content {
-    font-size: 24px;
-  }
-
-  .whatwedo_content > .title {
-    align-self: center;
-    padding: 20px 0;
-  }
-
-  .motive > img {
-    max-width: 80%;
-    max-height: none;
-    transform: scale(1);
-  }
-
-  .motive > p,
-  .motive_desc {
-    padding: 5px;
-    font-size: 14px;
-  }
-
   .logo_container > img {
     max-width: 80%;
     transform: scale(0.6);
@@ -360,32 +337,6 @@
     text-align: center;
   }
 
-  .motive_container {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .motive {
-    flex-direction: row;
-    width: 100%;
-  }
-
-  .motive > img {
-    max-width: 20%;
-  }
-
-  .motive_desc {
-    text-align: left;
-    font-size: 12px;
-  }
-
-  .motive_desc p:first-child {
-    font-size: 19px;
-    font-weight: 900;
-    color: white;
-    opacity: 1;
-  }
-
   .poweredby > .title > p {
     padding-top: 0px;
   }
@@ -397,5 +348,106 @@
   .button_container {
     display: flex;
     justify-content: space-between;
+  }
+
+  .about_us_bg {
+    flex-direction: column;
+    padding: 0 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .content Button {
+    background-color: white;
+    opacity: 80%;
+    color: black;
+    border-radius: 20px;
+    font-size: 12px;
+  }
+
+  .content p:first-child {
+    font-size: 29px;
+  }
+
+  .aboutus_desc,
+  .howitworks .desc {
+    font-size: 12px !important;
+  }
+
+  .planet,
+  .grid,
+  .container {
+    flex-direction: column;
+    gap: 0px !important;
+  }
+
+  .planet {
+    padding: 0 20px;
+  }
+
+  .user_org,
+  .howitworks,
+  .enterprise,
+  .features {
+    padding: 0;
+    margin: 0;
+  }
+
+  .howitworks {
+    text-align: justify;
+    position: relative;
+    right: 0;
+  }
+
+  .user_org {
+    font-size: 12px;
+    text-align: justify;
+  }
+
+  .user,
+  .enterprise {
+    margin: 18px 0;
+  }
+
+  .user .title,
+  .enterprise .title,
+  .howitworks .title,
+  .features .title {
+    font-size: 23px;
+    margin: 5px 0;
+  }
+
+  .grid {
+    flex-direction: row;
+    white-space: nowrap;
+    overflow-x: auto;
+    gap: 10px !important;
+    max-width: 100%;
+    scrollbar-width: none;
+  }
+
+  .grid .item {
+    padding: 20px;
+    max-width: 70%;
+    white-space: normal;
+    flex: 0 0 auto;
+    font-size: 12px;
+  }
+
+  .grid .item :first-child {
+    font-size: 16px;
+  }
+
+  .about_us_bg {
+    height: 50vh;
+  }
+
+  .features {
+    margin: 30px 0;
+  }
+
+  .poweredby {
+    padding: 20px 0;
   }
 }
