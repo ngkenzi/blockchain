@@ -78,7 +78,15 @@ const Home = () => {
               At BeingU, we're passionate about leveraging blockchain technology
               to enhance trust, transparency, and security.
             </p>
-            <Button>Learn more</Button>
+            <Button
+              style={{
+                fontFamily: "Kanit",
+                fontWeight: "100",
+                fontSize: "18px",
+              }}
+            >
+              Learn more
+            </Button>
           </div>
         </div>
         <div className={styles.planet}>
@@ -154,6 +162,33 @@ const Home = () => {
             </a>
           </div>
           <hr className="bottom_line" />
+        </div>
+        <div className={styles.signup}>
+          <div className={styles.container}>
+            <div className={styles.non_action}>
+              <p className={styles.ready_unlock}>
+                Ready to unlock the full potential of certification on the
+                blockchain?
+              </p>
+              <p>
+                Plus, for a limited time only, if you sign up today, you'll
+                receive free JOB (and Matic) tokens to kickstart your BeingU
+                journey.
+              </p>
+              <p>
+                Join us as we revolutionise the way certifications are verified
+                and valued in the future.
+              </p>
+            </div>
+
+            <div className={styles.action}>
+              <p>
+                Sign up for BeingU today and take the first step towards a
+                secure, transparent, and empowered digital future.
+              </p>
+              <Button>Sign up</Button>
+            </div>
+          </div>
         </div>
       </div>
     </>
