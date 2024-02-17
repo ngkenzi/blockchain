@@ -262,6 +262,40 @@
   opacity: 0.3;
 }
 
+.signup {
+  padding: 50px 250px;
+}
+
+.signup .container {
+  display: flex;
+  justify-content: space-between;
+  gap: 80px;
+}
+
+.ready_unlock {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.signup .action {
+  font-size: 20px;
+  align-self: center;
+}
+
+.signup Button {
+  font-size: large;
+  font-family: Kanit;
+  font-weight: 100;
+  margin: 10px 0;
+  border-radius: 30px;
+}
+
+.non_action {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
 @media (min-width: 360px) and (max-width: 600px) {
   .homepage_container > section,
   .homepage_section,
@@ -364,6 +398,8 @@
     color: black;
     border-radius: 20px;
     font-size: 12px;
+    font-family: Kanit;
+    font-weight: 100;
   }
 
   .content p:first-child {
@@ -449,5 +485,34 @@
 
   .poweredby {
     padding: 20px 0;
+  }
+
+  .signup {
+    padding: 40px 20px;
+  }
+
+  .ready_unlock {
+    font-size: 30px;
+    margin-bottom: 30px;
+  }
+
+  .ready_unlock p {
+    font-size: 12px;
+  }
+
+  .non_action {
+    gap: 10px;
+  }
+
+  .action p {
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .action Button {
+    width: 100%;
+    height: auto;
+    margin: 30px 0;
+    padding: 10px 0;
   }
 }
