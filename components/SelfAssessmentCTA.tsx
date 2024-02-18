@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button, Text, ActionIcon } from "@mantine/core";
 import { useRouter } from "next/router";
-import { FaTimes } from "react-icons/fa"; 
+import { FaTimes } from "react-icons/fa";
 
 const SelfAssessmentCTA = () => {
   const router = useRouter();
@@ -44,8 +44,11 @@ const SelfAssessmentCTA = () => {
         </ActionIcon>
 
         <Text>
-          Level up job opportunities with your 1st self-assessment cert today
+          Get your free 10 Matic and 5 Job Tokens with a simple self-assessment!
         </Text>
+        {/* <Text>
+          Level up job opportunities with your 1st self-assessment cert today
+        </Text> */}
         <Button onClick={handleCTAClick}>Start Self-Assessment</Button>
       </div>
     </div>
