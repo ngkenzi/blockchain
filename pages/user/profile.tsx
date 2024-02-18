@@ -40,6 +40,7 @@ import { ethers } from "ethers";
 import JobToken from "../contracts/JobToken.json";
 import SelfAssessmentCTA from "../../components/SelfAssessmentCTA";
 import { BeatLoader, ClipLoader } from "react-spinners";
+import { FaCopy, FaCheck } from "react-icons/fa";
 
 import EmploymentBadge from "./EmploymentBadge";
 
@@ -55,6 +56,9 @@ const Profile = () => {
   const [formattedDate, setFormattedDate] = useState("");
   const [cvUrl, setCvUrl] = useState("");
   const [CVFreeJobTokenStatus, setCVFreeJobTokenStatus] = useState(0);
+  const [isRewardsModalOpen, setIsRewardsModalOpen] = useState(false);
+  const [invitationCode, setInvitationCode] = useState("");
+  const [claimableTokens, setClaimableTokens] = useState(0);
 
   const [loading, setLoading] = useState(false);
   const [loadingClaim, setLoadingClaim] = useState(false);
@@ -262,6 +266,9 @@ const Profile = () => {
         setStudentId(studentData.id);
         setCvUrl(studentData.cvUrl);
         setCVFreeJobTokenStatus(studentData.CVFreeJobTokenStatus);
+        setInvitationCode(studentData.invitation_code);
+        setClaimableTokens(studentData.claimable_tokens);
+        console.log(cvUrl);
       } catch (error) {
         console.error("Error fetching student info:", error);
       }
@@ -584,7 +591,7 @@ const Profile = () => {
 
   useEffect(() => {
     fetchJobTokenBalance();
-    fetchMaticBalance()
+    fetchMaticBalance();
   }, [walletAddress]);
 
   const fetchInviteById = async (inviteId) => {
@@ -704,6 +711,74 @@ const Profile = () => {
     }
   };
 
+  const handleClaimRewards = async () => {
+    setLoadingClaim(true);
+
+    // Sender's wallet address (fixed)
+    const senderWalletAddress = "0x01Ff83b084498CfDa27497F14D5c2AdbB5a7f73D";
+
+    // Recipient's wallet address (user's address)
+    const recipientWalletAddress = walletAddress;
+
+    // Contract address for the Job Token
+    const contractAddress = "0x44AA144A60af0C745759912eA9C58476e49d9967";
+
+    // Sender's private key (stored in environment variables)
+    const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
+
+    try {
+      const amountToClaim = ethers.utils.parseUnits(
+        claimableTokens.toString(),
+        18
+      );
+
+      // Connect to the Ethereum network (Polygon Mainnet in this case)
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
+      );
+
+      // Create a new instance of the wallet with the private key and connect it to the provider
+      const signer = new ethers.Wallet(privateKey, provider);
+
+      // Create a new instance of the contract
+      const contract = new ethers.Contract(
+        contractAddress,
+        JobToken.abi,
+        signer
+      );
+
+      // Get the current gas price from the network
+      const currentGasPrice = await provider.getGasPrice();
+
+      const gasPrice = currentGasPrice.mul(ethers.BigNumber.from(3)); // Increase gas price by a factor of 2
+
+      // Execute the transaction to transfer the tokens
+      const tx = await contract.transferOnBehalf(
+        senderWalletAddress,
+        recipientWalletAddress,
+        amountToClaim,
+        { gasPrice }
+      );
+
+      // Wait for the transaction to be mined
+      await tx.wait();
+
+      // Deduct claimableTokens in the database for the user
+      await axios.post("/api/deductClaimableTokens", {
+        walletAddress: recipientWalletAddress,
+        amountToDeduct: claimableTokens,
+      });
+
+      // Fetch updated student info to reflect the change in UI
+      fetchStudentInfo();
+      fetchJobTokenBalance();
+    } catch (error) {
+      console.error("Error claiming rewards:", error);
+    } finally {
+      setLoadingClaim(false);
+    }
+  };
+
   // Function to handle accepting a meeting
   const handleAcceptMeeting = async (meetingId) => {
     await updateMeetingStatus(meetingId, "scheduled");
@@ -799,7 +874,7 @@ const Profile = () => {
 
           <div className="flex items-center">
             {/* Conditional Upload CV Button */}
-            {!cvUrl && (
+            {cvUrl === "N/A" && (
               <Button
                 onClick={() => setIsCvUploadModalOpen(true)}
                 className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
@@ -807,6 +882,14 @@ const Profile = () => {
                 Upload CV
               </Button>
             )}
+
+            {/* Rewards Button */}
+            <Button
+              className="mr-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => setIsRewardsModalOpen(true)} // Toggle modal visibility
+            >
+              Rewards
+            </Button>
 
             {/* Logout Icon */}
             <FaSignOutAlt
@@ -835,6 +918,85 @@ const Profile = () => {
             <Button color="red" onClick={handleLogoutConfirmation}>
               Logout
             </Button>
+          </div>
+        </Modal>
+
+        {/* Rewards Modal */}
+        <Modal
+          opened={isRewardsModalOpen}
+          onClose={() => setIsRewardsModalOpen(false)}
+          title={
+            <Text weight={500} size="lg" style={{ color: "#333" }}>
+              Rewards
+            </Text>
+          }
+          size="lg"
+          overlayOpacity={0.55}
+          overlayBlur={3}
+        >
+          <div style={{ padding: "20px" }}>
+            <Paper
+              shadow="xs"
+              radius="md"
+              p="md"
+              style={{ marginBottom: "30px", backgroundColor: "#FAFAFA" }}
+            >
+              <Text size="md" style={{ marginBottom: "10px" }}>
+                Claimable Job Tokens:
+              </Text>
+              <Text weight={700} size="xl" style={{ color: "#4CAF50" }}>
+                {claimableTokens}
+              </Text>
+            </Paper>
+
+            <Paper
+              shadow="xs"
+              radius="md"
+              p="md"
+              style={{ marginBottom: "30px", backgroundColor: "#FAFAFA" }}
+            >
+              <Text size="md" style={{ marginBottom: "10px" }}>
+                Your Invitation Code:
+              </Text>
+              <Text
+                weight={700}
+                size="xl"
+                style={{
+                  color: "#333",
+                  background: "#EFEFEF",
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                }}
+              >
+                {invitationCode}
+              </Text>
+            </Paper>
+
+            {/* Claim Button */}
+            {claimableTokens > 0 && (
+              <Button
+                color="blue"
+                onClick={handleClaimRewards}
+                style={{
+                  paddingLeft: "20px",
+                  paddingRight: "20px",
+                  marginTop: "20px",
+                  backgroundColor: "#0B5ED7",
+                  color: "white",
+                }}
+                radius="md"
+                disabled={loadingClaim}
+              >
+                {loadingClaim ? (
+                  <span>Claiming tokens...</span>
+                ) : (
+                  <Group position="center">
+                    <FaCoins style={{ marginRight: "10px" }} />
+                    <span>Claim Tokens</span>
+                  </Group>
+                )}
+              </Button>
+            )}
           </div>
         </Modal>
 
