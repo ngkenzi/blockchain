@@ -1,14 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./styles.module.css";
 import { useRouter } from "next/router";
 
 const HamburgerMenu = () => {
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const router = useRouter();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const toggleSlider = () => {
     setIsSliderOpen(!isSliderOpen);
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsAuthenticated(false);
+    router.push("/");
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token);
+  }, []);
 
   return (
     <>
@@ -45,12 +57,26 @@ const HamburgerMenu = () => {
           >
             students
           </p>
-          <p
-            className={styles.nav_link}
-            onClick={() => router.push("/user/login")}
-          >
-            login
-          </p>
+          {isAuthenticated ? (
+            <>
+              <p
+                className={styles.navLink}
+                onClick={() => router.push("/profile")}
+              >
+                profile
+              </p>
+              <p className={styles.loginLink} onClick={handleLogout}>
+                Logout {">"}
+              </p>
+            </>
+          ) : (
+            <p
+              className={styles.loginLink}
+              onClick={() => router.push("/user/login")}
+            >
+              Login {">"}
+            </p>
+          )}
         </div>
       </div>
     </>
