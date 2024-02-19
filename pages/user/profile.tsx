@@ -1209,7 +1209,7 @@ const Profile = () => {
                 </Button>
               )}
 
-              {cvUrl && CVFreeJobTokenStatus === 1 && (
+              {/* {cvUrl && CVFreeJobTokenStatus === 1 && (
                 <Button
                   color={loadingClaim ? "gray" : "green"}
                   onClick={handleClaimTokensCV}
@@ -1224,7 +1224,7 @@ const Profile = () => {
                     "Claim your 5 Job Tokens 🎁"
                   )}
                 </Button>
-              )}
+              )} */}
             </div>
           </div>
         </header>

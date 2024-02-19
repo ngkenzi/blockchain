@@ -23,8 +23,10 @@ export default async function handler(req, res) {
             res.status(201).json({ message: response.data.message || 'User registered successfully' });
         } catch (error) {
             // If there's an error, respond with the appropriate status code and message
-            if (error.response && error.response.status === 400) {
-                res.status(400).send('Email is already taken');
+            if (error.response) {
+                // Forward the backend's response status and message
+                const message = error.response.data.message || 'An error occurred';
+                res.status(error.response.status).json({ message });
             } else {
                 res.status(500).json({ message: 'Internal server error' });
             }
