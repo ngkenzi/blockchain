@@ -858,38 +858,41 @@ const Profile = () => {
   }, [walletAddress]);
 
   return (
-    <div className="bg-gray-900 min-h-screen">
+    <div
+      className="bg-gray-900 min-h-screen"
+      style={{ fontFamily: "Kanit, sans-serif" }}
+    >
       <Container
         size="lg"
-        className="p-4 md:p-10 bg-gray-100 shadow-lg rounded-lg min-h-screen relative"
+        className="p-4 md:p-10 bg-gray-100 text-white shadow-lg rounded-lg min-h-screen relative"
+        style={{ backgroundColor: "#1C1B1B" }}
       >
         {/* Icons */}
         <div className="flex justify-between items-center p-4">
           {/* Home Icon */}
-          <FaHome
+          {/* <FaHome
             className="text-gray-500 cursor-pointer hover:text-blue-500"
             size={24}
             onClick={navigateHome}
+          /> */}
+          <img
+            src="/images/logo.png"
+            alt="Logo"
+            style={{ width: "59px" }}
+            onClick={navigateHome}
+            className="cursor-pointer"
           />
 
           <div className="flex items-center">
             {/* Conditional Upload CV Button */}
-            {cvUrl === "N/A" && (
+            {/* {cvUrl === "N/A" && (
               <Button
                 onClick={() => setIsCvUploadModalOpen(true)}
                 className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               >
                 Upload CV
               </Button>
-            )}
-
-            {/* Rewards Button */}
-            <Button
-              className="mr-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => setIsRewardsModalOpen(true)} // Toggle modal visibility
-            >
-              Rewards
-            </Button>
+            )} */}
 
             {/* Logout Icon */}
             <FaSignOutAlt
@@ -1169,47 +1172,72 @@ const Profile = () => {
           </Button>
         </Modal>
 
-        <header className="flex flex-col md:flex-row justify-center items-center text-center mb-8">
-          <div className="flex flex-col items-center space-y-4">
+        <div className="flex flex-col md:flex-row justify-center md:justify-start items-center md:items-start text-center md:text-left mb-8 px-6 p-10 md:p-20">
+          <div className="mb-4 md:mb-0 md:mr-14">
             <Avatar
               src={avatarUrl}
-              size="xl"
+              size="150px"
               className="cursor-pointer"
               onClick={() => router.push("/user/AvatarPage")}
             />
-            <div>
-              <Text size="lg" weight={700}>
-                {FirstName && LastName ? `${FirstName} ${LastName}` : "User"}
-              </Text>
-              <Text size="sm">
-                {universityName
-                  ? `University: ${universityName}`
-                  : "University not set"}
-              </Text>
-              <Text size="sm">Job Token Balance: {jobTokenBalance}</Text>
-              <Text size="sm">Matic Balance: {maticBalance}</Text>
+          </div>
 
-              {/* Claim Tokens Button */}
-              {hasSubmitted && !tokensClaimed && (
+          <div style={{ fontFamily: "Kanit, sans-serif" }}>
+            <h1 className="text-4xl font-semibold pb-3">
+              {FirstName && LastName ? `${FirstName} ${LastName}` : "User"}
+            </h1>
+            <p className="font-normal py-1">
+              {universityName
+                ? `University: ${universityName}`
+                : "University not set"}
+            </p>
+            <p className=" font-normal py-1">
+              Job Token Balance: {jobTokenBalance}
+            </p>
+            <p className=" font-normal py-1 pb-2">
+              Matic Balance: {maticBalance}
+            </p>
+            <div className="flex space-x-4">
+              <Button
+                className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
+                style={{ borderRadius: "30px" }}
+                onClick={() => setIsRewardsModalOpen(true)} // Toggle modal visibility
+              >
+                Rewards
+              </Button>
+
+              {cvUrl === "N/A" && (
                 <Button
-                  color={loadingClaim ? "gray" : "green"}
-                  onClick={handleClaimTokens}
-                  className={`mt-4 ${
-                    loadingClaim
-                      ? "bg-gray-500"
-                      : "bg-gradient-to-r from-green-500 to-blue-500"
-                  } text-white`}
-                  disabled={loadingClaim}
+                  onClick={() => setIsCvUploadModalOpen(true)}
+                  className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
+                  style={{ borderRadius: "30px" }}
                 >
-                  {loadingClaim ? (
-                    <ClipLoader color="#ffffff" size={20} />
-                  ) : (
-                    "Claim your 5 Job Tokens & 2 Matic 🎁"
-                  )}
+                  Upload CV
                 </Button>
               )}
+            </div>
 
-              {/* {cvUrl && CVFreeJobTokenStatus === 1 && (
+            {/* Claim Tokens Button */}
+            {hasSubmitted && !tokensClaimed && (
+              <Button
+                color={loadingClaim ? "gray" : "green"}
+                onClick={handleClaimTokens}
+                className={`mt-4 ${
+                  loadingClaim
+                    ? "bg-gray-500"
+                    : "bg-gradient-to-r from-green-500 to-blue-500"
+                } text-white`}
+                disabled={loadingClaim}
+              >
+                {loadingClaim ? (
+                  <ClipLoader color="#ffffff" size={20} />
+                ) : (
+                  "Claim your 5 Job Tokens & 2 Matic 🎁"
+                )}
+              </Button>
+            )}
+
+            {/* {cvUrl && CVFreeJobTokenStatus === 1 && (
                 <Button
                   color={loadingClaim ? "gray" : "green"}
                   onClick={handleClaimTokensCV}
@@ -1225,12 +1253,11 @@ const Profile = () => {
                   )}
                 </Button>
               )} */}
-            </div>
           </div>
-        </header>
+        </div>
 
         {/* Search Bar */}
-        <div className="mb-6 relative">
+        {/* <div className="mb-6 relative">
           <Input
             placeholder="Search NFTs..."
             value={search}
@@ -1241,109 +1268,146 @@ const Profile = () => {
             className="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400"
             size={18}
           />
-        </div>
+        </div> */}
 
         {/* Tabs */}
-        <Tabs defaultValue="profile">
-          <Tabs.List>
-            <Tabs.Tab value="profile" color="blue">
-              Digital Cert
-            </Tabs.Tab>
-            <Tabs.Tab value="invites" color="blue">
+        <div>
+          <div className="flex flex-wrap md:flex-nowrap space-x-0 md:space-x-1 p-1 mb-4 md:mb-8">
+            <button
+              className={`flex-1 py-2 px-1 text-white ${
+                activeTab === "profile"
+                  ? "border-b-2"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setActiveTab("profile")}
+            >
+              Digital Certs
+            </button>
+            <button
+              className={`flex-1 py-2 text-white ${
+                activeTab === "invites"
+                  ? "border-b-2"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setActiveTab("invites")}
+            >
               Offers
-            </Tabs.Tab>
-            <Tabs.Tab value="history" color="blue">
+            </button>
+            <button
+              className={`flex-1 py-2 px-1 text-white ${
+                activeTab === "history"
+                  ? "border-b-2"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setActiveTab("history")}
+            >
               History
-            </Tabs.Tab>
-            <Tabs.Tab value="meetings" color="blue">
+            </button>
+            <button
+              className={`flex-1 py-2 px-2 text-white ${
+                activeTab === "meetings"
+                  ? "border-b-2"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setActiveTab("meetings")}
+            >
               Meetings
-            </Tabs.Tab>
-            <Tabs.Tab value="assessments" color="blue">
+            </button>
+            <button
+              className={`flex-1 py-2 px-2 text-white ${
+                activeTab === "assessments"
+                  ? "border-b-2"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setActiveTab("assessments")}
+            >
               Assessments
-            </Tabs.Tab>
-          </Tabs.List>
+            </button>
+          </div>
 
-          <Tabs.Panel value="profile" pt="xs">
-            {/* Display NFTs */}
-            {loading ? (
-              <Text align="center" size="lg">
-                Loading...
-              </Text>
-            ) : (
-              <>
-                {nfts.length === 0 && (
-                  <div className="flex flex-col items-center justify-center space-y-4">
-                    <FaBoxOpen size="60" color="gray" />
-                    <Text align="center" size="lg" style={{ color: "gray" }}>
-                      No NFTs found for the user
-                    </Text>
-                  </div>
-                )}
-                <Grid gutter="md">
-                  {nfts
-                    .filter(
-                      (nft) =>
-                        nft.name
-                          ?.toLowerCase()
-                          .includes(search.toLowerCase()) &&
-                        (nft.description?.toLowerCase().includes("course") ||
-                          nft.description?.toLowerCase().includes("tier") ||
-                          nft.description?.toLowerCase().includes("company"))
-                    )
-                    .map((nft, index) => (
-                      <Col key={index} md={6} lg={4}>
-                        <a
-                          href={`https://rarible.com/token/${nft.blockchain.toLowerCase()}/${
-                            nft.contract
-                          }:${nft.tokenId}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block mb-6"
-                        >
-                          <Paper
-                            elevation={3}
-                            className="transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-                          >
-                            <Image
-                              src={nft.image_url || "/default-image-path.jpg"}
-                              alt="NFT"
-                              fit="cover"
-                              className="rounded-t-lg"
-                            />
-                            <div className="p-4">
-                              <Text size="xl" weight={700} className="mb-2">
-                                {nft.name}
-                              </Text>
-                              <Text size="sm" color="gray">
-                                {nft.description}
-                              </Text>
-                            </div>
-                          </Paper>
-                        </a>
-                      </Col>
-                    ))}
-                </Grid>
-                {nfts.filter(
-                  (nft) =>
-                    nft.name?.toLowerCase().includes(search.toLowerCase()) &&
-                    (nft.description?.toLowerCase().includes("course") ||
-                      nft.description?.toLowerCase().includes("tier") ||
-                      nft.description?.toLowerCase().includes("company"))
-                ).length === 0 &&
-                  nfts.length !== 0 && (
-                    <Text
-                      align="center"
-                      size="lg"
-                      style={{ color: "red", marginTop: "20px" }}
-                    >
-                      No NFTs match the search criteria.
-                    </Text>
+          {activeTab === "profile" && (
+            <div>
+              {/* Display NFTs */}
+              {loading ? (
+                <Text align="center" size="lg">
+                  Loading...
+                </Text>
+              ) : (
+                <>
+                  {nfts.length === 0 && (
+                    <div className="flex flex-col items-center justify-center space-y-4">
+                      <FaBoxOpen size="60" color="gray" />
+                      <Text align="center" size="lg" style={{ color: "gray" }}>
+                        No NFTs found for the user
+                      </Text>
+                    </div>
                   )}
-              </>
-            )}
-          </Tabs.Panel>
+                  <Grid gutter="md">
+                    {nfts
+                      .filter(
+                        (nft) =>
+                          nft.name
+                            ?.toLowerCase()
+                            .includes(search.toLowerCase()) &&
+                          (nft.description?.toLowerCase().includes("course") ||
+                            nft.description?.toLowerCase().includes("tier") ||
+                            nft.description?.toLowerCase().includes("company"))
+                      )
+                      .map((nft, index) => (
+                        <Col key={index} md={6} lg={4}>
+                          <a
+                            href={`https://rarible.com/token/${nft.blockchain.toLowerCase()}/${
+                              nft.contract
+                            }:${nft.tokenId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block mb-6"
+                          >
+                            <Paper
+                              elevation={3}
+                              className="transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                            >
+                              <Image
+                                src={nft.image_url || "/default-image-path.jpg"}
+                                alt="NFT"
+                                fit="cover"
+                                className="rounded-t-lg"
+                              />
+                              <div className="p-4">
+                                <Text size="xl" weight={700} className="mb-2">
+                                  {nft.name}
+                                </Text>
+                                <Text size="sm" color="gray">
+                                  {nft.description}
+                                </Text>
+                              </div>
+                            </Paper>
+                          </a>
+                        </Col>
+                      ))}
+                  </Grid>
+                  {nfts.filter(
+                    (nft) =>
+                      nft.name?.toLowerCase().includes(search.toLowerCase()) &&
+                      (nft.description?.toLowerCase().includes("course") ||
+                        nft.description?.toLowerCase().includes("tier") ||
+                        nft.description?.toLowerCase().includes("company"))
+                  ).length === 0 &&
+                    nfts.length !== 0 && (
+                      <Text
+                        align="center"
+                        size="lg"
+                        style={{ color: "red", marginTop: "20px" }}
+                      >
+                        No NFTs match the search criteria.
+                      </Text>
+                    )}
+                </>
+              )}
+            </div>
+          )}
 
-          <Tabs.Panel value="invites" pt="xs">
+          {activeTab === "invites" && (
             <div className="space-y-4">
               {invites.length > 0 ? (
                 invites
@@ -1409,9 +1473,9 @@ const Profile = () => {
                 </Text>
               )}
             </div>
-          </Tabs.Panel>
+          )}
 
-          <Tabs.Panel value="history" pt="xs">
+          {activeTab === "history" && (
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -1475,10 +1539,10 @@ const Profile = () => {
                 </tbody>
               </table>
             </div>
-          </Tabs.Panel>
+          )}
 
           {/* Meetings Tab Panel */}
-          <Tabs.Panel value="meetings" pt="xs">
+          {activeTab === "meetings" && (
             <div className="space-y-4">
               {meetings.length > 0 ? (
                 meetings.map((meeting, index) => (
@@ -1541,44 +1605,46 @@ const Profile = () => {
                 </Text>
               )}
             </div>
-          </Tabs.Panel>
+          )}
 
-          <Tabs.Panel value="assessments" pt="xs">
-            {assessments.length > 0 ? (
-              <div className="space-y-4">
-                {assessments.map((assessment, index) => (
-                  <div key={index} className="p-4 bg-white shadow rounded-lg">
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <Text size="md" weight={500}>
-                          {assessment.title || `Assessment ${index + 1}`}
-                        </Text>
-                        <Text size="sm">
-                          Expiry Date:{" "}
-                          {new Date(
-                            assessment.expiry_date
-                          ).toLocaleDateString()}
-                        </Text>
+          {activeTab === "assessments" && (
+            <div>
+              {assessments.length > 0 ? (
+                <div className="space-y-4 text-black">
+                  {assessments.map((assessment, index) => (
+                    <div key={index} className="p-4 bg-white shadow rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <Text size="md" weight={500}>
+                            {assessment.title || `Assessment ${index + 1}`}
+                          </Text>
+                          <Text size="sm">
+                            Expiry Date:{" "}
+                            {new Date(
+                              assessment.expiry_date
+                            ).toLocaleDateString()}
+                          </Text>
+                        </div>
+                        <Button
+                          color="blue"
+                          onClick={() =>
+                            router.push(`/assessment/${assessment.companyID}`)
+                          } // Assuming companyID can be used to navigate to the specific assessment
+                        >
+                          Take Assessment
+                        </Button>
                       </div>
-                      <Button
-                        color="blue"
-                        onClick={() =>
-                          router.push(`/assessment/${assessment.companyID}`)
-                        } // Assuming companyID can be used to navigate to the specific assessment
-                      >
-                        Take Assessment
-                      </Button>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <Text align="center" size="md" color="gray">
-                No assessments available.
-              </Text>
-            )}
-          </Tabs.Panel>
-        </Tabs>
+                  ))}
+                </div>
+              ) : (
+                <Text align="center" size="md" color="gray">
+                  No assessments available.
+                </Text>
+              )}
+            </div>
+          )}
+        </div>
       </Container>
       {isSubmissionStatusLoaded && !hasSubmitted && <SelfAssessmentCTA />}
     </div>
