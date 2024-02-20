@@ -51,6 +51,8 @@ const Profile = () => {
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
   const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+
   const [studentId, setStudentId] = useState(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [formattedDate, setFormattedDate] = useState("");
@@ -278,6 +280,8 @@ const Profile = () => {
         setInvitationCode(studentData.invitation_code);
         setClaimableTokens(studentData.claimable_tokens);
         setMaticBalance(studentData.Matic_Balance);
+        setEmail(studentData.email);
+
         console.log(cvUrl);
       } catch (error) {
         console.error("Error fetching student info:", error);
@@ -327,7 +331,10 @@ const Profile = () => {
       const response = await axios.post("/api/redeemVoucher", {
         voucherCode,
         walletAddress,
+        email,
+        fullName,
       });
+
       if (response.status === 200) {
         setSuccessMessage(
           "Voucher redeemed successfully. Matic balance increased by 10."

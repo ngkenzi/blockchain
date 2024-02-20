@@ -4,13 +4,15 @@ import axios from 'axios';
 export default async function handler(req, res) {
     if (req.method === 'POST') {
         // Extract the voucherCode and walletAddress from the request body
-        const { voucherCode, walletAddress } = req.body;
+        const { voucherCode, walletAddress, email, fullName } = req.body;
 
         try {
             // Forward the request to your backend service
             const backendResponse = await axios.post('http://localhost:4000/redeemVoucher', {
                 voucherCode,
                 walletAddress,
+                email,
+                fullName
             });
 
             // Respond with success message and any additional data from the backend
