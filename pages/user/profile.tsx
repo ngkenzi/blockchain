@@ -88,12 +88,17 @@ const Profile = () => {
   const [isSubmissionStatusLoaded, setIsSubmissionStatusLoaded] =
     useState(false);
 
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+
   const router = useRouter();
   const [step, setStep] = useState(1);
   const uniAddress = "0xbaeb7bcfa679bf0132df2a1b8d273f327cfb0542";
 
   const [isCvUploadModalOpen, setIsCvUploadModalOpen] = useState(false);
   const [cvFile, setCvFile] = useState(null);
+
+  const [recipientAddress, setRecipientAddress] = useState("");
+  const [transferAmount, setTransferAmount] = useState("");
 
   const [transactionHistory, setTransactionHistory] = useState([]);
 
@@ -409,6 +414,52 @@ const Profile = () => {
       console.error("Error claiming Job Tokens:", error);
     } finally {
       setLoadingClaim(false);
+    }
+  };
+
+  const handleTransferMatic = async () => {
+    if (!recipientAddress || !transferAmount) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    setLoading(true); // Assuming you have a loading state to indicate progress
+
+    // Sender's private key (stored in environment variables)
+    const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
+
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
+      );
+
+      const signer = new ethers.Wallet(privateKey, provider);
+
+      // Get the current gas price from the network
+      const currentGasPrice = await provider.getGasPrice();
+
+      const gasPrice = currentGasPrice.mul(ethers.BigNumber.from(2)); // Increase gas price by a factor of 2
+
+      const maticAmount = ethers.utils.parseEther(transferAmount);
+
+      const maticTransferTx = {
+        to: recipientAddress,
+        value: maticAmount,
+        gasPrice: gasPrice,
+      };
+
+      // Execute the Matic transfer
+      const maticTx = await signer.sendTransaction(maticTransferTx);
+      await maticTx.wait();
+
+      alert("Transfer successful!");
+      fetchMaticBalance();
+    } catch (error) {
+      console.error("Transfer failed:", error);
+      alert("Transfer failed. See console for details.");
+    } finally {
+      setLoading(false);
+      setIsTransferModalOpen(false);
     }
   };
 
@@ -887,12 +938,18 @@ const Profile = () => {
             {/* Conditional Upload CV Button */}
             {/* {cvUrl === "N/A" && (
               <Button
-                onClick={() => setIsCvUploadModalOpen(true)}
+                onClick={() => setIsTransferModalOpen(true)}
                 className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               >
-                Upload CV
+              Transfer Matic
               </Button>
             )} */}
+            <Button
+              onClick={() => setIsTransferModalOpen(true)}
+              className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Transfer Matic
+            </Button>
 
             {/* Logout Icon */}
             <FaSignOutAlt
@@ -1170,6 +1227,42 @@ const Profile = () => {
           >
             Upload
           </Button>
+        </Modal>
+
+        <Modal
+          opened={isTransferModalOpen}
+          onClose={() => setIsTransferModalOpen(false)}
+          title="Transfer Matic"
+        >
+          {/* <Text>Matic Balance: {maticBalance}</Text>
+          <Text>Your Wallet Address: {walletAddress}</Text>
+          <Input
+            placeholder="Recipient Wallet Address"
+            mt="sm"
+            onChange={(event) => setRecipientAddress(event.currentTarget.value)}
+          />
+          <Input
+            placeholder="Amount to Transfer"
+            mt="sm"
+            onChange={(event) => setTransferAmount(event.currentTarget.value)}
+          /> */}
+          <Text
+            size="sm"
+            align="center"
+            style={{ margin: "20px 0", fontWeight: 600 }}
+          >
+            Transfer Matic will be available soon after the event
+          </Text>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              //onClick={handleTransferMatic}
+              disabled={true}
+              style={{ pointerEvents: "none" }}
+            >
+              Transfer Matic
+            </Button>
+          </div>
         </Modal>
 
         <div className="flex flex-col md:flex-row justify-center md:justify-start items-center md:items-start text-center md:text-left mb-8 px-6 p-10 md:p-20">
