@@ -64,10 +64,14 @@ const Profile = () => {
   const [loadingClaim, setLoadingClaim] = useState(false);
   const [tokensClaimed, setTokensClaimed] = useState(false);
 
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
   const [avatarUrl, setAvatarUrl] = useState("/sample-profile.jpg"); // Initial value
   const [universityName, setUniversityName] = useState("");
   const [jobTokenBalance, setJobTokenBalance] = useState(0);
   const [maticBalance, setMaticBalance] = useState(0);
+  const [voucherCode, setVoucherCode] = useState("");
 
   const [invites, setInvites] = useState([]);
   const [activeTab, setActiveTab] = useState("profile");
@@ -273,12 +277,15 @@ const Profile = () => {
         setCVFreeJobTokenStatus(studentData.CVFreeJobTokenStatus);
         setInvitationCode(studentData.invitation_code);
         setClaimableTokens(studentData.claimable_tokens);
+        setMaticBalance(studentData.Matic_Balance);
         console.log(cvUrl);
       } catch (error) {
         console.error("Error fetching student info:", error);
       }
     }
   };
+
+  console.log(maticBalance);
 
   // useEffect(() => {
   //   fetchStudentInfo();
@@ -305,6 +312,47 @@ const Profile = () => {
     }
   };
 
+  const handleRedeemVoucher = async () => {
+    if (!voucherCode) {
+      setErrorMessage("Please enter a voucher code.");
+      setSuccessMessage("");
+      return;
+    }
+
+    setLoading(true); // Show loading indication
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    try {
+      const response = await axios.post("/api/redeemVoucher", {
+        voucherCode,
+        walletAddress,
+      });
+      if (response.status === 200) {
+        setSuccessMessage(
+          "Voucher redeemed successfully. Matic balance increased by 10."
+        );
+        // Update the matic balance display
+        fetchMaticBalance();
+        // reset the voucher code input
+        setVoucherCode("");
+      } else {
+        setErrorMessage("Failed to redeem voucher: " + response.data.message);
+      }
+    } catch (error) {
+      console.error("Error redeeming voucher:", error);
+      console.log(error.response); // This line will help understand the server response
+
+      const message =
+        error.response?.data?.message ||
+        "An error occurred while redeeming the voucher.";
+
+      setErrorMessage(message);
+    } finally {
+      setLoading(false); // Hide loading indication
+    }
+  };
+
   // Define fetchJobTokenBalance outside of useEffect
   const fetchJobTokenBalance = async () => {
     try {
@@ -325,19 +373,19 @@ const Profile = () => {
   };
 
   const fetchMaticBalance = async () => {
+    if (!walletAddress) return;
+
     try {
-      const provider = new ethers.providers.JsonRpcProvider(
-        "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
+      const response = await axios.get(
+        `/api/getStudentInfoByWalletAddress?walletAddress=${walletAddress}`
       );
-
-      // Fetch the balance of the walletAddress
-      const balance = await provider.getBalance(walletAddress);
-
-      // Convert the balance from Wei to Ether (or Matic, in the case of Polygon)
-      const formattedBalance = ethers.utils.formatEther(balance);
-
-      // Update your state or UI with the Matic balance
-      setMaticBalance(parseFloat(formattedBalance));
+      if (response.data && response.status === 200) {
+        const studentData = response.data;
+        // Assuming Matic_Balance is returned in the response and is a number or string that can be directly set
+        setMaticBalance(studentData.Matic_Balance);
+      } else {
+        console.error("Failed to fetch student info for Matic balance");
+      }
     } catch (error) {
       console.error("Error fetching Matic balance:", error);
     }
@@ -1031,6 +1079,42 @@ const Profile = () => {
                 {invitationCode}
               </Text>
             </Paper>
+            {/* Redeem Voucher Code Section */}
+            <Paper
+              shadow="xs"
+              radius="md"
+              p="md"
+              style={{ marginBottom: "30px", backgroundColor: "#FAFAFA" }}
+            >
+              <Text size="md" style={{ marginBottom: "10px" }}>
+                Redeem Voucher Code
+              </Text>
+              <div>
+                <Input
+                  placeholder="Enter your voucher code here"
+                  value={voucherCode}
+                  onChange={(event) =>
+                    setVoucherCode(event.currentTarget.value)
+                  }
+                  style={{ marginBottom: "10px" }}
+                />
+                <Button color="blue" onClick={handleRedeemVoucher}>
+                  Redeem
+                </Button>
+
+                {successMessage && (
+                  <Text color="green" size="sm" style={{ marginTop: "10px" }}>
+                    {successMessage}
+                  </Text>
+                )}
+
+                {errorMessage && (
+                  <Text color="red" size="sm" style={{ marginTop: "10px" }}>
+                    {errorMessage}
+                  </Text>
+                )}
+              </div>
+            </Paper>
 
             {/* Claim Button */}
             {claimableTokens > 0 && (
@@ -1490,9 +1574,9 @@ const Profile = () => {
                       <Text
                         align="center"
                         size="lg"
-                        style={{ color: "red", marginTop: "20px" }}
+                        style={{ marginTop: "20px" }}
                       >
-                        No NFTs match the search criteria.
+                        No NFTs found
                       </Text>
                     )}
                 </>
