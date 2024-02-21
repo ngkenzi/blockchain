@@ -44,7 +44,7 @@ const SelfAssessmentCTA = () => {
         </ActionIcon>
 
         <Text>
-          Get your free 10 Matic and 5 Job Tokens with a simple self-assessment!
+          Level up job opportunities with your 1st self-assessment cert today
         </Text>
         {/* <Text>
           Level up job opportunities with your 1st self-assessment cert today
