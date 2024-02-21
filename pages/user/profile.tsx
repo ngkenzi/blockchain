@@ -1381,7 +1381,12 @@ const Profile = () => {
             <p className=" font-normal py-1 pb-2">
               Matic Balance: {maticBalance}
             </p>
-            <div className="flex space-x-4">
+            <div
+              className={`flex ${
+                cvUrl === "N/A" ? "space-x-4" : "justify-center "
+              }`}
+            >
+              {" "}
               <Button
                 className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
                 style={{ borderRadius: "30px" }}
@@ -1389,7 +1394,6 @@ const Profile = () => {
               >
                 Rewards
               </Button>
-
               {cvUrl === "N/A" && (
                 <Button
                   onClick={() => setIsCvUploadModalOpen(true)}
