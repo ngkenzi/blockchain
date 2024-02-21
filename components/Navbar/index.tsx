@@ -17,12 +17,12 @@ const Navbar = () => {
         <span className={styles.navLink} onClick={() => router.push("/search")}>
           search
         </span>
-        <span
+        {/* <span
           className={styles.navLink}
           onClick={() => router.push("/companies")}
         >
           companies
-        </span>
+        </span> */}
         <span
           className={styles.navLink}
           onClick={() => router.push("/students")}

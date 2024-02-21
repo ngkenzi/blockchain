@@ -180,7 +180,7 @@ const StudentDetail: FC = () => {
             throw new Error("Network response was not ok");
           }
           let data: Student = await response.json();
-          
+
           if (!localStorage.getItem("token")) {
             data = {
               ...data,
@@ -339,7 +339,8 @@ const StudentDetail: FC = () => {
                   .filter(
                     (nft) =>
                       nft.description?.toLowerCase().includes("course") ||
-                      nft.description?.toLowerCase().includes("tier")
+                      nft.description?.toLowerCase().includes("tier") ||
+                      nft.description?.toLowerCase().includes("company")
                   )
                   .map((nft, index) => (
                     <div

@@ -19,7 +19,7 @@ const Layout = ({ title, description, children }: Props) => {
     { link: "/", label: "Home" },
     { link: "/search", label: "Search" },
     { link: "/students", label: "Students" },
-    { link: "/companies", label: "Companies" },
+    // { link: "/companies", label: "Companies" },
 
     // { link: "/upskill", label: "Online Courses" },
     // { link: "/authentication", label: "Admin" },
