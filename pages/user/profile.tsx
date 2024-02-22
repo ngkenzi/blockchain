@@ -507,7 +507,13 @@ const Profile = () => {
       const maticTx = await signer.sendTransaction(maticTransferTx);
       await maticTx.wait();
 
+      await axios.post("/api/deductMaticBalance", {
+        walletAddress, // Sender's wallet address
+        amountToDeduct: transferAmount,
+      });
+
       alert("Transfer successful!");
+      setRecipientAddress("")
       fetchMaticBalance();
     } catch (error) {
       console.error("Transfer failed:", error);
@@ -1325,31 +1331,67 @@ const Profile = () => {
           onClose={() => setIsTransferModalOpen(false)}
           title="Transfer Matic"
         >
-          {/* <Text>Matic Balance: {maticBalance}</Text>
-          <Text>Your Wallet Address: {walletAddress}</Text>
+          <Text>Matic Balance: {maticBalance}</Text>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginTop: "20px",
+              marginBottom: "8px",
+            }}
+          >
+            {/* MATIC logo */}
+            <img
+              src="/assets/maticLogo.png"
+              alt="MATIC Logo"
+              style={{ width: "20px", height: "20px", marginRight: "8px" }}
+            />
+            {/* Label text */}
+            <Text weight={500}>MATIC Address (Polygon Network):</Text>
+          </div>
+
           <Input
-            placeholder="Recipient Wallet Address"
+            placeholder="MATIC Wallet Address"
             mt="sm"
             onChange={(event) => setRecipientAddress(event.currentTarget.value)}
           />
+
+          <Text mt="md" weight={500}>
+            Amount to Transfer:
+          </Text>
+
           <Input
             placeholder="Amount to Transfer"
             mt="sm"
-            onChange={(event) => setTransferAmount(event.currentTarget.value)}
-          /> */}
-          <Text
-            size="sm"
-            align="center"
-            style={{ margin: "20px 0", fontWeight: 600 }}
-          >
-            Transfer Matic will be available soon after the event
+            value={transferAmount}
+            onChange={(event) => {
+              const value = event.currentTarget.value;
+              // Allow only numbers and enforce minimum value of 1
+              const numericValue = parseFloat(value);
+              if (!isNaN(numericValue) && numericValue > 0) {
+                setTransferAmount(value);
+              } else if (value === "") {
+                // Allow clearing the input
+                setTransferAmount("");
+              }
+            }}
+          />
+
+          {/* Note about confirming wallet address */}
+          <Text color="red" mt="md" align="center">
+            Please confirm the matic wallet address before transferring.
+            Transactions are irreversible.
           </Text>
+
           <div style={{ display: "flex", justifyContent: "center" }}>
             <Button
               className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              //onClick={handleTransferMatic}
-              disabled={true}
-              style={{ pointerEvents: "none" }}
+              onClick={handleTransferMatic}
+              disabled={
+                !recipientAddress ||
+                parseFloat(transferAmount) > maticBalance ||
+                isNaN(parseFloat(transferAmount))
+              }
             >
               Transfer Matic
             </Button>
