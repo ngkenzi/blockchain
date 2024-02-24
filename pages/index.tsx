@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import styles from "./index.module.css";
 import HamburgerMenu from "../components/HamburgerMenu";
 import { Button } from "@mantine/core";
+import SelfAssessmentCTA from "../components/SelfAssessmentCTA";
 
 const Home = () => {
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -190,6 +191,7 @@ const Home = () => {
             </div>
           </div>
         </div>
+        {isSubmissionStatusLoaded && !hasSubmitted && <SelfAssessmentCTA />}
       </div>
     </>
   );

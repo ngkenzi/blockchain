@@ -5,11 +5,32 @@ import styles from "./styles.module.css";
 const Navbar = () => {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isSubmissionStatusLoaded, setIsSubmissionStatusLoaded] =
+    useState(false);
+
+  const checkSubmission = async () => {
+    try {
+      const userWAddress = localStorage.getItem("walletAddress");
+      const response = await fetch(
+        `/api/checkSubmissionStatus?walletAddress=${userWAddress}`
+      );
+      const data = await response.json();
+
+      if (data.exists) {
+        setHasSubmitted(true);
+      }
+      setIsSubmissionStatusLoaded(true);
+    } catch (error) {
+      console.error("Error checking submission status:", error);
+      setIsSubmissionStatusLoaded(true);
+    }
+  };
 
   useEffect(() => {
+    checkSubmission();
     const token = localStorage.getItem("token");
     setIsAuthenticated(!!token);
-    console.log(isAuthenticated);
   }, []);
 
   const handleLogout = () => {
