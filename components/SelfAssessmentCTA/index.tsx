@@ -4,41 +4,29 @@ import styles from "./style.module.css";
 
 const SelfAssessmentCTA = () => {
   const router = useRouter();
-  const [isVisible, setIsVisible] = useState(true);
-  const [hideCompletely, setHideCompletely] = useState(false);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    if (!isVisible) {
-      setTimeout(() => {
-        setHideCompletely(true);
-      }, 500);
+    if (!visible) {
+      const timeoutId = setTimeout(() => setVisible(false), 500);
+      return () => clearTimeout(timeoutId); // Cleanup function for unmounted component
     }
-  }, [isVisible]);
+  }, [visible]);
 
-  const handleCTAClick = () => {
-    router.push("/assessment");
-  };
+  const handleCTAClick = () => router.push("/assessment");
 
-  const handleClose = () => {
-    setIsVisible(false);
-  };
+  const handleClose = () => setVisible(false);
 
   return (
-    <>
-      {!hideCompletely && (
-        <div
-          className={`${styles.banner} ${!isVisible ? styles.slideDown : ""}`}
-        >
-          <span>
-            Level up job opportunities with your 1st self-assessment cert today
-          </span>
-          <div className={styles.button_container}>
-            <button onClick={handleCTAClick}>Start Self-Assessment</button>
-            <button onClick={handleClose}>Close</button>
-          </div>
-        </div>
-      )}
-    </>
+    <div className={`${styles.banner} ${!visible && styles.slideDown}`}>
+      <span>
+        Level up job opportunities with your 1st self-assessment cert today
+      </span>
+      <div className={styles.button_container}>
+        <button onClick={handleCTAClick}>Start Self-Assessment</button>
+        <button onClick={handleClose}>Close</button>
+      </div>
+    </div>
   );
 };
 
