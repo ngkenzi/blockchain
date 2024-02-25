@@ -5,7 +5,7 @@ export default async (req, res) => {
         const { universityName } = req.query;  // Extract university name from the query parameters
 
         try {
-            const response = await axios.get(`http://localhost:4000/students/${universityName}`);
+            const response = await axios.get(`http://13.250.122.124:5000/students/${universityName}`);
             res.status(200).json(response.data);  // Send response back to the client
         } catch (error) {
             console.error("Error fetching students:", error);

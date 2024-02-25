@@ -5,7 +5,7 @@ export default async function handler(req, res) {
     if (req.method === 'POST') {
         try {
             // Forward the request to your backend service
-            const response = await axios.post('http://localhost:4000/company/register', req.body);
+            const response = await axios.post('http://13.250.122.124:5000/company/register', req.body);
             // Send the response back to the frontend
             res.status(200).json(response.data);
         } catch (error) {

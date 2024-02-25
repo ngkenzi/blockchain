@@ -12,7 +12,7 @@ export default function CreateAssessmentSection() {
     const checkAssessmentSubmission = () => {
         const companyID = localStorage.getItem('companyId');
 
-        fetch(`http://localhost:4000/check-assessment/${companyID}`)
+        fetch(`http://13.250.122.124:5000/check-assessment/${companyID}`)
             .then(response => response.json())
             .then(data => {
                 if (data.assessmentExists) {
@@ -31,7 +31,7 @@ export default function CreateAssessmentSection() {
 
     const fetchSubmittedAssessment = () => {
         const companyID = localStorage.getItem('companyId');
-        fetch(`http://localhost:4000/get-assessment/${companyID}`)
+        fetch(`http://13.250.122.124:5000/get-assessment/${companyID}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success && data.questions) {
@@ -90,7 +90,7 @@ export default function CreateAssessmentSection() {
             return;
         }
 
-        fetch('http://localhost:4000/create-assessment', {
+        fetch('http://13.250.122.124:5000/create-assessment', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

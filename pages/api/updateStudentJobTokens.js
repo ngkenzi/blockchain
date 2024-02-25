@@ -7,7 +7,7 @@ export default async function handler(req, res) {
             const { wallet_address } = req.body;
 
             // Make a POST request to the actual updateStudentJobTokens endpoint
-            const backendResponse = await axios.post('http://localhost:4000/updateStudentJobTokens', {
+            const backendResponse = await axios.post('http://13.250.122.124:5000/updateStudentJobTokens', {
                 wallet_address
             });
 

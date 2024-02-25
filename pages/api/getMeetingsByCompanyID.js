@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
         try {
             // Making a request to your actual backend server
-            const backendResponse = await axios.get(`http://localhost:4000/getMeetings?companyId=${companyId}`);
+            const backendResponse = await axios.get(`http://13.250.122.124:5000/getMeetings?companyId=${companyId}`);
             const meetings = backendResponse.data.meetings;
 
             res.status(200).json({ meetings });

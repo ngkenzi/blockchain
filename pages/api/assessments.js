@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
         try {
             // Make a request to your backend API
-            const backendResponse = await axios.get("http://localhost:4000/assessments");
+            const backendResponse = await axios.get("http://13.250.122.124:5000/assessments");
 
             // Check if we got a successful response
             if (backendResponse.status === 200) {

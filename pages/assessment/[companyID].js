@@ -46,7 +46,7 @@ const AssessmentPage = () => {
     useEffect(() => {
         if (companyID) {
             setLoading(true);
-            axios.get(`http://localhost:4000/get-assessment/${companyID}`)
+            axios.get(`http://13.250.122.124:5000/get-assessment/${companyID}`)
                 .then(response => {
                     if (response.data.success) {
                         setAssessment(response.data.questions);
@@ -76,7 +76,7 @@ const AssessmentPage = () => {
         console.log(studentId)
         // Assuming you have studentId and companyID available, and responses collected in state
         try {
-            const response = await axios.post('http://localhost:4000/submit-assessment', {
+            const response = await axios.post('http://13.250.122.124:5000/submit-assessment', {
                 studentId,
                 companyID,
                 responses

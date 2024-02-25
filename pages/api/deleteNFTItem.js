@@ -9,7 +9,7 @@ export default async (req, res) => {
         }
 
         try {
-            const response = await axios.delete(`http://localhost:4000/deleteItemFromCid/${cid}`);
+            const response = await axios.delete(`http://13.250.122.124:5000/deleteItemFromCid/${cid}`);
 
             if (response.status === 200) {
                 res.status(200).json({ message: 'Item deleted successfully!' });

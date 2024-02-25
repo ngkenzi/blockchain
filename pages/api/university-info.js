@@ -10,7 +10,7 @@ export default async (req, res) => {
 
         try {
             // Change the URL below to your actual API endpoint
-            const response = await axios.get(`http://localhost:4000/user-university?walletAddress=${walletAddress}`);
+            const response = await axios.get(`http://13.250.122.124:5000/user-university?walletAddress=${walletAddress}`);
 
             if (response.data.universityName) {
                 res.status(200).json({ universityName: response.data.universityName });

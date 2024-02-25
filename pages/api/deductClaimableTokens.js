@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         const { walletAddress, amountToDeduct } = req.body;
 
         try {
-            const response = await axios.post('http://localhost:4000/deductClaimableTokens', {
+            const response = await axios.post('http://13.250.122.124:5000/deductClaimableTokens', {
                 walletAddress,
                 amountToDeduct
             });

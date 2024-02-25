@@ -21,7 +21,7 @@ export default async (req, res) => {
             // Forward the buffer to your backend server
             const response = await axios({
                 method: 'post',
-                url: 'http://localhost:4000/upload-cv',
+                url: 'http://13.250.122.124:5000/upload-cv',
                 data: data,
                 headers: {
                     ...req.headers,

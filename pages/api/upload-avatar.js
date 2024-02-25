@@ -9,7 +9,7 @@ export const config = {
 export default async (req, res) => {
     if (req.method === 'POST') {
         try {
-            const response = await axios.post('http://localhost:4000/upload-avatar', req, {
+            const response = await axios.post('http://13.250.122.124:5000/upload-avatar', req, {
                 headers: {
                     ...req.headers,
                     host: undefined,

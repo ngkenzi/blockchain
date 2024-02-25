@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
         try {
             // Making a request to the actual API endpoint
-            const response = await axios.post('http://localhost:4000/updateApplicationStatus', { applicationId, status });
+            const response = await axios.post('http://13.250.122.124:5000/updateApplicationStatus', { applicationId, status });
             res.status(200).json(response.data);
         } catch (error) {
             console.error('Error updating application status', error);

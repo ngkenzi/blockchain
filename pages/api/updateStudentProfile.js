@@ -7,7 +7,7 @@ export default async function handler(req, res) {
             const { studentId, cvUrl, CVFreeJobTokenStatus } = req.body;
 
             // Make a POST request to the actual updateStudentProfile endpoint
-            const backendResponse = await axios.post('http://localhost:4000/updateStudentProfile', {
+            const backendResponse = await axios.post('http://13.250.122.124:5000/updateStudentProfile', {
                 studentId,
                 cvUrl,
                 CVFreeJobTokenStatus

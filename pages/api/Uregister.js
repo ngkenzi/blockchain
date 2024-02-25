@@ -8,7 +8,7 @@ export default async function handler(req, res) {
             const { email, password, universityName, FirstName, LastName, cvUrl, CVFreeJobTokenStatus, referredBy } = req.body;
 
             // Make a POST request to the register endpoint
-            const response = await axios.post('http://localhost:4000/Uregister', {
+            const response = await axios.post('http://13.250.122.124:5000/Uregister', {
                 email,
                 password,
                 universityName,

@@ -3,7 +3,7 @@ import axios from 'axios';
 export default async function handler(req, res) {
     if (req.method === 'GET') {
         try {
-            const response = await axios.get('http://localhost:4000/getNFTDetails');
+            const response = await axios.get('http://13.250.122.124:5000/getNFTDetails');
             res.status(200).json(response.data);
         } catch (error) {
             res.status(500).json({ message: 'Error fetching nfts' });
