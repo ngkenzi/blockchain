@@ -13,7 +13,6 @@
 
 .slideDown {
   transform: translateY(100%);
-  transition: transform 0.5s ease-in-out;
 }
 
 .banner span {
