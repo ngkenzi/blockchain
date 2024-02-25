@@ -10,7 +10,7 @@ export default async (req, res) => {
                 },
             };
 
-            const response = await axios.post('http://localhost:4000/update-avatar-url', req.body, config);
+            const response = await axios.post('http://13.250.122.124:5000/update-avatar-url', req.body, config);
 
             res.status(response.status).json(response.data);
         } catch (error) {

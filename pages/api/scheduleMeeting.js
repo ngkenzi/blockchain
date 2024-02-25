@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
         try {
             // Forward the request to the actual backend server
-            const response = await axios.post('http://localhost:4000/scheduleMeeting', {
+            const response = await axios.post('http://13.250.122.124:5000/scheduleMeeting', {
                 studentId,
                 companyId,
                 meetingLink,

@@ -11,7 +11,7 @@ export default async function handler(req, res) {
         }
 
         try {
-            const response = await axios.get(`http://localhost:4000/invites/status/${recipientWalletAddress}`);
+            const response = await axios.get(`http://13.250.122.124:5000/invites/status/${recipientWalletAddress}`);
             res.status(200).json(response.data);
         } catch (error) {
             console.error(error);

@@ -8,7 +8,7 @@ export default async function handler(req, res) {
 
         try {
             // Forward the request to your backend service
-            const backendResponse = await axios.post('http://localhost:4000/redeemVoucher', {
+            const backendResponse = await axios.post('http://13.250.122.124:5000/redeemVoucher', {
                 voucherCode,
                 walletAddress,
                 email,

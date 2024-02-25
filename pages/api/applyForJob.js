@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         const applicationData = req.body;
 
         try {
-            const response = await axios.post('http://localhost:4000/applyForJob', applicationData);
+            const response = await axios.post('http://13.250.122.124:5000/applyForJob', applicationData);
             res.status(200).json({ success: true, message: 'Application submitted successfully' });
         } catch (error) {
             console.error('Error submitting application:', error);

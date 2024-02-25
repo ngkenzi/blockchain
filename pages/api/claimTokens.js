@@ -11,7 +11,7 @@ async function handler(req, res) {
 
         try {
             // Replace with your actual backend server URL
-            const backendServerUrl = `http://localhost:4000/claim-tokens/${walletAddress}`;
+            const backendServerUrl = `http://13.250.122.124:5000/claim-tokens/${walletAddress}`;
             const response = await axios.post(backendServerUrl);
 
             // Sending the response back to the client

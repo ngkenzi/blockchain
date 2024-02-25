@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
         try {
             // Forward the request to your backend service
-            const response = await axios.post(`http://localhost:4000/invites/${inviteId}/decline`);
+            const response = await axios.post(`http://13.250.122.124:5000/invites/${inviteId}/decline`);
             // Send the response back to the frontend
             res.status(200).json({ success: true, message: 'Invite declined successfully' });
         } catch (error) {

@@ -3,7 +3,7 @@ import axios from 'axios';
 export default async function handler(req, res) {
     if (req.method === 'GET') {
         try {
-            const response = await axios.get('http://localhost:4000/getNumberOfRow');
+            const response = await axios.get('http://13.250.122.124:5000/getNumberOfRow');
 
             // Forward the response back to the client
             res.status(200).json(response.data);

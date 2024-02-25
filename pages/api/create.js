@@ -5,7 +5,7 @@ export default async function handler(req, res) {
         try {
             const { name, description, minPrice, uri, tokenId, signature, cid, studentId, walletAddress } = req.body;
 
-            const response = await axios.post('http://localhost:4000/api/create', {
+            const response = await axios.post('http://13.250.122.124:5000/api/create', {
                 name, description, minPrice, uri, tokenId, signature, cid, studentId, walletAddress
             });
 

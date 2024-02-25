@@ -7,7 +7,7 @@ export default function AssessmentsSection() {
 
     useEffect(() => {
         // Fetch assessment submissions data from the API endpoint
-        fetch('http://localhost:4000/assessments-submitted') // Use the correct URL
+        fetch('http://13.250.122.124:5000/assessments-submitted') // Use the correct URL
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {
@@ -28,7 +28,7 @@ export default function AssessmentsSection() {
 
     const viewSubmission = (submissionId) => {
         // Fetch the submission details from the API based on submissionId
-        fetch(`http://localhost:4000/view-assessment-submission/${submissionId}`) // Use the correct URL
+        fetch(`http://13.250.122.124:5000/view-assessment-submission/${submissionId}`) // Use the correct URL
             .then((response) => response.json())
             .then((data) => {
                 if (data.success) {

@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
         try {
             // Forward the request to your backend service
-            const response = await axios.put(`http://localhost:4000/company/updateProfile/${companyId}`, profile, {
+            const response = await axios.put(`http://13.250.122.124:5000/company/updateProfile/${companyId}`, profile, {
                 headers: {
                     Authorization: token
                 }

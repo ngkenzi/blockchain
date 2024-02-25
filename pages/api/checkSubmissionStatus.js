@@ -26,7 +26,7 @@ export default async function handler(req, res) {
         }
 
         try {
-            const response = await axios.get(`http://localhost:4000/check-submission/${walletAddress}`);
+            const response = await axios.get(`http://13.250.122.124:5000/check-submission/${walletAddress}`);
             res.status(200).json(response.data);
         } catch (error) {
             console.error(error);

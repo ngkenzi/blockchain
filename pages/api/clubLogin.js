@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         const formData = req.body;
 
         try {
-            const response = await axios.post('http://localhost:4000/club/login', formData);
+            const response = await axios.post('http://13.250.122.124:5000/club/login', formData);
             // Assuming the response contains a token and club information
             res.status(200).json(response.data);
         } catch (error) {

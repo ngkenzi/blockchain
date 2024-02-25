@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         const { companyId } = req.query;
 
         try {
-            const response = await axios.get(`http://localhost:4000/jobOffers/${companyId}`);
+            const response = await axios.get(`http://13.250.122.124:5000/jobOffers/${companyId}`);
             res.status(200).json(response.data);
         } catch (error) {
             console.error('Error fetching job offers:', error);

@@ -7,7 +7,7 @@ export default async function handler(req, res) {
             const { email, password } = req.body;
 
             // Make a POST request to the login endpoint
-            const response = await axios.post('http://localhost:4000/login', {
+            const response = await axios.post('http://13.250.122.124:5000/login', {
                 email,
                 password,
             });

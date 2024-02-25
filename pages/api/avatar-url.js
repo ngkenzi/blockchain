@@ -9,7 +9,7 @@ export default async (req, res) => {
         }
 
         try {
-            const response = await axios.get(`http://localhost:4000/get-avatar-url?walletAddress=${walletAddress}`);
+            const response = await axios.get(`http://13.250.122.124:5000/get-avatar-url?walletAddress=${walletAddress}`);
 
             if (response.data.avatarUrl && response.data.avatarUrl !== "") {
                 res.status(200).json({ avatarUrl: response.data.avatarUrl });

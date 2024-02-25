@@ -11,7 +11,7 @@ export default async function handler(req, res) {
             }
 
             // Make a POST request to the loginAdmin endpoint
-            const response = await axios.post('http://localhost:4000/loginAdmin', {
+            const response = await axios.post('http://13.250.122.124:5000/loginAdmin', {
                 email,
                 password,
             });
