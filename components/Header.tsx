@@ -158,11 +158,11 @@ export function HeaderResponsive({
       icon: <FaUserGraduate size="1.5em" />,
       action: () => router.push("/students"),
     },
-    // {
-    //   label: "Companies",
-    //   icon: <FaBuilding size="1.5em" />,
-    //   action: () => router.push("/companies"),
-    // },
+    {
+      label: "Companies",
+      icon: <FaBuilding size="1.5em" />,
+      action: () => router.push("/companies"),
+    },
     ...(!isAuthenticated
       ? [
           {

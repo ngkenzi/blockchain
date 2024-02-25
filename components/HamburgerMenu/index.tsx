@@ -45,12 +45,12 @@ const HamburgerMenu = () => {
           <p className={styles.nav_link} onClick={() => router.push("/search")}>
             search
           </p>
-          {/* <p
+          <p
             className={styles.nav_link}
             onClick={() => router.push("/companies")}
           >
             companies
-          </p> */}
+          </p>
           <p
             className={styles.nav_link}
             onClick={() => router.push("/students")}
