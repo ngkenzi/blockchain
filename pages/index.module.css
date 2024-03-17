@@ -1,0 +1,518 @@
+.homepage_container {
+  background-image: url(/assets/homepage_bg.png);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100vh;
+  position: relative;
+}
+
+.body {
+  font-family: Kanit;
+}
+
+.homepage_container > section {
+  padding: 0 150px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 90vh;
+}
+
+.homepage_section {
+  padding: 0 150px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.upper_content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  opacity: 70%;
+  text-transform: uppercase;
+  padding: 10px 0px;
+  font-family: Kanit;
+  font-size: 16px;
+  font-style: normal;
+  letter-spacing: 2px;
+  margin-top: 76px;
+  max-width: 80%;
+  align-self: center;
+}
+
+.upper_content p:last-child {
+  font-size: 44px;
+  font-weight: 900;
+  opacity: 100%;
+  padding-top: 30px;
+}
+
+.lower_content {
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  max-width: 80%;
+  gap: 30px;
+}
+
+.lower_content > div {
+  align-self: center;
+  display: flex;
+  gap: 130px;
+}
+
+.lower_content button {
+  border-color: rgba(255, 255, 255, 0.6);
+  border-width: 1px;
+  border-style: solid;
+  background-color: rgba(10, 0, 29, 0.6);
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  min-width: 170px;
+  font-family: Kanit;
+}
+
+.lower_content > p {
+  color: white;
+  opacity: 73%;
+  text-align: center;
+  font-family: Kanit;
+}
+
+.about_us_bg {
+  padding: 0 150px;
+  height: 70vh;
+  position: relative;
+  z-index: 3;
+  background: linear-gradient(
+      to bottom,
+      rgba(1, 7, 23, 1) 0%,
+      rgba(0, 9, 24, 0.9) 10%,
+      rgba(0, 10, 29, 0.8) 20%,
+      rgba(4, 11, 38, 0.75) 30%,
+      rgba(9, 15, 49, 0.7) 40%,
+      rgba(17, 13, 52, 0.7) 50%,
+      rgba(22, 5, 40, 0.7) 60%,
+      rgba(30, 2, 42, 0.75) 70%,
+      rgba(30, 3, 41, 0.79) 80%,
+      rgba(17, 2, 24, 0.85) 90%,
+      rgb(0, 0, 0) 100%
+    ),
+    url(/images/about_us.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+}
+
+.aboutus_desc {
+  font-size: 16px !important;
+  opacity: 73%;
+  font-weight: 100 !important;
+  margin: 30px 0;
+}
+
+.content > p {
+  opacity: 73%;
+  color: white;
+  font-size: 44px;
+  font-weight: 700;
+}
+
+.planet {
+  padding: 0 150px;
+  height: 100vh;
+  position: relative;
+  z-index: 3;
+  background: linear-gradient(rgba(0, 0, 0, 0.73), rgba(0, 0, 0, 0.73)),
+    url(/images/planet.jpg);
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center;
+}
+
+.planet p {
+  color: white;
+  opacity: 73%;
+}
+
+.planet .container {
+  display: flex;
+  gap: 100px;
+  justify-content: space-between;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  margin-top: 180px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.features .title {
+  color: white;
+  font-size: 44px;
+  font-weight: 700;
+  opacity: 73%;
+  margin-bottom: 50px;
+}
+
+.user_org {
+  margin-top: 100px;
+}
+
+.grid {
+  display: flex;
+  flex-direction: row;
+  gap: 100px;
+}
+
+.grid .item {
+  background-color: #171717;
+  border-radius: 10px;
+  padding: 50px;
+}
+
+.grid .item :first-child {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  opacity: 73%;
+}
+
+.user_org .title {
+  font-size: 30px;
+  font-weight: 600;
+  opacity: 73%;
+  margin-bottom: 20px;
+}
+
+.howitworks .title {
+  font-size: 44px;
+  opacity: 73%;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.howitworks {
+  margin-top: 100px;
+}
+
+.enterprise {
+  margin-top: 100px;
+}
+
+.poweredby {
+  background-color: black;
+  height: 70vh;
+  min-height: 60vh;
+  position: relative;
+  padding: 0 150px;
+  padding-top: 140px;
+}
+
+.poweredby > .title > p {
+  color: darkgrey;
+  text-align: center;
+  font-family: Kanit;
+  font-weight: 100;
+  padding-top: 60px;
+  font-size: 30px;
+}
+
+.logo_container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo_container > a {
+  max-width: 100%;
+  max-height: 100%;
+  transform: scale(0.5);
+  cursor: pointer;
+}
+
+.logo_container > a:nth-child(2) {
+  background: white;
+  padding: 40px;
+  border-radius: 30px;
+  opacity: 80%;
+}
+
+.poweredby > hr {
+  background-color: white;
+  opacity: 0.3;
+}
+
+.signup {
+  padding: 50px 250px;
+}
+
+.signup .container {
+  display: flex;
+  justify-content: space-between;
+  gap: 80px;
+}
+
+.ready_unlock {
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.signup .action {
+  font-size: 20px;
+  align-self: center;
+}
+
+.signup Button {
+  font-size: large;
+  font-family: Kanit;
+  font-weight: 100;
+  margin: 10px 0;
+  border-radius: 30px;
+}
+
+.non_action {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+@media (min-width: 360px) and (max-width: 600px) {
+  .homepage_container > section,
+  .homepage_section,
+  .whatwedo_content,
+  .poweredby {
+    padding: 0 20px;
+  }
+  .intro {
+    min-height: 70vh;
+    padding: 80px 20px 20px 20px;
+  }
+
+  .homepage_container > section {
+    height: auto;
+  }
+
+  .homepage_container {
+    min-height: 50vh;
+    background-size: cover;
+  }
+
+  .upper_content {
+    margin-top: 0px;
+  }
+
+  .upper_content p:first-child {
+    font-size: 12px;
+  }
+
+  .upper_content p:last-child {
+    padding-top: 10px;
+    font-size: 29px;
+  }
+
+  .upper_content,
+  .lower_content > div,
+  .motive {
+    max-width: 100%;
+    align-self: center;
+    gap: 6px;
+  }
+
+  .lower_content {
+    min-width: 100%;
+  }
+
+  .lower_content > div {
+    display: flex;
+    width: 80%;
+    justify-content: space-between;
+  }
+
+  .lower_content button {
+    font-size: 13px;
+    min-width: 43%;
+  }
+
+  .logo_container > img {
+    max-width: 80%;
+    transform: scale(0.6);
+    padding: 20px;
+    opacity: 1;
+  }
+
+  .logo_container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .lower_content p {
+    font-size: 12px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+
+  .poweredby > .title > p {
+    padding-top: 0px;
+  }
+
+  .bottom_line {
+    margin-top: 20px;
+  }
+
+  .button_container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .about_us_bg {
+    flex-direction: column;
+    padding: 0 20px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .content Button {
+    background-color: white;
+    opacity: 80%;
+    color: black;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: Kanit;
+    font-weight: 100;
+  }
+
+  .content p:first-child {
+    font-size: 29px;
+  }
+
+  .aboutus_desc,
+  .howitworks .desc {
+    font-size: 12px !important;
+  }
+
+  .planet,
+  .grid,
+  .container {
+    flex-direction: column;
+    gap: 0px !important;
+  }
+
+  .planet {
+    padding: 0 20px;
+  }
+
+  .user_org,
+  .howitworks,
+  .enterprise,
+  .features {
+    padding: 0;
+    margin: 0;
+  }
+
+  .howitworks {
+    text-align: justify;
+    position: relative;
+    right: 0;
+  }
+
+  .user_org {
+    font-size: 12px;
+    text-align: justify;
+  }
+
+  .user,
+  .enterprise {
+    margin: 18px 0;
+  }
+
+  .user .title,
+  .enterprise .title,
+  .howitworks .title,
+  .features .title {
+    font-size: 23px;
+    margin: 5px 0;
+  }
+
+  .grid {
+    flex-direction: row;
+    white-space: nowrap;
+    overflow-x: auto;
+    gap: 10px !important;
+    max-width: 100%;
+    scrollbar-width: none;
+  }
+
+  .grid .item {
+    padding: 20px;
+    max-width: 70%;
+    white-space: normal;
+    flex: 0 0 auto;
+    font-size: 12px;
+  }
+
+  .grid .item :first-child {
+    font-size: 16px;
+  }
+
+  .about_us_bg {
+    height: 50vh;
+  }
+
+  .features {
+    margin: 30px 0;
+  }
+
+  .poweredby {
+    padding: 20px 0;
+  }
+
+  .signup {
+    padding: 40px 20px;
+  }
+
+  .ready_unlock {
+    font-size: 30px;
+    margin-bottom: 30px;
+  }
+
+  .ready_unlock p {
+    font-size: 12px;
+  }
+
+  .non_action {
+    gap: 10px;
+  }
+
+  .action p {
+    font-size: 16px;
+    margin-top: 10px;
+  }
+
+  .action Button {
+    width: 100%;
+    height: auto;
+    margin: 30px 0;
+    padding: 10px 0;
+  }
+}

@@ -40,6 +40,7 @@ import { ethers } from "ethers";
 import JobToken from "../contracts/JobToken.json";
 import SelfAssessmentCTA from "../../components/SelfAssessmentCTA";
 import { BeatLoader, ClipLoader } from "react-spinners";
+import { FaCopy, FaCheck } from "react-icons/fa";
 
 import EmploymentBadge from "./EmploymentBadge";
 
@@ -50,19 +51,30 @@ const Profile = () => {
   const [FirstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
   const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+
   const [studentId, setStudentId] = useState(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [formattedDate, setFormattedDate] = useState("");
   const [cvUrl, setCvUrl] = useState("");
   const [CVFreeJobTokenStatus, setCVFreeJobTokenStatus] = useState(0);
+  const [isRewardsModalOpen, setIsRewardsModalOpen] = useState(false);
+  const [invitationCode, setInvitationCode] = useState("");
+  const [claimableTokens, setClaimableTokens] = useState(0);
 
   const [loading, setLoading] = useState(false);
   const [loadingClaim, setLoadingClaim] = useState(false);
   const [tokensClaimed, setTokensClaimed] = useState(false);
 
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
   const [avatarUrl, setAvatarUrl] = useState("/sample-profile.jpg"); // Initial value
   const [universityName, setUniversityName] = useState("");
   const [jobTokenBalance, setJobTokenBalance] = useState(0);
+  const [maticBalance, setMaticBalance] = useState(0);
+  const [voucherCode, setVoucherCode] = useState("");
+
   const [invites, setInvites] = useState([]);
   const [activeTab, setActiveTab] = useState("profile");
   const [lastFetched, setLastFetched] = useState(Date.now());
@@ -82,6 +94,8 @@ const Profile = () => {
   const [isSubmissionStatusLoaded, setIsSubmissionStatusLoaded] =
     useState(false);
 
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+
   const router = useRouter();
   const [step, setStep] = useState(1);
   const uniAddress = "0xbaeb7bcfa679bf0132df2a1b8d273f327cfb0542";
@@ -89,14 +103,41 @@ const Profile = () => {
   const [isCvUploadModalOpen, setIsCvUploadModalOpen] = useState(false);
   const [cvFile, setCvFile] = useState(null);
 
+  const [recipientAddress, setRecipientAddress] = useState("");
+  const [transferAmount, setTransferAmount] = useState("");
+
   const [transactionHistory, setTransactionHistory] = useState([]);
+
+  const [assessments, setAssessments] = useState([]);
+  const [loadingAssessments, setLoadingAssessments] = useState(true);
+
+  useEffect(() => {
+    const fetchAssessments = async () => {
+      try {
+        const response = await axios.get("/api/assessments");
+
+        if (response.data.success) {
+          console.log(response.data.assessments);
+          setAssessments(response.data.assessments);
+        } else {
+          console.error(response.data.message);
+          setAssessments([]);
+        }
+      } catch (error) {
+        console.error("Error fetching assessments:", error);
+      } finally {
+        setLoadingAssessments(false);
+      }
+    };
+
+    fetchAssessments();
+  }, []);
 
   const navigateToAssessment = () => {
     router.push("/assessment");
   };
 
   const handleImageGenerate = (imgData) => {
-    console.log("handleImageGenerate called", imgData);
     setGeneratedImageData(imgData);
     setStep(2);
   };
@@ -156,7 +197,6 @@ const Profile = () => {
         params: { studentId: studentId },
       });
 
-      console.log("MEETINGS", response.data.meetings);
       setMeetings(response.data.meetings);
     } catch (error) {
       console.error("Error fetching meetings:", error);
@@ -182,7 +222,6 @@ const Profile = () => {
   };
 
   function handleInviteAction(invite) {
-    console.log("invite action clicked", invite);
     // Implement your invite action handling logic here
   }
 
@@ -238,11 +277,19 @@ const Profile = () => {
         setStudentId(studentData.id);
         setCvUrl(studentData.cvUrl);
         setCVFreeJobTokenStatus(studentData.CVFreeJobTokenStatus);
+        setInvitationCode(studentData.invitation_code);
+        setClaimableTokens(studentData.claimable_tokens);
+        setMaticBalance(studentData.Matic_Balance);
+        setEmail(studentData.email);
+
+        console.log(cvUrl);
       } catch (error) {
         console.error("Error fetching student info:", error);
       }
     }
   };
+
+  console.log(maticBalance);
 
   // useEffect(() => {
   //   fetchStudentInfo();
@@ -254,7 +301,6 @@ const Profile = () => {
       const response = await axios.get(
         `/api/checkSubmissionStatus?walletAddress=${userWAddress}`
       );
-      console.log("Submission Status Response:", response.data); // For debugging
 
       if (response.data.exists) {
         setHasSubmitted(true);
@@ -267,6 +313,50 @@ const Profile = () => {
     } catch (error) {
       console.error("Error checking submission status:", error);
       setIsSubmissionStatusLoaded(true);
+    }
+  };
+
+  const handleRedeemVoucher = async () => {
+    if (!voucherCode) {
+      setErrorMessage("Please enter a voucher code.");
+      setSuccessMessage("");
+      return;
+    }
+
+    setLoading(true); // Show loading indication
+    setErrorMessage("");
+    setSuccessMessage("");
+
+    try {
+      const response = await axios.post("/api/redeemVoucher", {
+        voucherCode,
+        walletAddress,
+        email,
+        fullName,
+      });
+
+      if (response.status === 200) {
+        setSuccessMessage(
+          "Voucher redeemed successfully. Matic balance increased by 10."
+        );
+        // Update the matic balance display
+        fetchMaticBalance();
+        // reset the voucher code input
+        setVoucherCode("");
+      } else {
+        setErrorMessage("Failed to redeem voucher: " + response.data.message);
+      }
+    } catch (error) {
+      console.error("Error redeeming voucher:", error);
+      console.log(error.response); // This line will help understand the server response
+
+      const message =
+        error.response?.data?.message ||
+        "An error occurred while redeeming the voucher.";
+
+      setErrorMessage(message);
+    } finally {
+      setLoading(false); // Hide loading indication
     }
   };
 
@@ -286,6 +376,25 @@ const Profile = () => {
       setJobTokenBalance(parseFloat(ethers.utils.formatUnits(balance, 18)));
     } catch (error) {
       console.error("Error fetching JobToken balance:", error);
+    }
+  };
+
+  const fetchMaticBalance = async () => {
+    if (!walletAddress) return;
+
+    try {
+      const response = await axios.get(
+        `/api/getStudentInfoByWalletAddress?walletAddress=${walletAddress}`
+      );
+      if (response.data && response.status === 200) {
+        const studentData = response.data;
+        // Assuming Matic_Balance is returned in the response and is a number or string that can be directly set
+        setMaticBalance(studentData.Matic_Balance);
+      } else {
+        console.error("Failed to fetch student info for Matic balance");
+      }
+    } catch (error) {
+      console.error("Error fetching Matic balance:", error);
     }
   };
 
@@ -337,15 +446,81 @@ const Profile = () => {
       // Wait for the transaction to be mined
       await tx.wait();
 
+      // Define the amount of Matic to send
+      const maticAmount = ethers.utils.parseEther("2");
+
+      // Create a transaction object for sending Matic
+      const maticTransferTx = {
+        to: recipientWalletAddress,
+        value: maticAmount,
+        gasPrice: gasPrice,
+      };
+
+      // Execute the Matic transfer
+      const maticTx = await signer.sendTransaction(maticTransferTx);
+      await maticTx.wait();
+
       // Update the database status
       await axios.post(`/api/claimTokens?walletAddress=${walletAddress}`);
-      console.log("5 Job Tokens successfully transferred and recorded.");
       setTokensClaimed(true);
       fetchJobTokenBalance();
+      fetchMaticBalance();
     } catch (error) {
       console.error("Error claiming Job Tokens:", error);
     } finally {
       setLoadingClaim(false);
+    }
+  };
+
+  const handleTransferMatic = async () => {
+    if (!recipientAddress || !transferAmount) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    setLoading(true); // Assuming you have a loading state to indicate progress
+
+    // Sender's private key (stored in environment variables)
+    const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
+
+    try {
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
+      );
+
+      const signer = new ethers.Wallet(privateKey, provider);
+
+      // Get the current gas price from the network
+      const currentGasPrice = await provider.getGasPrice();
+
+      const gasPrice = currentGasPrice.mul(ethers.BigNumber.from(2)); // Increase gas price by a factor of 2
+
+      const maticAmount = ethers.utils.parseEther(transferAmount);
+
+      const maticTransferTx = {
+        to: recipientAddress,
+        value: maticAmount,
+        gasPrice: gasPrice,
+      };
+
+      // Execute the Matic transfer
+      const maticTx = await signer.sendTransaction(maticTransferTx);
+      await maticTx.wait();
+
+      await axios.post("/api/deductMaticBalance", {
+        walletAddress, // Sender's wallet address
+        amountToDeduct: transferAmount,
+      });
+
+      alert("Transfer successful!");
+      setRecipientAddress("")
+      fetchMaticBalance();
+    } catch (error) {
+      console.error("Transfer failed:", error);
+      alert("Transfer failed. See console for details.");
+    } finally {
+      setLoading(false);
+      setIsTransferModalOpen(false);
     }
   };
 
@@ -405,7 +580,6 @@ const Profile = () => {
 
       fetchStudentInfo();
       fetchTransactionHistory();
-      console.log("5 Job Tokens successfully transferred and recorded.");
       alert(
         "5 Job Tokens have been successfully claimed! You can check the transaction details in the History tab."
       );
@@ -427,7 +601,6 @@ const Profile = () => {
 
     while (moreDataExists) {
       let url = `/api/rarible?address=${walletAddress}`;
-      console.log(url);
       try {
         const response = await axios.get(url, {
           headers: {
@@ -435,8 +608,6 @@ const Profile = () => {
             "x-api-key": "d94d0879-f919-4803-b293-11ea277a2982",
           },
         });
-
-        console.log(response.data);
 
         if (response.status !== 200) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -532,16 +703,14 @@ const Profile = () => {
 
   useEffect(() => {
     fetchJobTokenBalance();
+    fetchMaticBalance();
   }, [walletAddress]);
 
   const fetchInviteById = async (inviteId) => {
     try {
-      console.log("Fetching invite by ID:", inviteId);
-
       const response = await axios.get("/api/getInviteById", {
         params: { inviteId },
       });
-      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error("Error fetching invite by ID", error);
@@ -570,7 +739,6 @@ const Profile = () => {
     setTriggerMinting(true);
 
     try {
-      console.log("INVOTE", inviteId);
       // Fetch the full invite details
       const id = inviteId.id;
 
@@ -655,6 +823,74 @@ const Profile = () => {
     }
   };
 
+  const handleClaimRewards = async () => {
+    setLoadingClaim(true);
+
+    // Sender's wallet address (fixed)
+    const senderWalletAddress = "0x01Ff83b084498CfDa27497F14D5c2AdbB5a7f73D";
+
+    // Recipient's wallet address (user's address)
+    const recipientWalletAddress = walletAddress;
+
+    // Contract address for the Job Token
+    const contractAddress = "0x44AA144A60af0C745759912eA9C58476e49d9967";
+
+    // Sender's private key (stored in environment variables)
+    const privateKey = process.env.NEXT_PUBLIC_PRIVATE_KEY;
+
+    try {
+      const amountToClaim = ethers.utils.parseUnits(
+        claimableTokens.toString(),
+        18
+      );
+
+      // Connect to the Ethereum network (Polygon Mainnet in this case)
+      const provider = new ethers.providers.JsonRpcProvider(
+        "https://polygon-mainnet.g.alchemy.com/v2/GcZf35hKIVbLQKS8m0wprSq_jHauI4jL"
+      );
+
+      // Create a new instance of the wallet with the private key and connect it to the provider
+      const signer = new ethers.Wallet(privateKey, provider);
+
+      // Create a new instance of the contract
+      const contract = new ethers.Contract(
+        contractAddress,
+        JobToken.abi,
+        signer
+      );
+
+      // Get the current gas price from the network
+      const currentGasPrice = await provider.getGasPrice();
+
+      const gasPrice = currentGasPrice.mul(ethers.BigNumber.from(3)); // Increase gas price by a factor of 2
+
+      // Execute the transaction to transfer the tokens
+      const tx = await contract.transferOnBehalf(
+        senderWalletAddress,
+        recipientWalletAddress,
+        amountToClaim,
+        { gasPrice }
+      );
+
+      // Wait for the transaction to be mined
+      await tx.wait();
+
+      // Deduct claimableTokens in the database for the user
+      await axios.post("/api/deductClaimableTokens", {
+        walletAddress: recipientWalletAddress,
+        amountToDeduct: claimableTokens,
+      });
+
+      // Fetch updated student info to reflect the change in UI
+      fetchStudentInfo();
+      fetchJobTokenBalance();
+    } catch (error) {
+      console.error("Error claiming rewards:", error);
+    } finally {
+      setLoadingClaim(false);
+    }
+  };
+
   // Function to handle accepting a meeting
   const handleAcceptMeeting = async (meetingId) => {
     await updateMeetingStatus(meetingId, "scheduled");
@@ -721,7 +957,6 @@ const Profile = () => {
 
       if (response.data && response.data.result) {
         setTransactionHistory(response.data.result);
-        console.log(transactionHistory);
       }
     } catch (error) {
       console.error("Error fetching transaction history:", error);
@@ -735,30 +970,47 @@ const Profile = () => {
   }, [walletAddress]);
 
   return (
-    <div className="bg-gray-900 min-h-screen">
+    <div
+      className="bg-gray-900 min-h-screen"
+      style={{ fontFamily: "Kanit, sans-serif" }}
+    >
       <Container
         size="lg"
-        className="p-4 md:p-10 bg-gray-100 shadow-lg rounded-lg min-h-screen relative"
+        className="p-4 md:p-10 bg-gray-100 text-white shadow-lg rounded-lg min-h-screen relative"
+        style={{ backgroundColor: "#1C1B1B" }}
       >
         {/* Icons */}
         <div className="flex justify-between items-center p-4">
           {/* Home Icon */}
-          <FaHome
+          {/* <FaHome
             className="text-gray-500 cursor-pointer hover:text-blue-500"
             size={24}
             onClick={navigateHome}
+          /> */}
+          <img
+            src="/images/logo.png"
+            alt="Logo"
+            style={{ width: "59px" }}
+            onClick={navigateHome}
+            className="cursor-pointer"
           />
 
           <div className="flex items-center">
             {/* Conditional Upload CV Button */}
-            {!cvUrl && (
+            {/* {cvUrl === "N/A" && (
               <Button
-                onClick={() => setIsCvUploadModalOpen(true)}
+                onClick={() => setIsTransferModalOpen(true)}
                 className="mr-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               >
-                Upload CV
+              Transfer Matic
               </Button>
-            )}
+            )} */}
+            <Button
+              onClick={() => setIsTransferModalOpen(true)}
+              className="mr-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            >
+              Transfer Matic
+            </Button>
 
             {/* Logout Icon */}
             <FaSignOutAlt
@@ -787,6 +1039,121 @@ const Profile = () => {
             <Button color="red" onClick={handleLogoutConfirmation}>
               Logout
             </Button>
+          </div>
+        </Modal>
+
+        {/* Rewards Modal */}
+        <Modal
+          opened={isRewardsModalOpen}
+          onClose={() => setIsRewardsModalOpen(false)}
+          title={
+            <Text weight={500} size="lg" style={{ color: "#333" }}>
+              Rewards
+            </Text>
+          }
+          size="lg"
+          overlayOpacity={0.55}
+          overlayBlur={3}
+        >
+          <div style={{ padding: "20px" }}>
+            <Paper
+              shadow="xs"
+              radius="md"
+              p="md"
+              style={{ marginBottom: "30px", backgroundColor: "#FAFAFA" }}
+            >
+              <Text size="md" style={{ marginBottom: "10px" }}>
+                Claimable Job Tokens:
+              </Text>
+              <Text weight={700} size="xl" style={{ color: "#4CAF50" }}>
+                {claimableTokens}
+              </Text>
+            </Paper>
+
+            <Paper
+              shadow="xs"
+              radius="md"
+              p="md"
+              style={{ marginBottom: "30px", backgroundColor: "#FAFAFA" }}
+            >
+              <Text size="md" style={{ marginBottom: "10px" }}>
+                Your Invitation Code:
+              </Text>
+              <Text
+                weight={700}
+                size="xl"
+                style={{
+                  color: "#333",
+                  background: "#EFEFEF",
+                  padding: "8px 12px",
+                  borderRadius: "8px",
+                }}
+              >
+                {invitationCode}
+              </Text>
+            </Paper>
+            {/* Redeem Voucher Code Section */}
+            <Paper
+              shadow="xs"
+              radius="md"
+              p="md"
+              style={{ marginBottom: "30px", backgroundColor: "#FAFAFA" }}
+            >
+              <Text size="md" style={{ marginBottom: "10px" }}>
+                Redeem Voucher Code
+              </Text>
+              <div>
+                <Input
+                  placeholder="Enter your voucher code here"
+                  value={voucherCode}
+                  onChange={(event) =>
+                    setVoucherCode(event.currentTarget.value)
+                  }
+                  style={{ marginBottom: "10px" }}
+                />
+                <Button color="blue" onClick={handleRedeemVoucher}>
+                  Redeem
+                </Button>
+
+                {successMessage && (
+                  <Text color="green" size="sm" style={{ marginTop: "10px" }}>
+                    {successMessage}
+                  </Text>
+                )}
+
+                {errorMessage && (
+                  <Text color="red" size="sm" style={{ marginTop: "10px" }}>
+                    {errorMessage}
+                  </Text>
+                )}
+              </div>
+            </Paper>
+
+            {/* Claim Button */}
+            {claimableTokens > 0 && (
+              <Button
+                color="blue"
+                onClick={handleClaimRewards}
+                style={{
+                  paddingLeft: "20px",
+                  paddingRight: "20px",
+                  marginTop: "20px",
+                  backgroundColor: "#0B5ED7",
+                  color: "white",
+                }}
+                radius="md"
+                disabled={loadingClaim}
+              >
+                {loadingClaim ? (
+                  <span>Claiming tokens...</span>
+                ) : (
+                  <Group position="center">
+                    <FaCoins style={{ marginRight: "10px" }} />
+                    <span>Claim Tokens</span>
+                  </Group>
+                )}
+              </Button>
+            )}
           </div>
         </Modal>
 
@@ -959,44 +1326,148 @@ const Profile = () => {
           </Button>
         </Modal>
 
-        <header className="flex flex-col md:flex-row justify-center items-center text-center mb-8">
-          <div className="flex flex-col items-center space-y-4">
+        <Modal
+          opened={isTransferModalOpen}
+          onClose={() => setIsTransferModalOpen(false)}
+          title="Transfer Matic"
+        >
+          <Text>Matic Balance: {maticBalance}</Text>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              marginTop: "20px",
+              marginBottom: "8px",
+            }}
+          >
+            {/* MATIC logo */}
+            <img
+              src="/assets/maticLogo.png"
+              alt="MATIC Logo"
+              style={{ width: "20px", height: "20px", marginRight: "8px" }}
+            />
+            {/* Label text */}
+            <Text weight={500}>MATIC Address (Polygon Network):</Text>
+          </div>
+
+          <Input
+            placeholder="MATIC Wallet Address"
+            mt="sm"
+            onChange={(event) => setRecipientAddress(event.currentTarget.value)}
+          />
+
+          <Text mt="md" weight={500}>
+            Amount to Transfer:
+          </Text>
+
+          <Input
+            placeholder="Amount to Transfer"
+            mt="sm"
+            value={transferAmount}
+            onChange={(event) => {
+              const value = event.currentTarget.value;
+              // Allow only numbers and enforce minimum value of 1
+              const numericValue = parseFloat(value);
+              if (!isNaN(numericValue) && numericValue > 0) {
+                setTransferAmount(value);
+              } else if (value === "") {
+                // Allow clearing the input
+                setTransferAmount("");
+              }
+            }}
+          />
+
+          {/* Note about confirming wallet address */}
+          <Text color="red" mt="md" align="center">
+            Please confirm the matic wallet address before transferring.
+            Transactions are irreversible.
+          </Text>
+
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Button
+              className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleTransferMatic}
+              disabled={
+                !recipientAddress ||
+                parseFloat(transferAmount) > maticBalance ||
+                isNaN(parseFloat(transferAmount))
+              }
+            >
+              Transfer Matic
+            </Button>
+          </div>
+        </Modal>
+
+        <div className="flex flex-col md:flex-row justify-center md:justify-start items-center md:items-start text-center md:text-left mb-8 px-6 p-10 md:p-20">
+          <div className="mb-4 md:mb-0 md:mr-14">
             <Avatar
               src={avatarUrl}
-              size="xl"
+              size="150px"
               className="cursor-pointer"
               onClick={() => router.push("/user/AvatarPage")}
             />
-            <div>
-              <Text size="lg" weight={700}>
-                {FirstName && LastName ? `${FirstName} ${LastName}` : "User"}
-              </Text>
-              <Text size="sm">
-                {universityName
-                  ? `University: ${universityName}`
-                  : "University not set"}
-              </Text>
-              <Text size="sm">Job Token Balance: {jobTokenBalance}</Text>
+          </div>
 
-              {/* Claim Tokens Button */}
-              {hasSubmitted && !tokensClaimed && (
+          <div style={{ fontFamily: "Kanit, sans-serif" }}>
+            <h1 className="text-4xl font-semibold pb-3">
+              {FirstName && LastName ? `${FirstName} ${LastName}` : "User"}
+            </h1>
+            <p className="font-normal py-1">
+              {universityName
+                ? `University: ${universityName}`
+                : "University not set"}
+            </p>
+            <p className=" font-normal py-1">
+              Job Token Balance: {jobTokenBalance}
+            </p>
+            <p className=" font-normal py-1 pb-2">
+              Matic Balance: {maticBalance}
+            </p>
+            <div
+              className={`flex ${
+                cvUrl === "N/A" ? "space-x-4" : "justify-center "
+              }`}
+            >
+              {" "}
+              <Button
+                className="mt-4 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4"
+                style={{ borderRadius: "30px" }}
+                onClick={() => setIsRewardsModalOpen(true)} // Toggle modal visibility
+              >
+                Rewards
+              </Button>
+              {cvUrl === "N/A" && (
                 <Button
-                  color={loadingClaim ? "gray" : "green"}
-                  onClick={handleClaimTokens}
-                  className={`mt-4 ${
-                    loadingClaim ? "bg-gray-500" : "bg-green-500"
-                  }`}
-                  disabled={loadingClaim}
+                  onClick={() => setIsCvUploadModalOpen(true)}
+                  className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4"
+                  style={{ borderRadius: "30px" }}
                 >
-                  {loadingClaim ? (
-                    <ClipLoader color="#ffffff" size={20} />
-                  ) : (
-                    "Claim your 5 Job Tokens 🎁"
-                  )}
+                  Upload CV
                 </Button>
               )}
+            </div>
 
-              {cvUrl && CVFreeJobTokenStatus === 1 && (
+            {/* Claim Tokens Button */}
+            {/* {hasSubmitted && !tokensClaimed && (
+              <Button
+                color={loadingClaim ? "gray" : "green"}
+                onClick={handleClaimTokens}
+                className={`mt-4 ${
+                  loadingClaim
+                    ? "bg-gray-500"
+                    : "bg-gradient-to-r from-green-500 to-blue-500"
+                } text-white`}
+                disabled={loadingClaim}
+              >
+                {loadingClaim ? (
+                  <ClipLoader color="#ffffff" size={20} />
+                ) : (
+                  "Claim your 5 Job Tokens & 2 Matic 🎁"
+                )}
+              </Button>
+            )} */}
+
+            {/* {cvUrl && CVFreeJobTokenStatus === 1 && (
                 <Button
                   color={loadingClaim ? "gray" : "green"}
                   onClick={handleClaimTokensCV}
@@ -1011,13 +1482,12 @@ const Profile = () => {
                     "Claim your 5 Job Tokens 🎁"
                   )}
                 </Button>
-              )}
-            </div>
+              )} */}
           </div>
-        </header>
+        </div>
 
         {/* Search Bar */}
-        <div className="mb-6 relative">
+        {/* <div className="mb-6 relative">
           <Input
             placeholder="Search NFTs..."
             value={search}
@@ -1028,106 +1498,146 @@ const Profile = () => {
             className="absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400"
             size={18}
           />
-        </div>
+        </div> */}
 
         {/* Tabs */}
-        <Tabs defaultValue="profile">
-          <Tabs.List>
-            <Tabs.Tab value="profile" color="blue">
-              Digital Cert
-            </Tabs.Tab>
-            <Tabs.Tab value="invites" color="blue">
+        <div>
+          <div className="flex flex-wrap md:flex-nowrap space-x-0 md:space-x-1 p-1 mb-4 md:mb-8">
+            <button
+              className={`flex-1 py-2 px-1 text-white ${
+                activeTab === "profile"
+                  ? "border-b-2"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setActiveTab("profile")}
+            >
+              Digital Certs
+            </button>
+            <button
+              className={`flex-1 py-2 text-white ${
+                activeTab === "invites"
+                  ? "border-b-2"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setActiveTab("invites")}
+            >
               Offers
-            </Tabs.Tab>
-            <Tabs.Tab value="history" color="blue">
+            </button>
+            <button
+              className={`flex-1 py-2 px-1 text-white ${
+                activeTab === "history"
+                  ? "border-b-2"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setActiveTab("history")}
+            >
               History
-            </Tabs.Tab>
-            <Tabs.Tab value="meetings" color="blue">
+            </button>
+            <button
+              className={`flex-1 py-2 px-2 text-white ${
+                activeTab === "meetings"
+                  ? "border-b-2"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setActiveTab("meetings")}
+            >
               Meetings
-            </Tabs.Tab>
-          </Tabs.List>
+            </button>
+            <button
+              className={`flex-1 py-2 px-2 text-white ${
+                activeTab === "assessments"
+                  ? "border-b-2"
+                  : "bg-gray-700 hover:bg-gray-600"
+              }`}
+              onClick={() => setActiveTab("assessments")}
+            >
+              Assessments
+            </button>
+          </div>
 
-          <Tabs.Panel value="profile" pt="xs">
-            {/* Display NFTs */}
-            {loading ? (
-              <Text align="center" size="lg">
-                Loading...
-              </Text>
-            ) : (
-              <>
-                {nfts.length === 0 && (
-                  <div className="flex flex-col items-center justify-center space-y-4">
-                    <FaBoxOpen size="60" color="gray" />
-                    <Text align="center" size="lg" style={{ color: "gray" }}>
-                      No NFTs found for the user
-                    </Text>
-                  </div>
-                )}
-                <Grid gutter="md">
-                  {nfts
-                    .filter(
-                      (nft) =>
-                        nft.name
-                          ?.toLowerCase()
-                          .includes(search.toLowerCase()) &&
-                        (nft.description?.toLowerCase().includes("course") ||
-                          nft.description?.toLowerCase().includes("tier") ||
-                          nft.description?.toLowerCase().includes("company"))
-                    )
-                    .map((nft, index) => (
-                      <Col key={index} md={6} lg={4}>
-                        <a
-                          href={`https://rarible.com/token/${nft.blockchain.toLowerCase()}/${
-                            nft.contract
-                          }:${nft.tokenId}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="block mb-6"
-                        >
-                          <Paper
-                            elevation={3}
-                            className="transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
-                          >
-                            <Image
-                              src={nft.image_url || "/default-image-path.jpg"}
-                              alt="NFT"
-                              fit="cover"
-                              className="rounded-t-lg"
-                            />
-                            <div className="p-4">
-                              <Text size="xl" weight={700} className="mb-2">
-                                {nft.name}
-                              </Text>
-                              <Text size="sm" color="gray">
-                                {nft.description}
-                              </Text>
-                            </div>
-                          </Paper>
-                        </a>
-                      </Col>
-                    ))}
-                </Grid>
-                {nfts.filter(
-                  (nft) =>
-                    nft.name?.toLowerCase().includes(search.toLowerCase()) &&
-                    (nft.description?.toLowerCase().includes("course") ||
-                      nft.description?.toLowerCase().includes("tier") ||
-                      nft.description?.toLowerCase().includes("company"))
-                ).length === 0 &&
-                  nfts.length !== 0 && (
-                    <Text
-                      align="center"
-                      size="lg"
-                      style={{ color: "red", marginTop: "20px" }}
-                    >
-                      No NFTs match the search criteria.
-                    </Text>
+          {activeTab === "profile" && (
+            <div>
+              {/* Display NFTs */}
+              {loading ? (
+                <Text align="center" size="lg">
+                  Loading...
+                </Text>
+              ) : (
+                <>
+                  {nfts.length === 0 && (
+                    <div className="flex flex-col items-center justify-center space-y-4">
+                      <FaBoxOpen size="60" color="gray" />
+                      <Text align="center" size="lg" style={{ color: "gray" }}>
+                        No NFTs found for the user
+                      </Text>
+                    </div>
                   )}
-              </>
-            )}
-          </Tabs.Panel>
+                  <Grid gutter="md">
+                    {nfts
+                      .filter(
+                        (nft) =>
+                          nft.name
+                            ?.toLowerCase()
+                            .includes(search.toLowerCase()) &&
+                          (nft.description?.toLowerCase().includes("course") ||
+                            nft.description?.toLowerCase().includes("tier") ||
+                            nft.description?.toLowerCase().includes("company"))
+                      )
+                      .map((nft, index) => (
+                        <Col key={index} md={6} lg={4}>
+                          <a
+                            href={`https://rarible.com/token/${nft.blockchain.toLowerCase()}/${
+                              nft.contract
+                            }:${nft.tokenId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block mb-6"
+                          >
+                            <Paper
+                              elevation={3}
+                              className="transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                            >
+                              <Image
+                                src={nft.image_url || "/default-image-path.jpg"}
+                                alt="NFT"
+                                fit="cover"
+                                className="rounded-t-lg"
+                              />
+                              <div className="p-4">
+                                <Text size="xl" weight={700} className="mb-2">
+                                  {nft.name}
+                                </Text>
+                                <Text size="sm" color="gray">
+                                  {nft.description}
+                                </Text>
+                              </div>
+                            </Paper>
+                          </a>
+                        </Col>
+                      ))}
+                  </Grid>
+                  {nfts.filter(
+                    (nft) =>
+                      nft.name?.toLowerCase().includes(search.toLowerCase()) &&
+                      (nft.description?.toLowerCase().includes("course") ||
+                        nft.description?.toLowerCase().includes("tier") ||
+                        nft.description?.toLowerCase().includes("company"))
+                  ).length === 0 &&
+                    nfts.length !== 0 && (
+                      <Text
+                        align="center"
+                        size="lg"
+                        style={{ marginTop: "20px" }}
+                      >
+                        No NFTs found
+                      </Text>
+                    )}
+                </>
+              )}
+            </div>
+          )}
 
-          <Tabs.Panel value="invites" pt="xs">
+          {activeTab === "invites" && (
             <div className="space-y-4">
               {invites.length > 0 ? (
                 invites
@@ -1193,9 +1703,9 @@ const Profile = () => {
                 </Text>
               )}
             </div>
-          </Tabs.Panel>
+          )}
 
-          <Tabs.Panel value="history" pt="xs">
+          {activeTab === "history" && (
             <div className="overflow-x-auto">
               <table className="min-w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -1259,10 +1769,10 @@ const Profile = () => {
                 </tbody>
               </table>
             </div>
-          </Tabs.Panel>
+          )}
 
           {/* Meetings Tab Panel */}
-          <Tabs.Panel value="meetings" pt="xs">
+          {activeTab === "meetings" && (
             <div className="space-y-4">
               {meetings.length > 0 ? (
                 meetings.map((meeting, index) => (
@@ -1325,8 +1835,46 @@ const Profile = () => {
                 </Text>
               )}
             </div>
-          </Tabs.Panel>
-        </Tabs>
+          )}
+
+          {activeTab === "assessments" && (
+            <div>
+              {assessments.length > 0 ? (
+                <div className="space-y-4 text-black">
+                  {assessments.map((assessment, index) => (
+                    <div key={index} className="p-4 bg-white shadow rounded-lg">
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <Text size="md" weight={500}>
+                            {assessment.title || `Assessment ${index + 1}`}
+                          </Text>
+                          <Text size="sm">
+                            Expiry Date:{" "}
+                            {new Date(
+                              assessment.expiry_date
+                            ).toLocaleDateString()}
+                          </Text>
+                        </div>
+                        <Button
+                          color="blue"
+                          onClick={() =>
+                            router.push(`/assessment/${assessment.companyID}`)
+                          } // Assuming companyID can be used to navigate to the specific assessment
+                        >
+                          Take Assessment
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <Text align="center" size="md" color="gray">
+                  No assessments available.
+                </Text>
+              )}
+            </div>
+          )}
+        </div>
       </Container>
       {isSubmissionStatusLoaded && !hasSubmitted && <SelfAssessmentCTA />}
     </div>

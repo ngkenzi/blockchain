@@ -11,7 +11,7 @@ export default async function handler(req, res) {
 
         try {
             // Making a request to your local backend server
-            const response = await axios.get(`http://localhost:4000/jobApplications?companyId=${companyId}`);
+            const response = await axios.get(`http://13.250.122.124:5000/jobApplications?companyId=${companyId}`);
             res.status(200).json(response.data);
         } catch (error) {
             console.error('Error retrieving job applications', error);

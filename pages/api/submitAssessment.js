@@ -6,7 +6,7 @@ export default async function handler(req, res) {
         const formData = req.body;
 
         try {
-            const response = await axios.post('http://localhost:4000/assessment', formData);
+            const response = await axios.post('http://13.250.122.124:5000/assessment', formData);
             res.status(201).json({ message: 'Assessment data saved successfully' });
         } catch (error) {
             console.error('Error submitting assessment:', error);

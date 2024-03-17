@@ -7,7 +7,7 @@ export default async function handler(req, res) {
             const { email, password, universityName } = req.body;
 
             // Make a POST request to the register endpoint
-            const response = await axios.post('http://localhost:4000/register', {
+            const response = await axios.post('http://13.250.122.124:5000/register', {
                 email,
                 password,
                 universityName,

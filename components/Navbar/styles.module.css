@@ -1,0 +1,68 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  opacity: 70%;
+  padding: 15px 0px;
+  font-family: "Kanit", sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.41);
+}
+
+.menu_items {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.navbar button {
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.beingu_logo {
+  max-width: 40px;
+}
+
+.menuItems :hover {
+  transform: translateY(-10px);
+}
+
+.loginLink {
+  cursor: pointer;
+}
+
+@media (max-width: 992px) {
+  .navbar > div {
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 30%;
+    box-sizing: border-box;
+    scrollbar-width: none;
+  }
+}
+
+@media (min-width: 375px) and (max-width: 600px) {
+  .navbar > div {
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 30%;
+    box-sizing: border-box;
+    scrollbar-width: none;
+  }
+
+  .navbar {
+    font-size: 13px;
+  }
+
+  .navLink,
+  .loginLink {
+    padding-right: 15px;
+  }
+
+  .beingu_logo {
+    max-width: 32px;
+  }
+}

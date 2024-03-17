@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
         try {
             // Making a request to the actual API endpoint
-            const response = await axios.get('http://localhost:4000/getMeetingsByUserId', {
+            const response = await axios.get('http://13.250.122.124:5000/getMeetingsByUserId', {
                 params: { studentId }
             });
             res.status(200).json(response.data);

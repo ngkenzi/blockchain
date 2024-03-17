@@ -25,7 +25,7 @@ const JobsSection = () => {
 
         const companyId = localStorage.getItem('companyId');
         try {
-            const response = await axios.post('http://localhost:4000/jobOffers', { companyId, ...jobDetails });
+            const response = await axios.post('http://13.250.122.124:5000/jobOffers', { companyId, ...jobDetails });
             setSuccessMessage(response.data.message);
             setJobDetails({
                 jobType: '',

@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import {
-  Container,
-  TextInput,
-  Paper,
   Button,
-  Text,
   Notification,
   useMantineTheme,
 } from "@mantine/core";
@@ -22,6 +18,7 @@ const URegister = () => {
     universityName: "",
     FirstName: "",
     LastName: "",
+    referredBy: "",
   });
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -100,7 +97,7 @@ const URegister = () => {
         CVFreeJobTokenStatus,
       };
 
-      const response = await axios.post("/api/Uregister", formData);
+      const response = await axios.post("/api/Uregister", fullData);
       setInviteType("success");
       setMessage("User registered successfully");
       setInviteVisible(true);
@@ -127,105 +124,174 @@ const URegister = () => {
   );
 
   return (
-    <div className="bg-gray-300 min-h-screen flex items-center justify-center">
+    <div className="flex min-h-screen flex-1">
       {loading ? ( // Conditional rendering based on loading state
         <BeatLoader color="#333" /> // Show loader when loading
       ) : (
-        <Container className="w-full sm:w-2/4 md:w-2/4 lg:w-1/3 xl:w-1/3 2xl:w-1/3 p-8 rounded-lg bg-gray-300">
-          <div className="shadow-lg ">
-            <Paper
-              padding="xl"
-              style={{
-                margin: "8rem 0",
-                padding: "1rem",
-                borderRadius: "12px",
-                boxShadow: "0px 10px 25px rgba(0, 0, 0, 0.05)",
-              }}
-            >
-              <Text
-                align="center"
-                size="xl"
-                style={{ marginBottom: "3rem", fontWeight: 600 }}
+        <div
+          className="flex flex-1 flex-col justify-center px-4 py-12 sm:px-6 lg:flex-none lg:px-20 xl:px-24"
+          style={{ fontFamily: "Kanit, sans-serif" }}
+        >
+          <div className="mx-auto w-full max-w-sm lg:w-96">
+            <div>
+              <a href="/">
+                <img
+                  className="h-14 w-auto"
+                  src="/images/logo.png"
+                  alt="Beingu"
+                />
+              </a>
+              <h2
+                className="my-8 text-3xl font-medium tracking-normal text-left"
+                style={{ color: "#000000AB" }}
               >
-                User Registration
-              </Text>
+                Create your account
+              </h2>
+            </div>
 
-              <div className="flex space-x-4 mb-4">
-                <TextInput
-                  placeholder="First Name"
+            <div className="flex space-x-4 mb-4">
+              <div style={{ flex: 1 }}>
+                <label
+                  htmlFor="FirstName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  First Name
+                </label>
+                <input
+                  id="FirstName"
                   name="FirstName"
+                  type="text"
+                  required
                   value={formData.FirstName}
                   onChange={handleChange}
-                  style={{ flex: 1 }}
-                  label="First Name"
-                  required
+                  className="block w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
-                <TextInput
-                  placeholder="Last Name"
+              </div>
+              <div style={{ flex: 1 }}>
+                <label
+                  htmlFor="LastName"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Last Name
+                </label>
+                <input
+                  id="LastName"
                   name="LastName"
+                  type="text"
+                  required
                   value={formData.LastName}
                   onChange={handleChange}
-                  style={{ flex: 1 }}
-                  label="Last Name"
-                  required
+                  className="block w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
+            </div>
 
-              <TextInput
-                placeholder="Email"
+            <div className="mb-7">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
                 name="email"
+                required
                 value={formData.email}
                 onChange={handleChange}
-                style={{ marginBottom: 30 }}
-                label="Email"
-                required
+                className="block w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
+            </div>
 
-              <div className="mb-4 relative">
-                <TextInput
-                  placeholder="Password"
-                  name="password"
+            <div className="mb-7">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <input
+                  id="password"
                   type={showPassword ? "text" : "password"}
+                  name="password"
+                  required
                   value={formData.password}
                   onChange={handleChange}
-                  label="Password"
-                  required
-                  rightSection={PasswordInputRightIcon()} // Set the icon as the right section of the input
-                  rightSectionWidth={40} // Adjust width as needed
-                  style={{ marginBottom: 30 }}
+                  className="block w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="text-gray-500 focus:outline-none focus:text-gray-600"
+                  >
+                    {/* Assuming PasswordInputRightIcon is a function that returns an SVG or icon component */}
+                    {PasswordInputRightIcon()}
+                  </button>
+                </div>
               </div>
+            </div>
 
-              <TextInput
-                placeholder="Confirm Password"
-                name="confirmPassword"
-                type={showPassword ? "text" : "password"} // Match the type with password field
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                label="Confirm Password"
-                required
-                rightSection={PasswordInputRightIcon()} // Set the icon as the right section of the input
-                rightSectionWidth={40} // Adjust width as needed
-                style={{ marginBottom: 30 }}
-              />
+            <div className="mb-7">
+              <label
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Confirm Password
+              </label>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <input
+                  id="confirmPassword"
+                  type={showPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="block w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="text-gray-500 focus:outline-none focus:text-gray-600"
+                  >
+                    {PasswordInputRightIcon()}
+                  </button>
+                </div>
+              </div>
+            </div>
 
-              <TextInput
+            <div className="mt-4">
+              <label
+                htmlFor="cvFile"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Upload CV (PDF only)
+              </label>
+              <input
+                id="cvFile"
                 type="file"
                 accept="application/pdf"
                 onChange={(e) => setCvFile(e.target.files[0])}
-                label="Upload CV (PDF only)"
+                className="block w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
+            </div>
 
+            <div className="mt-4">
+              <label
+                htmlFor="universityName"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Select your university
+              </label>
               <select
+                id="universityName"
                 name="universityName"
                 value={formData.universityName}
                 onChange={handleChange}
-                style={{
-                  marginBottom: 40,
-                  width: "100%",
-                  padding: "10px",
-                  borderRadius: "5px",
-                }}
+                className="mt-1 block w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 required
               >
                 <option value="" disabled>
@@ -237,41 +303,64 @@ const URegister = () => {
                   </option>
                 ))}
               </select>
-              <Button
-                onClick={registerUser}
-                fullWidth
-                disabled={!isFormValid()}
-                style={{ marginBottom: "2rem" }}
+            </div>
+
+            {/* Referred By Input Field */}
+            <div className="mb-7 mt-4">
+              <label
+                htmlFor="referredBy"
+                className="block text-sm font-medium text-gray-700"
               >
-                Register
-              </Button>
-              {inviteVisible && message && (
-                <Notification
-                  style={{ marginTop: "2rem" }}
-                  color={inviteType}
-                  onClose={() => setInviteVisible(false)}
-                >
-                  {message}
-                </Notification>
-              )}
-              <Text align="center" size="sm" style={{ marginTop: "2rem" }}>
-                Already have an account?{" "}
-                <Link
-                  href="/user/login"
-                  style={{ color: theme.colors[theme.primaryColor][6] }}
-                >
-                  Login
-                </Link>
-                <p className="mt-2">
-                  <Link href="/" className="text-blue-600 underline">
-                    Navigate back to home
-                  </Link>
-                </p>
-              </Text>
-            </Paper>
+                Referral code (optional)
+              </label>
+              <input
+                id="referredBy"
+                name="referredBy"
+                type="text"
+                value={formData.referredBy}
+                onChange={handleChange}
+                className="block w-full rounded-md border-0 p-1.5 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                placeholder="Enter referral code"
+              />
+            </div>
+
+            <Button
+              onClick={registerUser}
+              fullWidth
+              disabled={!isFormValid()}
+              style={{ marginBottom: "2rem" }}
+            >
+              Register
+            </Button>
+            {inviteVisible && message && (
+              <Notification
+                style={{ marginTop: "2rem" }}
+                color={inviteType}
+                onClose={() => setInviteVisible(false)}
+              >
+                {message}
+              </Notification>
+            )}
+
+            <div className="mt-4 items-center justify-center text-center">
+              Already have an account?{" "}
+              <a
+                href="/user/login"
+                className="font-semibold text-blue-600 hover:text-blue-500"
+              >
+                Login
+              </a>
+            </div>
           </div>
-        </Container>
+        </div>
       )}
+      <div className="relative hidden w-0 flex-1 lg:block">
+        <img
+          className="absolute inset-0 h-full w-full object-cover"
+          src="/assets/RegisterPicture.webp"
+          alt=""
+        />
+      </div>
     </div>
   );
 };

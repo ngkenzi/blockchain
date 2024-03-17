@@ -337,20 +337,28 @@ const Questionnaire = () => {
             const response = await axios.post('/api/submitAssessment', formData);
 
             if (response.status === 200 || response.status === 201) {
-                const totalScore = calculateTotalScore();
-                const tier = determineTier(totalScore);
-                setDisableSubmit(true)
 
-                toast(`Total Score: ${totalScore} - Tier: ${tier}. Redirecting back to profile...`, {
-                    position: "top-center",
-                    autoClose: 8000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    style: { fontSize: '20px', width: '400px', height: 'auto' },
-                });
+                const jobTokensResponse = await axios.post('/api/updateStudentJobTokens', { wallet_address: walletAddress });
+                if (jobTokensResponse.status === 200) {
+
+                    const totalScore = calculateTotalScore();
+                    const tier = determineTier(totalScore);
+                    setDisableSubmit(true)
+
+                    toast(`Total Score: ${totalScore} - Tier: ${tier}. Redirecting back to profile...`, {
+                        position: "top-center",
+                        autoClose: 8000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        style: { fontSize: '20px', width: '400px', height: 'auto' },
+                    });
+
+                } else {
+                    toast.error('Error updating job tokens. Please try again.');
+                }
 
                 setTimeout(() => {
                     router.push('/user/profile');

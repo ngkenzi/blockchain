@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
         try {
             // Forward the request to your backend service
-            const response = await axios.get(`http://localhost:4000/students-accepted-invites`, {
+            const response = await axios.get(`http://13.250.122.124:5000/students-accepted-invites`, {
                 params: { companyWalletAddress }
             });
             // Send the response back to the frontend

@@ -12,7 +12,7 @@ export default async function handler(req, res) {
 
         try {
             // Making a request to your actual backend server
-            const backendResponse = await axios.post('http://localhost:4000/updateMeetingStatus', { meetingId, status });
+            const backendResponse = await axios.post('http://13.250.122.124:5000/updateMeetingStatus', { meetingId, status });
             res.status(200).json(backendResponse.data);
         } catch (error) {
             console.error('Error updating meeting status:', error);
