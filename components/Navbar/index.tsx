@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import styles from "./styles.module.css";
+import ProfilePicture from "../ProfilePicture/index";
 
 const Navbar = () => {
   const router = useRouter();
@@ -44,46 +45,13 @@ const Navbar = () => {
       <span>
         <img className={styles.beingu_logo} src="/images/logo.png" />
       </span>
-      <div>
-        <span className={styles.navLink} onClick={() => router.push("/")}>
-          home
-        </span>
-        <span className={styles.navLink} onClick={() => router.push("/search")}>
-          search
-        </span>
-        <span
-          className={styles.navLink}
-          onClick={() => router.push("/companies")}
-        >
-          companies
-        </span>
-        <span
-          className={styles.navLink}
-          onClick={() => router.push("/students")}
-        >
-          students
-        </span>
+      <div className={styles.menu_items}>
+        <button onClick={() => router.push("/")}>Home</button>
+        <button onClick={() => router.push("/")}>Search</button>
+        <button onClick={() => router.push("/")}>Companies</button>
+        <button onClick={() => router.push("/")}>Students</button>
       </div>
-      {isAuthenticated ? (
-        <>
-          <span
-            className={styles.navLink}
-            onClick={() => router.push("/profile")}
-          >
-            profile
-          </span>
-          <span className={styles.loginLink} onClick={handleLogout}>
-            Logout {">"}
-          </span>
-        </>
-      ) : (
-        <span
-          className={styles.loginLink}
-          onClick={() => router.push("/user/login")}
-        >
-          Login {">"}
-        </span>
-      )}
+      {isAuthenticated && <ProfilePicture />}
     </div>
   );
 };

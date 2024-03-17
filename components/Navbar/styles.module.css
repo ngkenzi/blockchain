@@ -4,22 +4,30 @@
   align-items: center;
   color: white;
   opacity: 70%;
-  text-transform: uppercase;
   padding: 15px 0px;
   font-family: "Kanit", sans-serif;
   font-size: 14px;
   font-style: normal;
-  letter-spacing: 2px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.41);
+}
+
+.menu_items {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+
+.navbar button {
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 
 .beingu_logo {
   max-width: 40px;
 }
 
-.navLink {
-  padding-right: 39px;
-  cursor: pointer;
+.menuItems :hover {
+  transform: translateY(-10px);
 }
 
 .loginLink {
